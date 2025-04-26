@@ -343,7 +343,7 @@ footer a {
 }
 
 .barra-nivel {
-    margin: 30px 0;
+    margin: 10px 0;
     position: relative;
     text-align: left;
     width: 100%;
@@ -352,6 +352,8 @@ footer a {
     margin-right: auto;
     border-radius: 0;
     overflow: visible;
+    padding-top: 20px;
+    padding-bottom: 5px;
 }
 
 .barra-nivel span {
@@ -371,22 +373,25 @@ footer a {
     border-radius: 5px;
     position: relative;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    overflow: visible;
 }
 
 .barra-nivel .nivel {
     height: 100%;
     width: 100%;
     display: block;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px;
     position: relative;
     background-color: var(--cor-destaque) !important;
     transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow: visible;
 }
 
 .barra-nivel .nivel::after {
     content: attr(data-nivel);
     position: absolute;
-    top: -50px;
+    top: -40px;
+    /* Ajustado para ficar mais próximo da barra */
     right: 0;
     transform: translateX(50%);
     background-color: var(--cor-secundaria);
@@ -398,6 +403,9 @@ footer a {
     z-index: 20;
     opacity: 0;
     transition: opacity 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    /* Evitar que bloqueie interações */
 }
 
 .barra-nivel .nivel:hover::after {
@@ -418,10 +426,8 @@ footer a {
     z-index: 20;
     opacity: 0;
     transition: opacity 0.3s ease;
-}
-
-.barra-nivel .nivel:hover::before {
-    opacity: 1;
+    pointer-events: none;
+    /* Evitar que bloqueie interações */
 }
 
 .sobre-flex-container {
@@ -437,98 +443,20 @@ footer a {
     min-width: 300px;
 }
 
-/* Estilos para o carrossel de idiomas */
-.idiomas-carrossel,
-.skills-carrossel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-    position: relative;
-    width: 100%;
-}
-
-.idioma-barra,
-.skills-barra {
-    display: none;
-    width: 100%;
-    opacity: 0;
-    transform: translateX(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.idioma-barra.ativo,
-.skills-barra.ativo {
-    display: block;
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.carrossel-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.carrossel-nav .carrossel-btn {
-    position: static;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2em;
-    background: var(--cor-destaque);
-    color: var(--cor-texto-claro);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.carrossel-nav .carrossel-btn:hover {
-    background: var(--cor-secundaria);
-    transform: scale(1.1);
-}
-
-.carrossel-nav .carrossel-btn:active {
-    background: var(--cor-primaria);
-    transform: scale(0.95);
-}
-
-.carrossel-nav .carrossel-btn:focus {
-    outline: 2px solid var(--cor-destaque);
-    outline-offset: 2px;
-}
-
-/* Responsividade para barras de skills/idiomas */
-@media (max-width: 768px) {
-    .barra-nivel {
-        width: 100%;
-    }
-
-    .idiomas-carrossel,
-    .skills-carrossel {
-        padding: 0;
-    }
-
-    .sobre-flex-container {
-        flex-direction: column;
-        gap: 40px;
-    }
-}
-
 /* Estilos para seção de portfólio */
 .portfolio-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
     margin-top: 30px;
-    perspective: 1000px;
-    /* Adicionando perspectiva ao container para efeito 3D suave */
+}
+
+/* Solução específica para evitar borrão de texto durante animações em webkit */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .portfolio-card {
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    }
 }
 
 .portfolio-card {
@@ -536,21 +464,38 @@ footer a {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    transition: transform 0.4s ease, box-shadow 0.4s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
     z-index: 1;
-    transform-style: preserve-3d;
-    /* Permite que elementos filhos mantenham sua posição no espaço 3D */
+    will-change: transform, box-shadow;
 }
 
 .portfolio-card:hover {
-    transform: translateZ(20px);
-    /* Move o card para frente no eixo Z em vez de escalar */
+    transform: scale(1.03) translateY(-3px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
     z-index: 2;
+}
+
+/* Fixando o conteúdo para evitar o borrão no texto */
+.portfolio-card-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* Propriedades para evitar borrão no texto durante animações */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.portfolio-title,
+.portfolio-desc,
+.portfolio-tags {
+    /* Mantém o texto nítido durante animações do card */
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .portfolio-image-container {
@@ -567,29 +512,14 @@ footer a {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Alterado de 'contain' para 'cover' */
     object-position: center;
     position: absolute;
     top: 0;
     left: 0;
     display: block;
     padding: 0;
-    /* Removido o padding de 5px */
     background-color: var(--cor-secundaria);
     transition: transform 0.3s ease;
-}
-
-/* Removendo o efeito de zoom nas imagens */
-.portfolio-card:hover .portfolio-image-container img,
-.portfolio-card:hover .portfolio-image-container source {
-    transform: none;
-}
-
-.portfolio-card-content {
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
 }
 
 .portfolio-title {
@@ -599,13 +529,6 @@ footer a {
     margin-bottom: 12px;
     text-align: center;
     width: 100%;
-    /* Removendo a transição para manter o texto fixo */
-    transition: none;
-}
-
-.portfolio-card:hover .portfolio-title {
-    /* Removendo a transformação para manter o texto fixo */
-    transform: none;
 }
 
 .portfolio-desc {
@@ -648,16 +571,23 @@ footer a {
     width: auto;
     margin-left: auto;
     margin-right: auto;
-    transform: translateZ(0);
-    /* Posição inicial */
+    position: relative;
+    z-index: 3;
 }
 
-.portfolio-card:hover .portfolio-btn {
+/* Animação do botão quando houver hover */
+.portfolio-btn:hover {
     background-color: var(--cor-primaria);
-    transform: translateZ(15px) scale(1.05);
-    /* Move o botão para frente e aumenta levemente seu tamanho */
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Melhorar a transição dos cards quando mudam de página */
+.portfolio-container {
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animações para controles de navegação do portfólio */
 .portfolio-navegacao {
     display: flex;
     justify-content: center;
@@ -672,18 +602,44 @@ footer a {
     color: var(--cor-texto-claro);
     border: none;
     border-radius: 5px;
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease-out;
 }
 
 .portfolio-nav-btn:hover:not(:disabled) {
     background-color: var(--cor-primaria);
-    transform: scale(1.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.portfolio-nav-btn:hover:not(:disabled)::before {
+    transform: translateX(0);
+    opacity: 0.5;
+}
+
+.portfolio-nav-btn:active:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .portfolio-nav-btn:disabled {
@@ -693,33 +649,20 @@ footer a {
 
 .portfolio-nav-btn.anterior i {
     margin-right: 5px;
+    transition: transform 0.3s ease;
 }
 
 .portfolio-nav-btn.proximo i {
     margin-left: 5px;
+    transition: transform 0.3s ease;
 }
 
-.portfolio-pagina-indicador {
-    color: var(--cor-secundaria);
-    font-weight: 600;
-    font-size: 1.1rem;
+.portfolio-nav-btn.anterior:hover i {
+    transform: translateX(-4px);
 }
 
-@media (max-width: 768px) {
-    .portfolio-container {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .portfolio-card img {
-        height: 160px;
-    }
-}
-
-@media (max-width: 480px) {
-    .portfolio-container {
-        grid-template-columns: 1fr;
-    }
+.portfolio-nav-btn.proximo:hover i {
+    transform: translateX(4px);
 }
 
 /* Estilos para seção de serviços */
@@ -733,13 +676,21 @@ footer a {
 /* Removendo a perspectiva 3D que causa embaçamento */
 .card-animated {}
 
+/* Solução específica para evitar borrão de texto durante animações em webkit */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .servico-card {
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    }
+}
+
 .servico-card {
     background-color: var(--cor-texto-claro);
     border-radius: 12px;
     padding: 25px 15px;
     text-align: left;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease-out, box-shadow 0.3s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -747,14 +698,21 @@ footer a {
     min-height: 250px;
     position: relative;
     z-index: 1;
-    /* Removendo propriedades que causam embaçamento */
+    will-change: transform, box-shadow;
 }
 
 .servico-card:hover {
-    /* Reduzindo levemente o efeito de escala para ser mais suave */
     transform: scale(1.03);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     z-index: 2;
+}
+
+/* Fixando o conteúdo para evitar o borrão no texto */
+.servico-titulo,
+.servico-descricao {
+    /* Mantém o texto nítido durante animações do card */
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .servico-icone {
@@ -1180,4 +1138,101 @@ picture source {
     object-position: center;
     transition: transform 0.3s ease;
     will-change: transform;
+}
+
+/* Estilos para carrosséis de idiomas e skills */
+.idiomas-carrossel,
+.skills-carrossel {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    padding-bottom: 50px;
+    /* Reduzido de 60px para 50px */
+    margin-bottom: 15px;
+    /* Reduzido de 20px para 15px */
+}
+
+.carrossel-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    /* Reduzido de 25px para 15px */
+    padding: 10px 0;
+    /* Adicionando padding para evitar cortes nos botões */
+    position: absolute;
+    /* Posicionamento absoluto */
+    bottom: 0;
+    /* Alinhado ao fundo do carrossel */
+    left: 0;
+    right: 0;
+    z-index: 10;
+    /* Garantir que esteja acima de outros elementos */
+}
+
+.carrossel-btn {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    position: relative;
+    /* Para garantir posicionamento correto */
+}
+
+.carrossel-btn:hover:not(:disabled) {
+    background-color: var(--cor-secundaria);
+    transform: scale(1.1);
+}
+
+.carrossel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Estilos específicos para idiomas */
+.idioma-barra {
+    display: none;
+    width: 100%;
+    padding: 10px 0;
+    /* Adicionado padding para evitar cortes */
+}
+
+.idioma-barra.ativo {
+    display: block;
+    animation: fadeIn 0.5s forwards;
+}
+
+/* Estilos específicos para skills */
+.skills-barra {
+    display: none;
+    width: 100%;
+    margin-bottom: 5px;
+    /* Reduzido de 10px para 5px */
+    padding: 3px 0;
+    /* Reduzido de 5px para 3px */
+}
+
+.skills-barra.ativo {
+    display: block;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

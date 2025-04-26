@@ -585,10 +585,22 @@ document.addEventListener('DOMContentLoaded', function () {
             btnAnterior.disabled = paginaAtual === 0;
             btnAnterior.addEventListener('click', () => {
                 if (paginaAtual > 0) {
-                    paginaAtual--;
-                    renderizarProjetos();
-                    // Rolagem suave para o topo da seção portfólio
-                    document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' });
+                    // Adicionar efeito de fade-out antes de mudar de página
+                    portfolioContainer.style.opacity = '0';
+
+                    // Aguardar a animação de fade-out terminar antes de trocar as páginas
+                    setTimeout(() => {
+                        paginaAtual--;
+                        renderizarProjetos();
+
+                        // Rolagem suave para o topo da seção portfólio
+                        document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' });
+
+                        // Adicionar um pequeno atraso antes do fade-in para uma transição mais suave
+                        setTimeout(() => {
+                            portfolioContainer.style.opacity = '1';
+                        }, 50);
+                    }, 300); // Tempo correspondente à duração da transição de opacidade no CSS
                 }
             });
             navegacao.appendChild(btnAnterior);
@@ -600,10 +612,22 @@ document.addEventListener('DOMContentLoaded', function () {
             btnProximo.disabled = paginaAtual === totalPaginas - 1;
             btnProximo.addEventListener('click', () => {
                 if (paginaAtual < totalPaginas - 1) {
-                    paginaAtual++;
-                    renderizarProjetos();
-                    // Rolagem suave para o topo da seção portfólio
-                    document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' });
+                    // Adicionar efeito de fade-out antes de mudar de página
+                    portfolioContainer.style.opacity = '0';
+
+                    // Aguardar a animação de fade-out terminar antes de trocar as páginas
+                    setTimeout(() => {
+                        paginaAtual++;
+                        renderizarProjetos();
+
+                        // Rolagem suave para o topo da seção portfólio
+                        document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' });
+
+                        // Adicionar um pequeno atraso antes do fade-in para uma transição mais suave
+                        setTimeout(() => {
+                            portfolioContainer.style.opacity = '1';
+                        }, 50);
+                    }, 300); // Tempo correspondente à duração da transição de opacidade no CSS
                 }
             });
             navegacao.appendChild(btnProximo);

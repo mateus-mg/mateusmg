@@ -8,12 +8,12 @@
     <title>Mateus Galvão</title>
 
     <!-- Script de otimização LCP - carregado imediatamente -->
-    <script src="js/lcp-optimizer.js"></script>
+    <script src="js/optimizer.js"></script>
 
     <!-- Preload crítico da imagem header (LCP) -->
     <link rel="preload" href="img/webp/header-bg.webp" as="image" type="image/webp" fetchpriority="high">
 
-    <!-- Meta tags para segurança e compatibilidade com Cloudflare Pages -->
+    <!-- Meta tags para segurança e compatibilidade -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self';">
@@ -118,9 +118,6 @@
 
     <!-- Referência ao arquivo CSS original com crossorigin -->
     <link href="css/style.css" rel="stylesheet" />
-
-    <!-- CSS específico para Cloudflare Pages -->
-    <link href="css/cloudflare-fixes.css" rel="stylesheet" />
 
     <!-- Adicionando preload para o favicon -->
     <link rel="preload" href="img/webp/favicon.webp" as="image" type="image/webp">
@@ -293,35 +290,46 @@
                             <div class="skills-carrossel">
                                 <div style="flex:1; display: flex; flex-direction: column; align-items: center;">
                                     <div id="skills-barras-container" style="width: 100%;" aria-live="polite">
-                                        <div class="skills-barra ativo" aria-label="Grupo de skills - Programação e Análise">
+                                        <div class="skills-barra ativo"
+                                            aria-label="Grupo de skills - Programação e Análise">
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-python skill-icon"></i> Python</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Avançado" data-i18n-nivel="skills.niveis.avancado" style="width: 100%;"></div>
+                                                    <div class="nivel" data-nivel="Avançado"
+                                                        data-i18n-nivel="skills.niveis.avancado" style="width: 100%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-database skill-icon"></i> SQL</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                    <div class="nivel" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario"
+                                                        style="width: 66.66%;"></div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-chart-bar skill-icon"></i> Power BI</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                    <div class="nivel" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario"
+                                                        style="width: 66.66%;"></div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-robot skill-icon"></i> Machine Learning</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;"></div>
+                                                    <div class="nivel" data-nivel="Básico"
+                                                        data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-file-excel skill-icon"></i> Excel</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Avançado" data-i18n-nivel="skills.niveis.avancado" style="width: 100%;"></div>
+                                                    <div class="nivel" data-nivel="Avançado"
+                                                        data-i18n-nivel="skills.niveis.avancado" style="width: 100%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -329,38 +337,50 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-exchange-alt skill-icon"></i> ETL</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                    <div class="nivel" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario"
+                                                        style="width: 66.66%;"></div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-git-alt skill-icon"></i> Git</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                    <div class="nivel" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario"
+                                                        style="width: 66.66%;"></div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-docker skill-icon"></i> Docker</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;"></div>
+                                                    <div class="nivel" data-nivel="Básico"
+                                                        data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-linux skill-icon"></i> Linux</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;"></div>
+                                                    <div class="nivel" data-nivel="Básico"
+                                                        data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-filter skill-icon"></i> Power Query</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                    <div class="nivel" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario"
+                                                        style="width: 66.66%;"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="carrossel-nav">
-                                        <button class="carrossel-btn anterior" aria-label="Skills anteriores"><i class="fas fa-chevron-left"></i></button>
-                                        <button class="carrossel-btn proximo" aria-label="Próximas skills"><i class="fas fa-chevron-right"></i></button>
+                                        <button class="carrossel-btn anterior" aria-label="Skills anteriores"><i
+                                                class="fas fa-chevron-left"></i></button>
+                                        <button class="carrossel-btn proximo" aria-label="Próximas skills"><i
+                                                class="fas fa-chevron-right"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -540,8 +560,8 @@
 
     <!-- Scripts não críticos carregados de forma otimizada -->
     <script src="js/scripts.js" defer></script>
-    <!-- Script de otimização de imagens para melhorar LCP -->
-    <script src="js/image-optimizer.js" async></script>
+    <!-- Script de otimização unificado -->
+    <script src="js/optimizer.js" async></script>
 </body>
 
 </html>

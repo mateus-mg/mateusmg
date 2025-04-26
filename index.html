@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mateus Galvão</title>
+
+    <!-- Script de otimização LCP - carregado imediatamente -->
+    <script src="js/lcp-optimizer.js"></script>
+
+    <!-- Preload crítico da imagem header (LCP) -->
+    <link rel="preload" href="img/webp/header-bg.webp" as="image" type="image/webp" fetchpriority="high">
+
+    <!-- Meta tags para segurança e compatibilidade com Cloudflare Pages -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self';">
+
+    <!-- Preload e inlining dos estilos críticos -->
+    <style>
+        /* Estilos críticos para renderização inicial */
+        :root {
+            --cor-primaria: #0F2027;
+            --cor-secundaria: #203A43;
+            --cor-destaque: #145C50;
+            --cor-fundo-claro: #ECE5DA;
+            --cor-texto-escuro: #1F1F1F;
+            --cor-texto-claro: #F2F2F2;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-texto-escuro);
+        }
+
+        /* Otimizações para o elemento LCP específico */
+        .main-content header p[data-i18n="header.role"] {
+            font-size: 1.2em;
+            color: var(--cor-texto-claro);
+            margin-bottom: 10px;
+            opacity: 1;
+            will-change: auto;
+            /* Evita consumo de recursos de GPU */
+            text-rendering: optimizeSpeed;
+        }
+
+        header {
+            text-align: center;
+            background-color: var(--cor-primaria);
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Melhorando a imagem de fundo para priorizar renderização de texto */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--cor-primaria);
+            opacity: 0.9;
+            z-index: 2;
+        }
+
+        /* Carregamento de imagem de fundo após elementos críticos */
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: none;
+            /* Será carregada via JavaScript */
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        header>* {
+            position: relative;
+            z-index: 3;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            color: var(--cor-texto-claro);
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: var(--cor-texto-claro);
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <!-- Carrega fonte do sistema primeiro para melhorar o tempo de renderização -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" as="style"
+        crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"
+        crossorigin />
+
+    <!-- Apenas ícones essenciais para primeira renderização -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style"
+        crossorigin>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"
+        crossorigin />
+
+    <!-- Referência ao arquivo CSS original com crossorigin -->
+    <link href="css/style.css" rel="stylesheet" />
+
+    <!-- CSS específico para Cloudflare Pages -->
+    <link href="css/cloudflare-fixes.css" rel="stylesheet" />
+
+    <!-- Adicionando preload para o favicon -->
+    <link rel="preload" href="img/webp/favicon.webp" as="image" type="image/webp">
+    <link rel="alternate icon" href="img/favicon.png" type="image/png">
+
+    <!-- Meta tags para SEO -->
+    <meta content="Portfólio de Mateus Galvão, engenheiro e cientista de dados." name="description" />
+    <meta content="Mateus Galvão - Portfólio" property="og:title" />
+    <meta content="img/header-bg.jpg" property="og:image" />
+    <meta content="1200" property="og:image:width" />
+    <meta content="630" property="og:image:height" />
+    <meta content="Conheça meus projetos em Python, Power BI e Machine Learning." property="og:description" />
+
+    <!-- SEO JSON-LD para portfólio -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Portfólio de Mateus Galvão",
+      "description": "Projetos de Data Science, Power BI, Python e Machine Learning.",
+      "hasPart": [
+        {
+          "@type": "CreativeWork",
+          "headline": "Análise de Vendas com Power BI",
+          "description": "Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.",
+          "image": "img/powerbi-projeto.jpg",
+          "keywords": ["Power BI", "DAX", "Visualização de Dados"],
+          "datePublished": "2024",
+          "url": "https://github.com/mateus-mg/powerbi-vendas"
+        },
+        {
+          "@type": "CreativeWork",
+          "headline": "Previsão de Preços de Casas (Python) ",
+          "description": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
+          "image": "img/casas-python.jpg",
+          "keywords": ["Python", "Pandas", "Scikit-learn", "Matplotlib"],
+          "datePublished": "2023",
+          "url": "https://github.com/mateus-mg/house-prices-prediction"
+        },
+        {
+          "@type": "CreativeWork",
+          "headline": "Dashboard de RH",
+          "description": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+          "image": "img/dashboard-rh.jpg",
+          "keywords": ["Power BI", "Excel", "Recursos Humanos"],
+          "datePublished": "2023",
+          "url": "https://github.com/mateus-mg/dashboard-rh"
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body>
+    <div class="seletor-idiomas">
+        <button class="menu-idiomas-toggle" aria-label="Abrir menu de idiomas"
+            data-i18n-aria="acessibilidade.abrir_menu_idiomas">
+            <i class="fas fa-globe"></i>
+        </button>
+        <ul class="menu-idiomas">
+            <li><button class="seletor-idioma" data-idioma="pt">Português</button></li>
+            <li><button class="seletor-idioma" data-idioma="en">English</button></li>
+            <li><button class="seletor-idioma" data-idioma="es">Espanhol</button></li>
+        </ul>
+    </div>
+    <nav class="sidebar" id="sidebar">
+        <a href="#sobre" data-i18n="nav.sobre">Sobre</a>
+        <a href="#experiencias" data-i18n="nav.experiencias">Experiências</a>
+        <a href="#portfolio" data-i18n="nav.portfolio">Portfólio</a>
+        <a href="#servicos" data-i18n="nav.servicos">Serviços</a>
+        <a href="#contato" data-i18n="nav.contato">Contato</a>
+    </nav>
+    <button aria-label="Abrir menu de navegação" class="sidebar-toggle" id="toggle-button" onclick="toggleSidebar()"
+        data-i18n-aria="acessibilidade.abrir_menu_navegacao">☰</button>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="main-content" id="main-content">
+        <header>
+            <p data-i18n="header.welcome">Olá, seja bem-vindo!</p>
+            <h1 data-i18n="header.name">Eu sou Mateus Galvão</h1>
+            <p data-i18n="header.role">Engenheiro de Dados | Cientista de Dados | Arquiteto de Dados</p>
+            <div class="header-icons">
+                <a class="icon-link" href="#contato" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a class="icon-link" href="https://github.com/mateus-mg" target="_blank" title="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a class="icon-link" href="https://linkedin.com/in/mateus-marques-galvão-759b3a3a" target="_blank"
+                    title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+        </header>
+        <section class="sobre" id="sobre">
+            <div class="titulo-section" data-i18n="sobre">Sobre mim</div>
+            <div class="conteudo-section">
+                <p data-i18n="sobre_descricao">Sou um amante da computação que busca explorar a capacidade de
+                    processamento das máquinas na extração
+                    de informações úteis de grandes massas de dados.</p>
+                <div class="sobre-flex-container">
+                    <div class="sobre-coluna">
+                        <!-- Subseção Perfil -->
+                        <div class="subsecao" id="perfil">
+                            <h3 data-i18n="perfil.titulo">Perfil</h3>
+                            <ul>
+                                <li><strong data-i18n="perfil.nome">Nome:</strong><br /> Mateus Marques Galvão</li>
+                                <li><strong data-i18n="perfil.nascimento">Data de Nascimento:</strong><br /> 27 de
+                                    agosto, 1996</li>
+                                <li><strong data-i18n="perfil.profissao">Profissão:</strong><br /> Analista de Dados
+                                </li>
+                            </ul>
+                            <div class="idiomas-carrossel">
+                                <div style="flex:1; display: flex; flex-direction: column; align-items: center;">
+                                    <div id="idioma-barras-container" style="width: 100%;" aria-live="polite">
+                                        <div class="idioma-barra ativo" aria-label="Português - Nível Nativo">
+                                            <div class="barra-nivel">
+                                                <span data-i18n="idiomas.Portuguese">Português</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Nativo"
+                                                        data-i18n-nivel="idiomas.nativo" style="width: 100%;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="idioma-barra" aria-label="Inglês - Nível Fluente">
+                                            <div class="barra-nivel">
+                                                <span data-i18n="idiomas.ingles">Inglês</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Fluente"
+                                                        data-i18n-nivel="idiomas.fluente" style="width: 75%;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="idioma-barra" aria-label="Espanhol - Nível Intermediário">
+                                            <div class="barra-nivel">
+                                                <span data-i18n="idiomas.espanhol">Espanhol</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Intermediário"
+                                                        data-i18n-nivel="idiomas.intermediario" style="width: 50%;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="idioma-barra" aria-label="Francês - Nível Básico">
+                                            <div class="barra-nivel">
+                                                <span data-i18n="idiomas.frances">Francês</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Básico"
+                                                        data-i18n-nivel="idiomas.basico" style="width: 25%;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carrossel-nav">
+                                        <button class="carrossel-btn anterior" aria-label="Idioma anterior"
+                                            data-i18n-aria="acessibilidade.idioma_anterior"><i
+                                                class="fas fa-chevron-left"></i></button>
+                                        <button class="carrossel-btn proximo" aria-label="Próximo idioma"
+                                            data-i18n-aria="acessibilidade.proximo_idioma"><i
+                                                class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skills-coluna">
+                        <!-- Subseção Skills -->
+                        <div class="subsecao" id="skills">
+                            <h3 data-i18n="skills.titulo">Skills</h3>
+                            <div class="skills-carrossel">
+                                <div style="flex:1; display: flex; flex-direction: column; align-items: center;">
+                                    <div id="skills-barras-container" style="width: 100%;" aria-live="polite">
+                                        <div class="skills-barra ativo" aria-label="Grupo de skills - Programação e Análise">
+                                            <div class="barra-nivel">
+                                                <span><i class="fab fa-python skill-icon"></i> Python</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Avançado" data-i18n-nivel="skills.niveis.avancado" style="width: 100%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fas fa-database skill-icon"></i> SQL</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fas fa-chart-bar skill-icon"></i> Power BI</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fas fa-robot skill-icon"></i> Machine Learning</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fas fa-file-excel skill-icon"></i> Excel</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Avançado" data-i18n-nivel="skills.niveis.avancado" style="width: 100%;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="skills-barra" aria-label="Grupo de skills - Ferramentas e Sistemas">
+                                            <div class="barra-nivel">
+                                                <span><i class="fas fa-exchange-alt skill-icon"></i> ETL</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fab fa-git-alt skill-icon"></i> Git</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fab fa-docker skill-icon"></i> Docker</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fab fa-linux skill-icon"></i> Linux</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="barra-nivel">
+                                                <span><i class="fas fa-filter skill-icon"></i> Power Query</span>
+                                                <div class="nivel-fundo">
+                                                    <div class="nivel" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario" style="width: 66.66%;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carrossel-nav">
+                                        <button class="carrossel-btn anterior" aria-label="Skills anteriores"><i class="fas fa-chevron-left"></i></button>
+                                        <button class="carrossel-btn proximo" aria-label="Próximas skills"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Botões personalizados -->
+            <div style="text-align:center; margin-top: 30px;">
+                <a class="botao fale-comigo" href="#contato" data-i18n-botao="botoes.faleComigo">Fale Comigo</a>
+                <a class="botao" download="" href="pdf/Mateus-CV.pdf" data-i18n-botao="botoes.baixeCV">Baixe meu
+                    CV</a>
+            </div>
+        </section>
+        <section class="experiencias" id="experiencias">
+            <div class="titulo-section" data-i18n="experiencias">Experiências</div>
+            <div class="conteudo-section">
+                <p data-i18n="experiencias_descricao">Professor de Big Data, certificado em Data Analysis e Engenheiro
+                    de Dados com pós-graduação.</p>
+            </div>
+        </section>
+        <section class="portfolio" id="portfolio">
+            <div class="titulo-section" data-i18n="portfolio">Portfólio</div>
+            <div class="conteudo-section">
+                <p data-i18n="portfolio_descricao">Confira alguns dos meus projetos de Data Science.</p>
+                <div class="portfolio-container">
+                    <!-- Cards gerados dinamicamente via JavaScript -->
+                </div>
+            </div>
+        </section>
+        <section class="servicos" id="servicos">
+            <div class="titulo-section" data-i18n="servicos">Serviços</div>
+            <div class="conteudo-section">
+                <p data-i18n="servicos_descricao">Ofereço soluções completas em análise de dados para o seu negócio:</p>
+                <div class="servicos-container">
+                    <div class="servico-card">
+                        <div class="servico-icone">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="servico-titulo" data-i18n="servicos_cards.analise_descritiva.titulo">Análise
+                            Descritiva</h3>
+                        <p class="servico-descricao" data-i18n="servicos_cards.analise_descritiva.descricao">
+                            Transformação de dados brutos em insights visuais através de
+                            dashboards dinâmicos, permitindo a compreensão clara do desempenho atual dos seus negócios.
+                        </p>
+                    </div>
+
+                    <div class="servico-card">
+                        <div class="servico-icone">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                        <h3 class="servico-titulo" data-i18n="servicos_cards.analise_diagnostica.titulo">Análise
+                            Diagnóstica</h3>
+                        <p class="servico-descricao" data-i18n="servicos_cards.analise_diagnostica.descricao">
+                            Identificação das causas raiz por trás dos resultados dos negócios,
+                            permitindo entender o "porquê" de tendências e padrões nos seus dados.</p>
+                    </div>
+
+                    <div class="servico-card">
+                        <div class="servico-icone">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="servico-titulo" data-i18n="servicos_cards.machine_learning.titulo">Machine Learning
+                        </h3>
+                        <p class="servico-descricao" data-i18n="servicos_cards.machine_learning.descricao">
+                            Desenvolvimento de modelos preditivos para antecipar tendências,
+                            comportamentos e resultados, apoiando decisões estratégicas baseadas em dados.</p>
+                    </div>
+
+                    <div class="servico-card">
+                        <div class="servico-icone">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3 class="servico-titulo" data-i18n="servicos_cards.engenharia_dados.titulo">Engenharia de
+                            Dados</h3>
+                        <p class="servico-descricao" data-i18n="servicos_cards.engenharia_dados.descricao">Construção de
+                            pipelines robustos para extração, transformação e
+                            carregamento (ETL) de dados, garantindo informações confiáveis e atualizadas.</p>
+                    </div>
+
+                    <div class="servico-card">
+                        <div class="servico-icone">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3 class="servico-titulo" data-i18n="servicos_cards.treinamento.titulo">Treinamento e
+                            Consultoria</h3>
+                        <p class="servico-descricao" data-i18n="servicos_cards.treinamento.descricao">Capacitação de
+                            equipes em ferramentas de análise de dados (Python,
+                            Power BI, Excel) e consultoria para implementação de cultura data-driven.</p>
+                    </div>
+
+                    <div class="servico-card">
+                        <div class="servico-icone">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <h3 class="servico-titulo" data-i18n="servicos_cards.arquitetura_dados.titulo">Arquitetura de
+                            Dados</h3>
+                        <p class="servico-descricao" data-i18n="servicos_cards.arquitetura_dados.descricao">
+                            Desenvolvimento de modelos de dados eficientes, projetando
+                            estruturas escaláveis que otimizam o armazenamento e a recuperação de informações.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="contato" id="contato">
+            <div class="titulo-section" data-i18n="contato">Contato</div>
+            <div class="conteudo-section">
+                <p data-i18n="contato_descricao">Fale comigo! Será uma honra poder te ajudar.</p>
+                <form action="https://formsubmit.co/mateusmarques2011@live.com" class="form-contato" method="POST">
+                    <label for="nome" data-i18n="formulario.nome">Nome:</label>
+                    <input id="nome" name="Nome" required="" type="text" />
+                    <label for="email" data-i18n="formulario.email">E-mail:</label>
+                    <input id="email" name="Email" required="" type="email" />
+                    <label for="assunto" data-i18n="formulario.assunto">Assunto:</label>
+                    <select id="assunto" name="_subject" required="">
+                        <option disabled="" selected="" value="" data-i18n="formulario.selecioneAssunto">Selecione um
+                            assunto</option>
+                        <option value="Orçamento" data-i18n="formulario.orcamento">Orçamento</option>
+                        <option value="Parceria" data-i18n="formulario.parceria">Parceria</option>
+                        <option value="Proposta de Emprego" data-i18n="formulario.proposta">Proposta de Emprego</option>
+                        <option value="Outro" data-i18n="formulario.outro">Outro</option>
+                    </select>
+                    <label for="mensagem" data-i18n="formulario.mensagem">Mensagem:</label>
+                    <textarea id="mensagem" name="Mensagem" required="" rows="4"></textarea>
+                    <input name="_captcha" type="hidden" value="false" />
+                    <input name="_format" type="hidden" value="json" />
+                    <button class="botao" type="submit" data-i18n-botao="botoes.enviarMensagem">Enviar Mensagem</button>
+                </form>
+            </div>
+        </section>
+        <footer>
+            <p data-i18n="footer">© 2025 Mateus Galvão</p>
+        </footer>
+    </div>
+    <!-- Botão Voltar ao Início -->
+    <a class="botao" href="#" id="btn-topo" title="Voltar ao início" data-i18n-title="botoes.voltarAoTopo"><span
+            class="seta-topo">↑</span></a>
+
+    <!-- Script crítico inline para inicialização rápida -->
+    <script>
+        // Script de inicialização rápida para garantir interatividade básica sem bloquear o LCP
+        document.addEventListener('DOMContentLoaded', function () {
+            // Registrar elemento LCP para medição de performance
+            if (window.PerformanceObserver) {
+                const observer = new PerformanceObserver((list) => {
+                    const entries = list.getEntries();
+                    const lastEntry = entries[entries.length - 1];
+                    // Registrar no console para depuração
+                    console.log('LCP:', lastEntry.startTime, lastEntry);
+                });
+                observer.observe({ type: 'largest-contentful-paint', buffered: true });
+            }
+
+            // Função básica para sidebar que não depende do script principal
+            function atualizarIconeSidebar(aberto) {
+                const icone = aberto ? '✖' : '☰';
+                toggleButton.classList.add('trocando');
+                toggleButton.querySelector('.icone-menu')?.classList.remove('entrando');
+                setTimeout(() => {
+                    toggleButton.innerHTML = `<span class="icone-menu entrando">${icone}</span>`;
+                    setTimeout(() => {
+                        toggleButton.querySelector('.icone-menu')?.classList.add('entrando');
+                        toggleButton.classList.remove('trocando');
+                    }, 10);
+                }, 140);
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.getElementById('sidebar')?.classList.remove('open');
+                    document.getElementById('sidebar-overlay')?.classList.remove('ativo');
+                    atualizarIconeSidebar(false);
+                }
+            });
+        });
+    </script>
+
+    <!-- Scripts não críticos carregados de forma otimizada -->
+    <script src="js/scripts.js" defer></script>
+    <!-- Script de otimização de imagens para melhorar LCP -->
+    <script src="js/image-optimizer.js" async></script>
+</body>
+
+</html>

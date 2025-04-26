@@ -1,0 +1,9 @@
+# Redirecionar de www para non-www (corrigido)
+https://www.mateusmg.pages.dev/* https://mateusmg.pages.dev/:splat 301!
+http://www.mateusmg.pages.dev/* https://mateusmg.pages.dev/:splat 301!
+
+# Redirecionar HTTP para HTTPS
+http://mateusmg.pages.dev/* https://mateusmg.pages.dev/:splat 301!
+
+# Redirecionamento para 404 personalizado
+/* /404.html 404

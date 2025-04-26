@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página não encontrada | Portfólio de Mateus</title>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --cor-primaria: #0F2027;
+            /* Grafite */
+            --cor-secundaria: #203A43;
+            /* Azul petróleo */
+            --cor-destaque: #145C50;
+            /* Ciano vibrante */
+            --cor-fundo-claro: #ECE5DA;
+            /* Areia neutra quente */
+            --cor-texto-escuro: #1F1F1F;
+            /* Preto suave */
+            --cor-texto-claro: #F2F2F2;
+            /* Neve acinzentada */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-texto-escuro);
+        }
+
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-secundaria) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('img/header-bg.jpg') center center/cover no-repeat;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .error-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+            border-radius: 15px;
+            background-color: rgba(15, 32, 39, 0.7);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--cor-destaque);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: inline-block;
+        }
+
+        .error-code::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--cor-destaque);
+            border-radius: 2px;
+        }
+
+        .error-message {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--cor-texto-claro);
+            font-weight: 600;
+        }
+
+        .error-description {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: var(--cor-texto-claro);
+            line-height: 1.6;
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--cor-destaque);
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-button:hover {
+            background-color: var(--cor-secundaria);
+            transform: scale(1.07);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-container">
+        <div class="error-content">
+            <div class="error-code">404</div>
+            <div class="error-message">Página Não Encontrada</div>
+            <div class="error-description">
+                Ops! A página que você está procurando não existe ou foi movida.
+                Verifique se o URL está correto ou volte para a página inicial.
+            </div>
+            <a href="index.html" class="home-button">Voltar para a Página Inicial</a>
+        </div>
+    </div>
+</body>
+
+</html>

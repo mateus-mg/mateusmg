@@ -1,0 +1,191 @@
+{
+    "tituloDocumento": "Mateus Galvão - Portfólio",
+    "metaDescricao": "Portfólio de Mateus Galvão, engenheiro e cientista de dados.",
+    "nav": {
+        "sobre": "Sobre",
+        "experiencias": "Experiências",
+        "portfolio": "Portfólio",
+        "servicos": "Serviços",
+        "contato": "Contato"
+    },
+    "header": {
+        "welcome": "Olá, seja bem-vindo!",
+        "role": "Engenheiro de Dados | Cientista de Dados | Arquiteto de Dados",
+        "name": "Eu sou Mateus Galvão"
+    },
+    "sobre": "Sobre mim",
+    "experiencias": "Experiências",
+    "portfolio": "Portfólio",
+    "servicos": "Serviços",
+    "contato": "Contato",
+    "sobre_descricao": "Sou um amante da computação que busca explorar a capacidade de processamento das máquinas na extração de informações úteis de grandes massas de dados.",
+    "experiencias_descricao": "Professor de Big Data, certificado em Data Analysis e Engenheiro de Dados com pós-graduação.",
+    "portfolio_descricao": "Confira alguns dos meus projetos de Data Science.",
+    "servicos_descricao": "Ofereço soluções completas em análise de dados para o seu negócio:",
+    "contato_descricao": "Fale comigo! Será uma honra poder te ajudar.",
+    "botoes": {
+        "faleComigo": {
+            "original": "Fale Comigo",
+            "traducao": "Fale Comigo"
+        },
+        "baixeCV": {
+            "original": "Baixe meu CV",
+            "traducao": "Baixe meu CV"
+        },
+        "enviarMensagem": {
+            "original": "Enviar Mensagem",
+            "traducao": "Enviar Mensagem"
+        },
+        "verProjeto": {
+            "original": "Ver Projeto",
+            "traducao": "Ver Projeto"
+        },
+        "anterior": {
+            "original": "Anterior",
+            "traducao": "Anterior"
+        },
+        "proximo": {
+            "original": "Próximo",
+            "traducao": "Próximo"
+        },
+        "voltarAoTopo": {
+            "original": "Voltar ao topo",
+            "traducao": "Voltar ao topo"
+        }
+    },
+    "perfil": {
+        "titulo": "Perfil",
+        "nome": "Nome",
+        "nascimento": "Data de Nascimento",
+        "profissao": "Profissão"
+    },
+    "skills": {
+        "titulo": "Skills",
+        "niveis": {
+            "avancado": "Avançado",
+            "intermediario": "Intermediário",
+            "basico": "Básico"
+        }
+    },
+    "idiomas": {
+        "Portuguese": "Português",
+        "ingles": "Inglês",
+        "espanhol": "Espanhol",
+        "frances": "Francês",
+        "nativo": "Nativo",
+        "fluente": "Fluente",
+        "intermediario": "Intermediário",
+        "basico": "Básico"
+    },
+    "servicos_cards": {
+        "analise_descritiva": {
+            "titulo": "Análise Descritiva",
+            "descricao": "Transformação de dados brutos em insights visuais através de dashboards dinâmicos, permitindo a compreensão clara do desempenho atual dos seus negócios."
+        },
+        "analise_diagnostica": {
+            "titulo": "Análise Diagnóstica",
+            "descricao": "Identificação das causas raiz por trás dos resultados dos negócios, permitindo entender o \"porquê\" de tendências e padrões nos seus dados."
+        },
+        "machine_learning": {
+            "titulo": "Machine Learning",
+            "descricao": "Desenvolvimento de modelos preditivos para antecipar tendências, comportamentos e resultados, apoiando decisões estratégicas baseadas em dados."
+        },
+        "engenharia_dados": {
+            "titulo": "Engenharia de Dados",
+            "descricao": "Construção de pipelines robustos para extração, transformação e carregamento (ETL) de dados, garantindo informações confiáveis e atualizadas."
+        },
+        "treinamento": {
+            "titulo": "Treinamento e Consultoria",
+            "descricao": "Capacitação de equipes em ferramentas de análise de dados (Python, Power BI, Excel) e consultoria para implementação de cultura data-driven."
+        },
+        "arquitetura_dados": {
+            "titulo": "Arquitetura de Dados",
+            "descricao": "Desenvolvimento de modelos de dados eficientes, projetando estruturas escaláveis que otimizam o armazenamento e a recuperação de informações."
+        }
+    },
+    "formulario": {
+        "nome": "Nome:",
+        "email": "E-mail:",
+        "assunto": "Assunto:",
+        "selecioneAssunto": "Selecione um assunto",
+        "orcamento": "Orçamento",
+        "parceria": "Parceria",
+        "proposta": "Proposta de Emprego",
+        "outro": "Outro",
+        "mensagem": "Mensagem:",
+        "feedback": {
+            "enviando": "Enviando mensagem...",
+            "sucesso": "Mensagem enviada com sucesso! Entrarei em contato em breve.",
+            "erro": "Ocorreu um erro. Tente novamente ou entre em contato por e-mail."
+        }
+    },
+    "projetos": {
+        "analise_vendas": {
+            "titulo": "Análise de Vendas com Power BI",
+            "descricao": "Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.",
+            "alt": "Dashboard de vendas criado no Power BI mostrando gráficos de faturamento, produtos e regiões",
+            "tecnologias": [
+                "Power BI",
+                "DAX",
+                "Visualização"
+            ]
+        },
+        "previsao_casas": {
+            "titulo": "Previsão de Preços de Casas (Python)",
+            "descricao": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
+            "alt": "Gráfico de dispersão de preços de casas previsto por modelo de machine learning",
+            "tecnologias": [
+                "Python",
+                "Pandas",
+                "Scikit-learn"
+            ]
+        },
+        "dashboard_rh": {
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+            "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "RH"
+            ]
+        },
+        "dashboard_rh2": {
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+            "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "RH"
+            ]
+        },
+        "previsao_casas2": {
+            "titulo": "Previsão de Preços de Casas (Python)",
+            "descricao": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
+            "alt": "Gráfico de dispersão de preços de casas previsto por modelo de machine learning",
+            "tecnologias": [
+                "Python",
+                "Pandas",
+                "Scikit-learn"
+            ]
+        },
+        "dashboard_rh3": {
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+            "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "RH"
+            ]
+        }
+    },
+    "footer": "© 2025 Mateus Galvão",
+    "acessibilidade": {
+        "idioma_anterior": "Idioma anterior",
+        "proximo_idioma": "Próximo idioma",
+        "abrir_menu_navegacao": "Abrir menu de navegação",
+        "abrir_menu_idiomas": "Abrir menu de idiomas"
+    }
+}

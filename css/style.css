@@ -455,7 +455,9 @@ footer a {
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
     .portfolio-card {
         -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
         -webkit-transform: translateZ(0) scale(1.0, 1.0);
+        transform: translateZ(0) scale(1.0, 1.0);
     }
 }
 
@@ -674,13 +676,14 @@ footer a {
 }
 
 /* Removendo a perspectiva 3D que causa embaçamento */
-.card-animated {}
 
 /* Solução específica para evitar borrão de texto durante animações em webkit */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
     .servico-card {
         -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
         -webkit-transform: translateZ(0) scale(1.0, 1.0);
+        transform: translateZ(0) scale(1.0, 1.0);
     }
 }
 

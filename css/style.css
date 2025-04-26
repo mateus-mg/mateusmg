@@ -176,7 +176,7 @@ select:focus {
 
 header {
     text-align: center;
-    background: var(--cor-primaria) url('../img/header-bg.jpg') center center/cover no-repeat;
+    background: var(--cor-primaria) url('../img/webp/header-bg.webp') center center/cover no-repeat;
     position: relative;
     z-index: 1;
     min-height: 100vh;
@@ -207,7 +207,7 @@ header::after {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('../img/header-bg.jpg') center center/cover no-repeat;
+    background: url('../img/webp/header-bg.webp') center center/cover no-repeat;
     opacity: 0.4;
     z-index: 1;
 }

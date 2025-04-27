@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inicializar o portfólio
     inicializarPortfolio();
 
+    // Configurar formulário de contato
+    configurarFormularioContato();
+
     // Configurar demais eventos da UI
     configurarOutrosEventos();
 
@@ -903,4 +906,182 @@ function traduzirPagina(idioma) {
             console.error('Erro ao traduzir a página:', error);
             alert(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
         });
+}
+
+// Função centralizada para gerenciar o popup de feedback
+function gerenciarFeedbackPopup() {
+    // Singleton - cria o popup apenas uma vez
+    let feedbackPopup = document.getElementById('feedback-popup');
+
+    // Criar elemento se não existir
+    if (!feedbackPopup) {
+        console.log("Criando popup de feedback");
+        feedbackPopup = document.createElement('div');
+        feedbackPopup.id = 'feedback-popup';
+        feedbackPopup.className = 'feedback-popup';
+        feedbackPopup.innerHTML = `
+            <div class="feedback-content">
+                <div class="feedback-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="feedback-titulo" data-i18n="feedback.titulo">Mensagem Enviada com Sucesso!</h3>
+                <p class="feedback-mensagem" data-i18n="feedback.mensagem">Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.</p>
+                <button class="botao feedback-fechar" data-i18n-botao="feedback.fechar">Fechar</button>
+            </div>
+        `;
+        document.body.appendChild(feedbackPopup);
+
+        // Configurar botão de fechar (apenas uma vez)
+        const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
+        if (fecharBtn) {
+            fecharBtn.addEventListener('click', () => {
+                esconderPopup();
+            });
+        }
+    }
+
+    // Métodos para manipular o popup
+    function mostrarPopup(mensagem, titulo) {
+        // Atualizar conteúdo se necessário
+        if (mensagem) {
+            const mensagemEl = feedbackPopup.querySelector('.feedback-mensagem');
+            if (mensagemEl) mensagemEl.innerHTML = mensagem;
+        }
+
+        if (titulo) {
+            const tituloEl = feedbackPopup.querySelector('.feedback-titulo');
+            if (tituloEl) tituloEl.textContent = titulo;
+        }
+
+        // Mostrar popup com animação
+        feedbackPopup.style.display = 'flex';
+        feedbackPopup.offsetHeight; // Forçar reflow
+        setTimeout(() => {
+            feedbackPopup.classList.add('ativo');
+        }, 10);
+    }
+
+    function esconderPopup() {
+        feedbackPopup.classList.remove('ativo');
+        setTimeout(() => {
+            feedbackPopup.style.display = 'none';
+        }, 300);
+    }
+
+    function atualizarMensagemEnvio(nome, assunto) {
+        let mensagem = '';
+
+        if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
+        if (!assunto) assunto = localStorage.getItem('ultimo_assunto') || '';
+
+        if (assunto) {
+            mensagem = `
+                <strong>Olá ${nome}!</strong><br>
+                Sua mensagem sobre "<em>${assunto}</em>" foi enviada com sucesso.<br>
+                Agradecemos seu contato e responderemos em até 48 horas úteis.
+            `;
+        } else {
+            mensagem = `
+                <strong>Olá ${nome}!</strong><br>
+                Sua mensagem foi enviada com sucesso.<br>
+                Agradecemos seu contato e responderemos em até 48 horas úteis.
+            `;
+        }
+
+        return mensagem;
+    }
+
+    function atualizarMensagemEnviando(nome) {
+        return `Enviando sua mensagem, ${nome || 'usuário'}...`;
+    }
+
+    // Expor interface pública
+    return {
+        elemento: feedbackPopup,
+        mostrar: mostrarPopup,
+        esconder: esconderPopup,
+        mensagemEnvio: atualizarMensagemEnvio,
+        mensagemEnviando: atualizarMensagemEnviando
+    };
+}
+
+// Função para configurar o formulário de contato e feedback
+function configurarFormularioContato() {
+    console.log("Configurando formulário de contato");
+
+    const formulario = document.getElementById('formulario-contato');
+    if (!formulario) {
+        console.error("Formulário de contato não encontrado");
+        return;
+    }
+
+    // Inicializar gerenciador de feedback (singleton)
+    const feedbackManager = gerenciarFeedbackPopup();
+
+    // Atualizar o assunto do email com base na seleção do dropdown
+    const assuntoDropdown = document.getElementById('assunto');
+    if (assuntoDropdown) {
+        assuntoDropdown.addEventListener('change', function () {
+            const assuntoSelecionado = this.value;
+            const subjectField = document.querySelector('input[name="_subject"]');
+            if (subjectField && assuntoSelecionado) {
+                subjectField.value = `${assuntoSelecionado}`;
+                console.log("Assunto atualizado para:", subjectField.value);
+            }
+        });
+    }
+
+    // Implementação para método tradicional POST
+    formulario.addEventListener('submit', function (evento) {
+        // Garantir que o assunto esteja atualizado no momento do envio
+        const assuntoSelecionado = document.getElementById('assunto').value;
+        const subjectField = formulario.querySelector('input[name="_subject"]');
+        if (subjectField && assuntoSelecionado) {
+            subjectField.value = `${assuntoSelecionado}`;
+        }
+
+        // Armazenar dados em localStorage para personalização da mensagem
+        const nome = document.getElementById('nome').value;
+        localStorage.setItem('ultimo_contato_nome', nome);
+        localStorage.setItem('ultimo_assunto', assuntoSelecionado);
+
+        // Mostrar feedback "Enviando..."
+        feedbackManager.mostrar(
+            feedbackManager.mensagemEnviando(nome),
+            "Enviando Mensagem..."
+        );
+
+        // Permitir que o formulário continue o envio após um breve atraso
+        evento.preventDefault();
+        setTimeout(() => {
+            console.log("Enviando formulário pelo método POST tradicional");
+            formulario.submit();
+        }, 1500);
+    });
+
+    // Verificar URL para parâmetros de sucesso (quando retorna do FormSubmit)
+    if (window.location.search.includes('enviado=sucesso')) {
+        const nome = localStorage.getItem('ultimo_contato_nome');
+        const assunto = localStorage.getItem('ultimo_assunto');
+
+        // Mostrar feedback de mensagem enviada com sucesso
+        feedbackManager.mostrar(
+            feedbackManager.mensagemEnvio(nome, assunto),
+            "Mensagem Recebida!"
+        );
+    }
+}
+
+// Função simplificada para mostrar feedback de envio (para compatibilidade)
+function mostrarFeedbackEnvio() {
+    const feedbackManager = gerenciarFeedbackPopup();
+    const nome = localStorage.getItem('ultimo_contato_nome');
+    const assunto = localStorage.getItem('ultimo_assunto');
+
+    feedbackManager.mostrar(
+        feedbackManager.mensagemEnvio(nome, assunto),
+        "Mensagem Recebida!"
+    );
+
+    return feedbackManager.elemento;
 }

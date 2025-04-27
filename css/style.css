@@ -1316,14 +1316,21 @@ section {
 
 .sobre .botao {
     margin: 10px 15px;
-    min-width: 200px; /* Aumentado para 250px */
-    height: 35px; /* Definindo altura de 54px */
-    display: inline-flex; /* Mudando para flex para centralizar o texto verticalmente */
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
+    min-width: 200px;
+    /* Aumentado para 250px */
+    height: 35px;
+    /* Definindo altura de 54px */
+    display: inline-flex;
+    /* Mudando para flex para centralizar o texto verticalmente */
+    justify-content: center;
+    /* Centraliza horizontalmente */
+    align-items: center;
+    /* Centraliza verticalmente */
     text-align: center;
-    font-size: 1.1em; /* Aumentando o tamanho da fonte */
-    font-weight: bold; /* Colocando o texto em negrito */
+    font-size: 1.1em;
+    /* Aumentando o tamanho da fonte */
+    font-weight: bold;
+    /* Colocando o texto em negrito */
 }
 
 /* Container dos botões - melhorar centralização */
@@ -1348,4 +1355,103 @@ section {
     background-color: rgba(20, 92, 80, 0.05);
     padding: 15px;
     border-radius: 5px;
+}
+
+/* Estilos para o popup de feedback */
+.feedback-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feedback-popup.ativo {
+    opacity: 1;
+}
+
+.feedback-content {
+    background-color: var(--cor-fundo-claro);
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 90%;
+    width: 500px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.feedback-popup.ativo .feedback-content {
+    transform: translateY(0);
+}
+
+.feedback-icon {
+    font-size: 4rem;
+    color: var(--cor-destaque);
+    margin-bottom: 1rem;
+}
+
+.feedback-titulo {
+    font-size: 1.8rem;
+    color: var(--cor-destaque);
+    margin-bottom: 1rem;
+}
+
+.feedback-mensagem {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--cor-texto-escuro);
+}
+
+.feedback-fechar {
+    min-width: 120px;
+    cursor: pointer;
+}
+
+/* Animação do ícone */
+@keyframes pulsar {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.feedback-popup .feedback-icon i {
+    animation: pulsar 1.5s ease-in-out infinite;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .feedback-content {
+        padding: 1.5rem;
+        width: 90%;
+    }
+
+    .feedback-icon {
+        font-size: 3rem;
+    }
+
+    .feedback-titulo {
+        font-size: 1.5rem;
+    }
+
+    .feedback-mensagem {
+        font-size: 1rem;
+    }
 }

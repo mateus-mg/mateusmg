@@ -663,96 +663,22 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    // Adicionar feedback do formulário de contato
-    const formularioContato = document.querySelector('.form-contato');
+    // Adicionar feedback do formulário de contato via AJAX
+    const formularioContato = document.getElementById('formulario-contato');
     if (formularioContato) {
-        /* CÓDIGO DE FEEDBACK DO FORMULÁRIO DESATIVADO TEMPORARIAMENTE
-        // Criar container de mensagens
-        const mensagemContainer = document.createElement('div');
-        mensagemContainer.className = 'form-mensagem-container';
-        mensagemContainer.style.display = 'none';
-        formularioContato.parentNode.insertBefore(mensagemContainer, formularioContato.nextSibling);
+        formularioContato.addEventListener('submit', function (evento) {
+            // Prevenir o comportamento padrão
+            evento.preventDefault();
 
-        formularioContato.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Mostrar mensagem de carregamento
-            mensagemContainer.innerHTML = `
-                <div class="form-mensagem carregando">
-                    <i class="fas fa-spinner fa-spin"></i> 
-                    Enviando mensagem...
-                </div>
-            `;
-            mensagemContainer.style.display = 'block';
-
-            // Desabilitar botão de envio
-            const btnSubmit = formularioContato.querySelector('button[type="submit"]');
-            btnSubmit.disabled = true;
-
-            // Capturar dados do formulário
+            // Pegar dados do formulário
             const formData = new FormData(formularioContato);
-            const actionUrl = formularioContato.getAttribute('action');
 
-            // Enviar dados via fetch API
-            fetch(actionUrl, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return { success: true };
-                    } else {
-                        return { success: false, message: 'Erro ao enviar mensagem.' };
-                    }
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Mensagem de sucesso
-                        mensagemContainer.innerHTML = `
-
-                        <div class="form-mensagem sucesso">
-                            <i class="fas fa-check-circle"></i>
-                            Mensagem enviada com sucesso! Entrarei em contato em breve.
-                        </div>
-                    `;
-
-                        // Limpar formulário
-                        formularioContato.reset();
-                    } else {
-                        // Mensagem de erro
-                        mensagemContainer.innerHTML = `
-                        <div class="form-mensagem erro">
-                            <i class="fas fa-exclamation-circle"></i>
-                            ${data.message || 'Ocorreu um erro. Tente novamente ou entre em contato por e-mail.'}
-                        </div>
-                    `;
-                    }
-                })
-                .catch(error => {
-                    // Usar a função melhorada de tratamento de erros
-                    tratarErroFormulario(error, mensagemContainer);
-                })
-                .finally(() => {
-                    // Reativar botão após 2 segundos (para evitar múltiplos envios)
-                    setTimeout(() => {
-                        btnSubmit.disabled = false;
-                    }, 2000);
-
-                    // Rolar para a mensagem
-                    mensagemContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                    // Definir temporizador para remover a mensagem
-                    setTimeout(() => {
-                        if (mensagemContainer.querySelector('.sucesso')) {
-                            mensagemContainer.style.display = 'none';
-                        }
-                    }, 6000);
-                });
+            // Enviar dados usando XMLHttpRequest
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', formularioContato.action, true);
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.send(formData);
         });
-        */
     }
 });
 
@@ -1029,3 +955,52 @@ function traduzirPagina(idioma) {
             console.error('Erro ao traduzir a página:', error);
         });
 }
+
+// Função para ajustar dinamicamente o nível das barras
+// Adicionar log específico para barras com 100% de preenchimento
+function ajustarNiveisBarras() {
+    const barras = document.querySelectorAll('.barra-nivel .nivel');
+
+    barras.forEach(barra => {
+        const nivel = barra.getAttribute('data-nivel');
+        console.log(`Processando barra com nível: ${nivel}`); // Log para depuração
+
+        // Aplicar porcentagens consistentes com os valores definidos no CSS
+        if (nivel) {
+            let porcentagem;
+            switch (nivel.toLowerCase()) {
+                case 'nativo':
+                case 'avançado':
+                    porcentagem = '100%';
+                    break;
+                case 'fluente':
+                    porcentagem = '75%';
+                    break;
+                case 'intermediário':
+                    porcentagem = '66.66%'; // Corrigido para corresponder ao CSS
+                    break;
+                case 'básico':
+                    porcentagem = '33.33%'; // Corrigido para corresponder ao CSS
+                    break;
+                default:
+                    porcentagem = '0';
+            }
+
+            // Somente aplicar estilo se não tiver !important no CSS
+            const isIdiomaOuSkills =
+                barra.closest('#idioma-barras-container') ||
+                barra.closest('#skills-barras-container');
+
+            if (!isIdiomaOuSkills) {
+                barra.style.width = porcentagem;
+            }
+
+            if (porcentagem === '100%') {
+                console.log(`Barra com 100% de preenchimento: ${barra.outerHTML}`); // Log específico
+            }
+        }
+    });
+}
+
+// Chamar a função ao carregar a página
+document.addEventListener('DOMContentLoaded', ajustarNiveisBarras);

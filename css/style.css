@@ -478,13 +478,15 @@ footer a {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0, 0.2, 1);
     height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
     z-index: 1;
     will-change: transform, box-shadow;
+    /* Minimiza repaints durante animações */
+    contain: layout paint style;
 }
 
 .portfolio-card:hover {
@@ -519,6 +521,9 @@ footer a {
     overflow: hidden;
     position: relative;
     background-color: var(--cor-secundaria);
+    /* Evita que o conteúdo se rompa durante as animações */
+    contain: strict;
+    z-index: 1;
 }
 
 .portfolio-image-container img,
@@ -533,7 +538,12 @@ footer a {
     display: block;
     padding: 0;
     background-color: var(--cor-secundaria);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    /* Previne travamentos durante animações */
+    contain: paint;
 }
 
 .portfolio-title {
@@ -598,7 +608,24 @@ footer a {
 
 /* Melhorar a transição dos cards quando mudam de página */
 .portfolio-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-top: 30px;
     transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 992px) {
+    .portfolio-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .portfolio-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Animações para controles de navegação do portfólio */

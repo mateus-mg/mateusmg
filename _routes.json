@@ -15,6 +15,16 @@
             "handle": "static"
         },
         {
+            "src": "^https?://www\\.mateusmg\\.pages\\.dev/(.*)",
+            "dest": "https://mateusmg.pages.dev/$1",
+            "status": 301
+        },
+        {
+            "src": "^http://mateusmg\\.pages\\.dev/(.*)",
+            "dest": "https://mateusmg.pages.dev/$1",
+            "status": 301
+        },
+        {
             "src": "^/index.html$",
             "dest": "/",
             "status": 301

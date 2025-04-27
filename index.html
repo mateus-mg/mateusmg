@@ -493,11 +493,11 @@
             <div class="titulo-section" data-i18n="contato">Contato</div>
             <div class="conteudo-section">
                 <p data-i18n="contato_descricao">Fale comigo! Será uma honra poder te ajudar.</p>
-                <form action="https://formsubmit.co/mateusmarques2011@live.com" class="form-contato" method="POST">
+                <form id="formulario-contato" class="form-contato" method="POST" action="https://formsubmit.co/mateusmarques2011@live.com">
                     <label for="nome" data-i18n="formulario.nome">Nome:</label>
-                    <input id="nome" name="Nome" required="" type="text" />
+                    <input id="nome" name="nome" required="" type="text" />
                     <label for="email" data-i18n="formulario.email">E-mail:</label>
-                    <input id="email" name="Email" required="" type="email" />
+                    <input id="email" name="email" required="" type="email" />
                     <label for="assunto" data-i18n="formulario.assunto">Assunto:</label>
                     <select id="assunto" name="_subject" required="">
                         <option disabled="" selected="" value="" data-i18n="formulario.selecioneAssunto">Selecione um
@@ -508,13 +508,15 @@
                         <option value="Outro" data-i18n="formulario.outro">Outro</option>
                     </select>
                     <label for="mensagem" data-i18n="formulario.mensagem">Mensagem:</label>
-                    <textarea id="mensagem" name="Mensagem" required="" rows="4"></textarea>
-                    <input name="_captcha" type="hidden" value="false" />
-                    <!-- Removendo o formato JSON para facilitar a ativação inicial -->
-                    <!-- <input name="_format" type="hidden" value="json" /> -->
-                    <input name="_next" type="hidden" value="https://mateusgalvao.pages.dev/agradecimento.html" />
-                    <input name="_template" type="hidden" value="table" />
-                    <input type="hidden" name="_honey" value="">
+                    <textarea id="mensagem" name="mensagem" required="" rows="4"></textarea>
+                    
+                    <!-- Div para mostrar o status do formulário - COMENTADO TEMPORARIAMENTE
+                    <div id="form-status" style="display: none;"></div>
+                    -->
+                    
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_next" value="https://mateusgalvao.pages.dev/agradecimento.html">
+                    
                     <button class="botao" type="submit" data-i18n-botao="botoes.enviarMensagem">Enviar Mensagem</button>
                 </form>
             </div>

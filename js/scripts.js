@@ -666,6 +666,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Adicionar feedback do formulário de contato
     const formularioContato = document.querySelector('.form-contato');
     if (formularioContato) {
+        /* CÓDIGO DE FEEDBACK DO FORMULÁRIO DESATIVADO TEMPORARIAMENTE
         // Criar container de mensagens
         const mensagemContainer = document.createElement('div');
         mensagemContainer.className = 'form-mensagem-container';
@@ -751,104 +752,104 @@ document.addEventListener('DOMContentLoaded', function () {
                     }, 6000);
                 });
         });
-    }
-
-    // Portfólio - Navegação por abas
-    const bolinhasPortfolio = document.querySelectorAll('.bolinha-portfolio');
-    let abaAtual = 0;
-    bolinhasPortfolio.forEach((bolinha, idx) => {
-        bolinha.addEventListener('click', () => {
-            abaAtual = idx;
-            const offset = idx * 100;
-            portfolioContainer.style.transform = `translateX(-${offset}%)`;
-            bolinhasPortfolio.forEach(b => b.classList.remove('ativo'));
-            bolinha.classList.add('ativo');
-        });
-    });
-
-    // --- Código migrado do index.html ---
-    // Rolagem suave para o botão "Fale Comigo"
-    const btnFaleComigo = document.querySelector('.botao.fale-comigo');
-    if (btnFaleComigo) {
-        btnFaleComigo.addEventListener('click', function (e) {
-            e.preventDefault();
-            const contato = document.getElementById('contato');
-            if (contato) {
-                contato.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
-
-    // Scroll suave para o ícone de e-mail
-    const emailIcon = document.querySelector('.header-icons .icon-link[href="#contato"]');
-    if (emailIcon) {
-        emailIcon.addEventListener('click', function (e) {
-            e.preventDefault();
-            const contato = document.getElementById('contato');
-            if (contato) {
-                contato.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    }
-
-    // Corrigir inconsistências no overlay do menu lateral
-    const overlayElement = document.getElementById('sidebar-overlay');
-    const toggleBtn = document.getElementById('toggle-button');
-    toggleBtn.addEventListener('click', function () {
-        overlayElement.classList.toggle('ativo');
-    });
-    overlayElement.addEventListener('click', function () {
-        overlayElement.classList.remove('ativo');
-        sidebar.classList.remove('open'); // Corrigido de 'ativo' para 'open'
-
-        // Atualizar atributos ARIA
-        sidebar.setAttribute('aria-hidden', true);
-        toggleButton.setAttribute('aria-expanded', false);
-    });
-
-    // Otimizar imagens
-    document.querySelectorAll('img').forEach(img => {
-        if (!img.hasAttribute('loading')) {
-            img.setAttribute('loading', 'lazy');
-        }
-        // Adicionar dimensões explícitas para prevenir layout shifts
-        if (!img.hasAttribute('width') && !img.hasAttribute('height')) {
-            img.style.aspectRatio = '16/9';
-        }
-    });
-
-    // Adicionar funcionalidade ao menu de idiomas
-    const menuIdiomasToggle = document.querySelector('.menu-idiomas-toggle');
-    const menuIdiomas = document.querySelector('.menu-idiomas');
-
-    if (menuIdiomasToggle && menuIdiomas) {
-        // Abrir/fechar menu ao clicar no botão
-        menuIdiomasToggle.addEventListener('click', () => {
-            menuIdiomas.classList.toggle('ativo');
-        });
-
-        // Fechar menu quando clicar fora dele
-        document.addEventListener('click', (event) => {
-            if (!menuIdiomasToggle.contains(event.target) && !menuIdiomas.contains(event.target)) {
-                menuIdiomas.classList.remove('ativo');
-            }
-        });
-
-        // Fechar menu ao pressionar ESC
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                menuIdiomas.classList.remove('ativo');
-            }
-        });
-
-        // Fechar menu após selecionar um idioma
-        document.querySelectorAll('.menu-idiomas .seletor-idioma').forEach(botao => {
-            botao.addEventListener('click', () => {
-                menuIdiomas.classList.remove('ativo');
-            });
-        });
+        */
     }
 });
+
+// Portfólio - Navegação por abas
+const bolinhasPortfolio = document.querySelectorAll('.bolinha-portfolio');
+let abaAtual = 0;
+bolinhasPortfolio.forEach((bolinha, idx) => {
+    bolinha.addEventListener('click', () => {
+        abaAtual = idx;
+        const offset = idx * 100;
+        portfolioContainer.style.transform = `translateX(-${offset}%)`;
+        bolinhasPortfolio.forEach(b => b.classList.remove('ativo'));
+        bolinha.classList.add('ativo');
+    });
+});
+
+// --- Código migrado do index.html ---
+const btnFaleComigo = document.querySelector('.botao.fale-comigo');
+if (btnFaleComigo) {
+    btnFaleComigo.addEventListener('click', function (e) {
+        e.preventDefault();
+        const contato = document.getElementById('contato');
+        if (contato) {
+            contato.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+}
+
+// Scroll suave para o ícone de e-mail
+const emailIcon = document.querySelector('.header-icons .icon-link[href="#contato"]');
+if (emailIcon) {
+    emailIcon.addEventListener('click', function (e) {
+        e.preventDefault();
+        const contato = document.getElementById('contato');
+        if (contato) {
+            contato.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+}
+
+// Corrigir inconsistências no overlay do menu lateral
+const overlayElement = document.getElementById('sidebar-overlay');
+const toggleBtn = document.getElementById('toggle-button');
+toggleBtn.addEventListener('click', function () {
+    overlayElement.classList.toggle('ativo');
+});
+overlayElement.addEventListener('click', function () {
+    overlayElement.classList.remove('ativo');
+    sidebar.classList.remove('open'); // Corrigido de 'ativo' para 'open'
+
+    // Atualizar atributos ARIA
+    sidebar.setAttribute('aria-hidden', true);
+    toggleButton.setAttribute('aria-expanded', false);
+});
+
+// Otimizar imagens
+document.querySelectorAll('img').forEach(img => {
+    if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+    }
+    // Adicionar dimensões explícitas para prevenir layout shifts
+    if (!img.hasAttribute('width') && !img.hasAttribute('height')) {
+        img.style.aspectRatio = '16/9';
+    }
+});
+
+// Adicionar funcionalidade ao menu de idiomas
+const menuIdiomasToggle = document.querySelector('.menu-idiomas-toggle');
+const menuIdiomas = document.querySelector('.menu-idiomas');
+
+if (menuIdiomasToggle && menuIdiomas) {
+    // Abrir/fechar menu ao clicar no botão
+    menuIdiomasToggle.addEventListener('click', () => {
+        menuIdiomas.classList.toggle('ativo');
+    });
+
+    // Fechar menu quando clicar fora dele
+    document.addEventListener('click', (event) => {
+        if (!menuIdiomasToggle.contains(event.target) && !menuIdiomas.contains(event.target)) {
+            menuIdiomas.classList.remove('ativo');
+        }
+    });
+
+    // Fechar menu ao pressionar ESC
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            menuIdiomas.classList.remove('ativo');
+        }
+    });
+
+    // Fechar menu após selecionar um idioma
+    document.querySelectorAll('.menu-idiomas .seletor-idioma').forEach(botao => {
+        botao.addEventListener('click', () => {
+            menuIdiomas.classList.remove('ativo');
+        });
+    });
+}
 
 // Função de tradução - melhorada para tratar todos os idiomas da mesma forma
 function traduzirPagina(idioma) {

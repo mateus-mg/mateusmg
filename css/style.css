@@ -914,31 +914,34 @@ footer a {
     font-size: 1.2em;
 }
 
-.form-mensagem.carregando {
-    background-color: var(--cor-fundo-claro);
-    border: 1px solid var(--cor-destaque);
-    color: var(--cor-secundaria);
+/* Estilos para os estados do formulário */
+#form-status {
+    padding: 12px;
+    border-radius: 4px;
+    margin: 15px 0;
+    font-weight: 500;
+    text-align: center;
 }
 
-.form-mensagem.sucesso {
-    background-color: rgba(43, 196, 173, 0.1);
-    /* Cor destaque com transparência */
-    border: 1px solid var(--cor-destaque);
-    color: #2e7d32;
-    /* Mantendo verde para sucesso */
+#form-status.enviando {
+    background-color: #e8f4fd;
+    color: #0c5da5;
+    border: 1px solid #b8d8f8;
 }
 
-.form-mensagem.erro {
-    background-color: rgba(220, 53, 69, 0.1);
-    /* Vermelho com transparência */
-    border: 1px solid #dc3545;
-    /* Mantendo vermelho para erro */
-    color: #c62828;
-    /* Mantendo vermelho para erro */
+#form-status.sucesso {
+    background-color: #e8f9f0;
+    color: #0f7b45;
+    border: 1px solid #b8e8d0;
 }
 
-/* Melhorias de responsividade */
-@media (max-width: 480px) {
+#form-status.erro {
+    background-color: #fef0f0;
+    color: #c01e1e;
+    border: 1px solid #f8c8c8;
+}
+
+@media screen and (max-width: 480px) {
     .sidebar.open {
         width: 100%;
         border-radius: 0;

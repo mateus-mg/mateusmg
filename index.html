@@ -16,7 +16,7 @@
     <!-- Meta tags para segurança e compatibilidade -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.fontawesome.com data:; img-src 'self' data: https://*.fontawesome.com https://cdnjs.cloudflare.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
+        content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.fontawesome.com data:; img-src 'self' data: https://*.fontawesome.com https://cdnjs.cloudflare.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co/ https://formsubmit.co/mateusmarques2011@live.com; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy"
@@ -510,7 +510,11 @@
                     <label for="mensagem" data-i18n="formulario.mensagem">Mensagem:</label>
                     <textarea id="mensagem" name="Mensagem" required="" rows="4"></textarea>
                     <input name="_captcha" type="hidden" value="false" />
-                    <input name="_format" type="hidden" value="json" />
+                    <!-- Removendo o formato JSON para facilitar a ativação inicial -->
+                    <!-- <input name="_format" type="hidden" value="json" /> -->
+                    <input name="_next" type="hidden" value="https://mateusgalvao.pages.dev/agradecimento.html" />
+                    <input name="_template" type="hidden" value="table" />
+                    <input type="hidden" name="_honey" value="">
                     <button class="botao" type="submit" data-i18n-botao="botoes.enviarMensagem">Enviar Mensagem</button>
                 </form>
             </div>

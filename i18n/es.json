@@ -114,9 +114,14 @@
         "outro": "Otro",
         "mensagem": "Mensaje:",
         "feedback": {
-            "enviando": "Enviando mensaje...",
-            "sucesso": "¡Mensaje enviado con éxito! Me pondré en contacto pronto.",
-            "erro": "Ocurrió un error. Por favor, inténtelo de nuevo o póngase en contacto por correo electrónico."
+            "erro": "Ocurrió un error. Por favor, inténtelo de nuevo o póngase en contacto por correo electrónico.",
+            "titulo": "¡Mensaje Enviado!",
+            "enviando_titulo": "Enviando Mensaje...",
+            "mensagem": "Su mensaje ha sido recibido y será analizado con prioridad. Espere respuesta pronto.",
+            "enviando": "\"{{nome}}\", Estamos enviando su mensaje...",
+            "sucesso": "<strong>¡Hola {{nome}}!</strong><br>Su mensaje sobre \"<em>{{assunto}}</em>\" ha sido enviado con éxito.<br>Agradecemos su contacto y nos pondremos en contacto lo antes posible.",
+            "sucesso_sem_assunto": "<strong>¡Hola {{nome}}!</strong><br>Su mensaje ha sido enviado con éxito.<br>Agradecemos su contacto y nos pondremos en contacto lo antes posible.",
+            "fechar": "Cerrar"
         }
     },
     "projetos": {

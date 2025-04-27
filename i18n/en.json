@@ -114,9 +114,14 @@
         "outro": "Other",
         "mensagem": "Message:",
         "feedback": {
-            "enviando": "Sending message...",
-            "sucesso": "Message sent successfully! I will contact you soon.",
-            "erro": "An error occurred. Please try again or contact me by email."
+            "erro": "An error occurred. Please try again or contact me by email.",
+            "titulo": "Message Sent!",
+            "enviando_titulo": "Sending Message...",
+            "mensagem": "Your message has been received and will be reviewed with priority. Please wait for a response soon.",
+            "enviando": "\"{{nome}}\", We are sending your message...",
+            "sucesso": "<strong>Hello {{nome}}!</strong><br>Your message about \"<em>{{assunto}}</em>\" has been successfully sent!<br>We appreciate your contact and will get back to you as soon as possible.",
+            "sucesso_sem_assunto": "<strong>Hello {{nome}}!</strong><br>Your message has been successfully sent!<br>We appreciate your contact and will get back to you as soon as possible.",
+            "fechar": "Close"
         }
     },
     "projetos": {

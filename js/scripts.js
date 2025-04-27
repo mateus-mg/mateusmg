@@ -924,9 +924,9 @@ function gerenciarFeedbackPopup() {
                 <div class="feedback-icon">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <h3 class="feedback-titulo" data-i18n="feedback.titulo">Mensagem Enviada com Sucesso!</h3>
-                <p class="feedback-mensagem" data-i18n="feedback.mensagem">Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.</p>
-                <button class="botao feedback-fechar" data-i18n-botao="feedback.fechar">Fechar</button>
+                <h3 class="feedback-titulo" data-i18n="formulario.feedback.titulo">Mensagem Enviada!</h3>
+                <p class="feedback-mensagem" data-i18n="formulario.feedback.mensagem">Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.</p>
+                <button class="botao feedback-fechar" data-i18n="formulario.feedback.fechar">Fechar</button>
             </div>
         `;
         document.body.appendChild(feedbackPopup);
@@ -953,6 +953,9 @@ function gerenciarFeedbackPopup() {
             if (tituloEl) tituloEl.textContent = titulo;
         }
 
+        // Traduzir os elementos estáticos do popup que não são dinâmicos
+        traduzirElementosPopup();
+
         // Mostrar popup com animação
         feedbackPopup.style.display = 'flex';
         feedbackPopup.offsetHeight; // Forçar reflow
@@ -968,40 +971,124 @@ function gerenciarFeedbackPopup() {
         }, 300);
     }
 
+    // Função auxiliar para traduzir os elementos estáticos do popup
+    function traduzirElementosPopup() {
+        // Obter o idioma atual
+        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
+
+        // Buscar as traduções para o botão de fechar
+        fetch(`i18n/${idiomaAtual}.json`)
+            .then(response => response.json())
+            .then(traducoes => {
+                const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
+                if (fecharBtn && traducoes.formulario?.feedback?.fechar) {
+                    fecharBtn.textContent = traducoes.formulario.feedback.fechar;
+                }
+            })
+            .catch(error => {
+                console.error(`Erro ao traduzir elementos do popup: ${error}`);
+            });
+    }
+
     function atualizarMensagemEnvio(nome, assunto) {
-        let mensagem = '';
+        // Obter o idioma atual
+        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
 
         if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
         if (!assunto) assunto = localStorage.getItem('ultimo_assunto') || '';
 
-        if (assunto) {
-            mensagem = `
-                <strong>Olá ${nome}!</strong><br>
-                Sua mensagem sobre "<em>${assunto}</em>" foi enviada com sucesso.<br>
-                Agradecemos seu contato e responderemos em até 48 horas úteis.
-            `;
-        } else {
-            mensagem = `
-                <strong>Olá ${nome}!</strong><br>
-                Sua mensagem foi enviada com sucesso.<br>
-                Agradecemos seu contato e responderemos em até 48 horas úteis.
-            `;
-        }
-
-        return mensagem;
+        // Buscar as traduções para a mensagem de sucesso
+        return fetch(`i18n/${idiomaAtual}.json`)
+            .then(response => response.json())
+            .then(traducoes => {
+                if (assunto && assunto.trim() !== '' && traducoes.formulario?.feedback?.sucesso) {
+                    // Substituir placeholders na mensagem de sucesso
+                    return traducoes.formulario.feedback.sucesso
+                        .replace(/{{nome}}/g, nome)
+                        .replace(/{{assunto}}/g, assunto);
+                } else if (traducoes.formulario?.feedback?.sucesso_sem_assunto) {
+                    // Usar mensagem sem assunto
+                    return traducoes.formulario.feedback.sucesso_sem_assunto
+                        .replace(/{{nome}}/g, nome);
+                } else {
+                    // Fallback para mensagem padrão em português
+                    return `
+                        <strong>Olá ${nome}!</strong><br>
+                        Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
+                        Agradecemos seu contato e entraremos em contato o mais breve possível.
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error(`Erro ao buscar traduções: ${error}`);
+                // Fallback para mensagem padrão em português
+                return `
+                    <strong>Olá ${nome}!</strong><br>
+                    Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
+                    Agradecemos seu contato e entraremos em contato o mais breve possível.
+                `;
+            });
     }
 
     function atualizarMensagemEnviando(nome) {
-        return `Enviando sua mensagem, ${nome || 'usuário'}...`;
+        // Obter o idioma atual
+        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
+
+        if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
+
+        // Buscar as traduções para a mensagem de enviando
+        return fetch(`i18n/${idiomaAtual}.json`)
+            .then(response => response.json())
+            .then(traducoes => {
+                if (traducoes.formulario?.feedback?.enviando) {
+                    // Substituir placeholders na mensagem de enviando
+                    return traducoes.formulario.feedback.enviando
+                        .replace(/{{nome}}/g, nome);
+                } else {
+                    // Fallback para mensagem padrão em português
+                    return `"${nome}", Estamos enviando sua mensagem...`;
+                }
+            })
+            .catch(error => {
+                console.error(`Erro ao buscar traduções: ${error}`);
+                // Fallback para mensagem padrão em português
+                return `"${nome}", Estamos enviando sua mensagem...`;
+            });
     }
 
-    // Expor interface pública
+    // Função para obter o título traduzido
+    function obterTituloTraduzido(tipo = 'titulo') {
+        // Obter o idioma atual
+        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
+
+        // Buscar as traduções para o título
+        return fetch(`i18n/${idiomaAtual}.json`)
+            .then(response => response.json())
+            .then(traducoes => {
+                const chave = tipo === 'enviando' ? 'enviando_titulo' : 'titulo';
+
+                if (traducoes.formulario?.feedback?.[chave]) {
+                    return traducoes.formulario.feedback[chave];
+                } else {
+                    // Fallback para título padrão em português
+                    return tipo === 'enviando' ? 'Enviando Mensagem...' : 'Mensagem Enviada!';
+                }
+            })
+            .catch(error => {
+                console.error(`Erro ao buscar traduções para título: ${error}`);
+                // Fallback para título padrão em português
+                return tipo === 'enviando' ? 'Enviando Mensagem...' : 'Mensagem Enviada!';
+            });
+    }
+
+    // Expor interface pública com métodos assíncronos para suportar traduções
     return {
         elemento: feedbackPopup,
         mostrar: mostrarPopup,
         esconder: esconderPopup,
         mensagemEnvio: atualizarMensagemEnvio,
-        mensagemEnviando: atualizarMensagemEnviando
+        mensagemEnviando: atualizarMensagemEnviando,
+        obterTituloTraduzido: obterTituloTraduzido
     };
 }
 
@@ -1032,7 +1119,7 @@ function configurarFormularioContato() {
     }
 
     // Implementação para método tradicional POST
-    formulario.addEventListener('submit', function (evento) {
+    formulario.addEventListener('submit', async function (evento) {
         // Garantir que o assunto esteja atualizado no momento do envio
         const assuntoSelecionado = document.getElementById('assunto').value;
         const subjectField = formulario.querySelector('input[name="_subject"]');
@@ -1045,18 +1132,31 @@ function configurarFormularioContato() {
         localStorage.setItem('ultimo_contato_nome', nome);
         localStorage.setItem('ultimo_assunto', assuntoSelecionado);
 
-        // Mostrar feedback "Enviando..."
-        feedbackManager.mostrar(
-            feedbackManager.mensagemEnviando(nome),
-            "Enviando Mensagem..."
-        );
+        try {
+            // Obter mensagem traduzida para "enviando"
+            const mensagemEnviando = await feedbackManager.mensagemEnviando(nome);
+            // Obter título traduzido para "enviando"
+            const tituloEnviando = await feedbackManager.obterTituloTraduzido('enviando');
 
-        // Permitir que o formulário continue o envio após um breve atraso
-        evento.preventDefault();
-        setTimeout(() => {
-            console.log("Enviando formulário pelo método POST tradicional");
-            formulario.submit();
-        }, 1500);
+            // Mostrar feedback "Enviando..." com título traduzido
+            feedbackManager.mostrar(mensagemEnviando, tituloEnviando);
+
+            // Permitir que o formulário continue o envio após um breve atraso
+            evento.preventDefault();
+            setTimeout(() => {
+                console.log("Enviando formulário pelo método POST tradicional");
+                formulario.submit();
+            }, 1500);
+        } catch (error) {
+            console.error("Erro ao mostrar mensagem de envio:", error);
+            // Fallback se a tradução falhar
+            feedbackManager.mostrar(
+                `"${nome}", Estamos enviando sua mensagem...`,
+                "Enviando Mensagem..."
+            );
+            evento.preventDefault();
+            setTimeout(() => formulario.submit(), 1500);
+        }
     });
 
     // Verificar URL para parâmetros de sucesso (quando retorna do FormSubmit)
@@ -1064,24 +1164,26 @@ function configurarFormularioContato() {
         const nome = localStorage.getItem('ultimo_contato_nome');
         const assunto = localStorage.getItem('ultimo_assunto');
 
-        // Mostrar feedback de mensagem enviada com sucesso
-        feedbackManager.mostrar(
-            feedbackManager.mensagemEnvio(nome, assunto),
-            "Mensagem Recebida!"
-        );
+        // Função assíncrona auto-executável para lidar com as promises
+        (async function () {
+            try {
+                // Obter mensagem traduzida para "sucesso"
+                const mensagemSucesso = await feedbackManager.mensagemEnvio(nome, assunto);
+                // Obter título traduzido para "sucesso"
+                const tituloSucesso = await feedbackManager.obterTituloTraduzido('titulo');
+
+                // Mostrar feedback de mensagem enviada com sucesso com título traduzido
+                feedbackManager.mostrar(mensagemSucesso, tituloSucesso);
+            } catch (error) {
+                console.error("Erro ao mostrar mensagem de sucesso:", error);
+                // Fallback se a tradução falhar
+                feedbackManager.mostrar(
+                    `<strong>Olá ${nome || 'usuário'}!</strong><br>
+                    Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
+                    Agradecemos seu contato e entraremos em contato o mais breve possível.`,
+                    "Mensagem Enviada!"
+                );
+            }
+        })();
     }
-}
-
-// Função simplificada para mostrar feedback de envio (para compatibilidade)
-function mostrarFeedbackEnvio() {
-    const feedbackManager = gerenciarFeedbackPopup();
-    const nome = localStorage.getItem('ultimo_contato_nome');
-    const assunto = localStorage.getItem('ultimo_assunto');
-
-    feedbackManager.mostrar(
-        feedbackManager.mensagemEnvio(nome, assunto),
-        "Mensagem Recebida!"
-    );
-
-    return feedbackManager.elemento;
 }

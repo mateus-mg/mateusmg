@@ -114,9 +114,13 @@
         "outro": "Outro",
         "mensagem": "Mensagem:",
         "feedback": {
-            "enviando": "Enviando mensagem...",
-            "sucesso": "Mensagem enviada com sucesso! Entrarei em contato em breve.",
-            "erro": "Ocorreu um erro. Tente novamente ou entre em contato por e-mail."
+            "titulo": "Mensagem Enviada!",
+            "enviando_titulo": "Enviando Mensagem...",
+            "mensagem": "Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.",
+            "enviando": "\"{{nome}}\", Estamos enviando sua mensagem...",
+            "sucesso": "<strong>Olá {{nome}}!</strong><br>Sua mensagem sobre \"<em>{{assunto}}</em>\" foi enviada com sucesso!<br>Agradecemos seu contato e entraremos em contato o mais breve possível.",
+            "sucesso_sem_assunto": "<strong>Olá {{nome}}!</strong><br>Sua mensagem foi enviada com sucesso!<br>Agradecemos seu contato e entraremos em contato o mais breve possível.",
+            "fechar": "Fechar"
         }
     },
     "projetos": {

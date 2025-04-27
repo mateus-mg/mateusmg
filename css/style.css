@@ -1415,28 +1415,18 @@ section {
 .feedback-fechar {
     min-width: 120px;
     cursor: pointer;
+    border-radius: 25px;
+    /* Adicionando bordas bem arredondadas */
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Animação do ícone */
-@keyframes pulsar {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+.feedback-fechar:hover {
+    transform: scale(1.05);
+    background-color: var(--cor-secundaria);
+    box-shadow: 0 4px 12px rgba(20, 92, 80, 0.2);
 }
 
-.feedback-popup .feedback-icon i {
-    animation: pulsar 1.5s ease-in-out infinite;
-}
-
-/* Responsividade */
 @media (max-width: 768px) {
     .feedback-content {
         padding: 1.5rem;

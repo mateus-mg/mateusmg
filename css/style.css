@@ -1980,49 +1980,33 @@ section {
     }
 }
 
-/* Classes predefinidas para níveis específicos */
-.nivel-avancado,
-.nivel-nativo {
-    width: 100% !important;
+/* Classes para substituir estilos inline nos carrosséis de idiomas e skills */
+.carrossel-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.barras-container {
+    width: 100%;
+}
+
+/* Classes específicas para os níveis de barras de progresso 
+   (Essas classes já existem no final do arquivo, mas estamos mantendo aqui para referência) */
+.nivel-nativo,
+.nivel-avancado {
+    width: 100%;
 }
 
 .nivel-fluente {
-    width: 75% !important;
+    width: 75%;
 }
 
 .nivel-intermediario {
-    width: 66.66% !important;
+    width: 66.66%;
 }
 
 .nivel-basico {
-    width: 33.33% !important;
-}
-
-/* Classes para contornar o problema de width:fit-content em CSP */
-.w-fit {
-    display: inline-block !important;
-}
-
-.max-w-xs {
-    max-width: 20rem !important;
-}
-
-.max-w-sm {
-    max-width: 24rem !important;
-}
-
-.max-w-md {
-    max-width: 28rem !important;
-}
-
-.max-w-lg {
-    max-width: 32rem !important;
-}
-
-.max-w-xl {
-    max-width: 36rem !important;
-}
-
-.max-w-full {
-    max-width: 100% !important;
+    width: 33.33%;
 }

@@ -237,14 +237,14 @@
                                 </li>
                             </ul>
                             <div class="idiomas-carrossel">
-                                <div style="flex:1; display: flex; flex-direction: column; align-items: center;">
-                                    <div id="idioma-barras-container" style="width: 100%;" aria-live="polite">
+                                <div class="carrossel-container">
+                                    <div id="idioma-barras-container" class="barras-container" aria-live="polite">
                                         <div class="idioma-barra ativo" aria-label="Português - Nível Nativo">
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.Portuguese">Português</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Nativo"
-                                                        data-i18n-nivel="idiomas.nativo" style="width: 100%;">
+                                                    <div class="nivel nivel-nativo" data-nivel="Nativo"
+                                                        data-i18n-nivel="idiomas.nativo">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Nativo</div>
                                                         </div>
@@ -257,8 +257,8 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.ingles">Inglês</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Fluente"
-                                                        data-i18n-nivel="idiomas.fluente" style="width: 75%;">
+                                                    <div class="nivel nivel-fluente" data-nivel="Fluente"
+                                                        data-i18n-nivel="idiomas.fluente">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Fluente</div>
                                                         </div>
@@ -271,8 +271,8 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.espanhol">Espanhol</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário"
-                                                        data-i18n-nivel="idiomas.intermediario" style="width: 50%;">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
+                                                        data-i18n-nivel="idiomas.intermediario">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Intermediário</div>
                                                         </div>
@@ -284,8 +284,8 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.frances">Francês</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico"
-                                                        data-i18n-nivel="idiomas.basico" style="width: 25%;">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico"
+                                                        data-i18n-nivel="idiomas.basico">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Básico</div>
                                                         </div>
@@ -312,15 +312,15 @@
                         <div class="subsecao" id="skills">
                             <h3 data-i18n="skills.titulo">Skills</h3>
                             <div class="skills-carrossel">
-                                <div style="flex:1; display: flex; flex-direction: column; align-items: center;">
-                                    <div id="skills-barras-container" style="width: 100%;" aria-live="polite">
+                                <div class="carrossel-container">
+                                    <div id="skills-barras-container" class="barras-container" aria-live="polite">
                                         <div class="skills-barra ativo"
                                             aria-label="Grupo de skills - Programação e Análise">
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-python skill-icon"></i> Python</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Avançado"
-                                                        data-i18n-nivel="skills.niveis.avancado" style="width: 100%;">
+                                                    <div class="nivel nivel-avancado" data-nivel="Avançado"
+                                                        data-i18n-nivel="skills.niveis.avancado">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Avançado</div>
                                                         </div>
@@ -330,9 +330,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-database skill-icon"></i> SQL</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario"
-                                                        style="width: 66.66%;">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Intermediário</div>
                                                         </div>
@@ -343,9 +342,8 @@
                                                 <span><i class="fas fa-chart-bar skill-icon"></i> Power BI</span>
                                                 <!-- Power BI -->
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario"
-                                                        style="width: 66.66%;">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Intermediário</div>
                                                         </div>
@@ -355,8 +353,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-robot skill-icon"></i> Machine Learning</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico"
-                                                        data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico"
+                                                        data-i18n-nivel="skills.niveis.basico">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Básico</div>
                                                         </div>
@@ -366,8 +364,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-file-excel skill-icon"></i> Excel</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Avançado"
-                                                        data-i18n-nivel="skills.niveis.avancado" style="width: 100%;">
+                                                    <div class="nivel nivel-avancado" data-nivel="Avançado"
+                                                        data-i18n-nivel="skills.niveis.avancado">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Avançado</div>
                                                         </div>
@@ -379,9 +377,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-exchange-alt skill-icon"></i> ETL</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario"
-                                                        style="width: 66.66%;">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Intermediário</div>
                                                         </div>
@@ -391,9 +388,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-git-alt skill-icon"></i> Git</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario"
-                                                        style="width: 66.66%;">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Intermediário</div>
                                                         </div>
@@ -403,8 +399,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-docker skill-icon"></i> Docker</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico"
-                                                        data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico"
+                                                        data-i18n-nivel="skills.niveis.basico">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Básico</div>
                                                         </div>
@@ -414,8 +410,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-linux skill-icon"></i> Linux</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Básico"
-                                                        data-i18n-nivel="skills.niveis.basico" style="width: 33.33%;">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico"
+                                                        data-i18n-nivel="skills.niveis.basico">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Básico</div>
                                                         </div>
@@ -425,9 +421,8 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-filter skill-icon"></i> Power Query</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario"
-                                                        style="width: 66.66%;">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
+                                                        data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
                                                             <div class="tooltip">Intermediário</div>
                                                         </div>

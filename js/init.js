@@ -11,22 +11,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         observer.observe({ type: 'largest-contentful-paint', buffered: true });
     }
-
-    // Apenas referência à função centralizada de atualização de ícones
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.getElementById('sidebar')?.classList.remove('open');
-            document.getElementById('sidebar-overlay')?.classList.remove('ativo');
-            // Usar função global se disponível, evitando duplicação
-            if (window.atualizarIconeSidebar) {
-                window.atualizarIconeSidebar(false);
-            } else {
-                // Fallback mínimo se a função principal ainda não estiver carregada
-                const toggleButton = document.getElementById('toggle-button');
-                if (toggleButton) {
-                    toggleButton.innerHTML = `<span class="icone-menu entrando">☰</span>`;
-                }
-            }
-        }
-    });
 });

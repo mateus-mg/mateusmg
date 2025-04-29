@@ -162,12 +162,7 @@ function configurarSeletorIdiomas() {
         }
     });
 
-    // Fechar menu ao pressionar ESC
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            menuIdiomas.classList.remove('ativo');
-        }
-    });
+    // Nota: O tratamento de ESC foi movido para a função centralizadaconfigurarEventosTeclado()
 
     // Adicionar eventos aos botões de idioma
     document.querySelectorAll('.menu-idiomas .seletor-idioma').forEach(botao => {

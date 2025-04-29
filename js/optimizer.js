@@ -6,6 +6,8 @@
 // Otimizações de LCP - Executar imediatamente
 (function () {
     // ----- OTIMIZAÇÕES DE LCP -----
+    // Indica que este arquivo está lidando com o monitoramento LCP centralizadamente
+    window.lcpMonitoringActive = true;
 
     // Priorizar a renderização do texto do LCP
     const applyLcpOptimizations = () => {
@@ -57,11 +59,14 @@
         }
     };
 
-    // Monitorar o progresso de renderização
+    // Monitorar o progresso de renderização - Centralizado aqui
     if ('PerformanceObserver' in window) {
         const lcpObserver = new PerformanceObserver((entryList) => {
             const entries = entryList.getEntries();
             const lastEntry = entries[entries.length - 1];
+
+            // Registrar no console para depuração
+            console.log('LCP:', lastEntry.startTime, lastEntry);
 
             // Após registrar o LCP, podemos iniciar operações não-críticas
             scheduleNonCriticalOperations();

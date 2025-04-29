@@ -3,6 +3,9 @@ let sidebar;
 let toggleButton;
 let idiomaAtualProjetos = 'pt';
 
+// Garantir que window.carrosseis existe globalmente antes de ser usado
+window.carrosseis = window.carrosseis || {};
+
 // Garantir que código crítico é executado antes de referenciar os elementos
 document.addEventListener('DOMContentLoaded', function () {
     console.log("Inicializando o site...");
@@ -26,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Garantir que o overlay existe
     const overlay = criarOverlaySidebar();
+
+    // Iniciar configuração centralizada de eventos de teclado
+    configurarEventosTeclado();
 
     // Iniciar animações
     iniciarAnimacaoSections();
@@ -128,6 +134,9 @@ function atualizarIconeSidebar(aberto) {
     }, 140);
 }
 
+// Exportar para uso global (referenciada em init.js)
+window.atualizarIconeSidebar = atualizarIconeSidebar;
+
 // Configurar o seletor de idiomas
 function configurarSeletorIdiomas() {
     console.log("Configurando seletor de idiomas");
@@ -191,29 +200,9 @@ function inicializarCarrosseis() {
         btnProximoSeletor: '.skills-carrossel .carrossel-btn.proximo'
     });
 
-    // Adicionar suporte a navegação por teclado
-    document.addEventListener('keydown', (e) => {
-        const focusIsInIdiomasCarousel = document.activeElement.closest('.idiomas-carrossel');
-        const focusIsInSkillsCarousel = document.activeElement.closest('.skills-carrossel');
-
-        if (focusIsInIdiomasCarousel) {
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                idiomasCarrossel.mostrar(idiomasCarrossel.getAtual() - 1);
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                idiomasCarrossel.mostrar(idiomasCarrossel.getAtual() + 1);
-            }
-        } else if (focusIsInSkillsCarousel) {
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                skillsCarrossel.mostrar(skillsCarrossel.getAtual() - 1);
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                skillsCarrossel.mostrar(skillsCarrossel.getAtual() + 1);
-            }
-        }
-    });
+    // Armazenar carrosséis no objeto global para acesso pelo handler central de teclas
+    window.carrosseis.idiomas = idiomasCarrossel;
+    window.carrosseis.skills = skillsCarrossel;
 
     console.log("Carrosséis inicializados");
 }
@@ -355,18 +344,6 @@ function configurarOutrosEventos() {
             }
         });
     }
-
-    // Tecla ESC para fechar sidebar
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sidebar) {
-            sidebar.classList.remove('open');
-            document.getElementById('sidebar-overlay')?.classList.remove('ativo');
-            if (toggleButton) {
-                toggleButton.setAttribute('aria-expanded', false);
-                atualizarIconeSidebar(false);
-            }
-        }
-    });
 
     console.log("Outros eventos da UI configurados");
 }
@@ -962,7 +939,7 @@ function traduzirPagina(idioma) {
                 // Renderizar projetos com o novo idioma
                 if (window.renderizarPortfolio) {
                     console.log("Renderizando portfólio após tradução");
-                    window.renderizarPortfolio('avançar', 'idioma');
+                    window.renderizarPortfolio('avançar', 'navegacao');
                 } else {
                     console.warn("Função renderizarPortfolio não encontrada, reinicializando portfólio");
                     inicializarPortfolio();
@@ -988,6 +965,174 @@ function traduzirPagina(idioma) {
             console.error('Erro ao traduzir a página:', error);
             alert(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
         });
+}
+
+// Função para configurar o formulário de contato e feedback
+function configurarFormularioContato() {
+    console.log("Configurando formulário de contato");
+
+    const formulario = document.getElementById('formulario-contato');
+    if (!formulario) {
+        console.error("Formulário de contato não encontrado");
+        return;
+    }
+
+    // Inicializar gerenciador de feedback (singleton)
+    const feedbackManager = gerenciarFeedbackPopup();
+
+    // Atualizar o assunto do email com base na seleção do dropdown
+    const assuntoDropdown = document.getElementById('assunto');
+    if (assuntoDropdown) {
+        assuntoDropdown.addEventListener('change', function () {
+            const assuntoSelecionado = this.value;
+            const subjectField = document.querySelector('input[name="_subject"]');
+            if (subjectField && assuntoSelecionado) {
+                subjectField.value = `${assuntoSelecionado}`;
+                console.log("Assunto atualizado para:", subjectField.value);
+            }
+        });
+    }
+
+    // Função unificada para lidar com fallbacks
+    const aplicarFallbackMensagem = function (tipo, nome, assunto = "") {
+        let mensagem, titulo;
+
+        if (tipo === 'enviando') {
+            mensagem = `"${nome}", Estamos enviando sua mensagem...`;
+            titulo = "Enviando Mensagem...";
+        } else {
+            mensagem = `<strong>Olá ${nome || 'usuário'}!</strong><br>
+                        Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
+                        Agradecemos seu contato e entraremos em contato o mais breve possível.`;
+            titulo = "Mensagem Enviada!";
+        }
+
+        feedbackManager.mostrar(mensagem, titulo);
+        return mensagem;
+    };
+
+    // Implementação para método tradicional POST
+    formulario.addEventListener('submit', async function (evento) {
+        // Garantir que o assunto esteja atualizado no momento do envio
+        const assuntoSelecionado = document.getElementById('assunto').value;
+        const subjectField = formulario.querySelector('input[name="_subject"]');
+        if (subjectField && assuntoSelecionado) {
+            subjectField.value = `${assuntoSelecionado}`;
+        }
+
+        // Armazenar dados em localStorage para personalização da mensagem
+        const nome = document.getElementById('nome').value;
+        localStorage.setItem('ultimo_contato_nome', nome);
+        localStorage.setItem('ultimo_assunto', assuntoSelecionado);
+
+        try {
+            // Obter mensagem traduzida para "enviando"
+            const mensagemEnviando = await feedbackManager.mensagemEnviando(nome);
+            // Obter título traduzido para "enviando"
+            const tituloEnviando = await feedbackManager.obterTituloTraduzido('enviando');
+
+            // Mostrar feedback "Enviando..." com título traduzido
+            feedbackManager.mostrar(mensagemEnviando, tituloEnviando);
+
+            // Permitir que o formulário continue o envio após um breve atraso
+            evento.preventDefault();
+            setTimeout(() => {
+                console.log("Enviando formulário pelo método POST tradicional");
+                formulario.submit();
+            }, 3000);
+        } catch (error) {
+            console.error("Erro ao mostrar mensagem de envio:", error);
+            // Fallback comum se a tradução falhar
+            evento.preventDefault();
+            aplicarFallbackMensagem('enviando', nome);
+            setTimeout(() => formulario.submit(), 3000);
+        }
+    });
+
+    // Verificar URL para parâmetros de sucesso (quando retorna do FormSubmit)
+    if (window.location.search.includes('enviado=sucesso')) {
+        const nome = localStorage.getItem('ultimo_contato_nome');
+        const assunto = localStorage.getItem('ultimo_assunto');
+
+        // Função assíncrona auto-executável para lidar com as promises
+        (async function () {
+            try {
+                // Obter mensagem traduzida para "sucesso"
+                const mensagemSucesso = await feedbackManager.mensagemEnvio(nome, assunto);
+                // Obter título traduzido para "sucesso"
+                const tituloSucesso = await feedbackManager.obterTituloTraduzido('titulo');
+
+                // Mostrar feedback de mensagem enviada com sucesso com título traduzido
+                feedbackManager.mostrar(mensagemSucesso, tituloSucesso);
+            } catch (error) {
+                console.error("Erro ao mostrar mensagem de sucesso:", error);
+                // Usando a função unificada de fallback
+                aplicarFallbackMensagem('sucesso', nome, assunto);
+            }
+        })();
+    }
+}
+
+// Função centralizada para tratamento de eventos de teclado
+function configurarEventosTeclado() {
+    console.log("Configurando tratamento centralizado de teclas");
+
+    // Único listener para todos os eventos de teclado
+    document.addEventListener('keydown', (e) => {
+        // Tratamento da tecla ESC
+        if (e.key === 'Escape') {
+            // Fechar sidebar
+            if (sidebar) {
+                sidebar.classList.remove('open');
+                document.getElementById('sidebar-overlay')?.classList.remove('ativo');
+                if (toggleButton) {
+                    toggleButton.setAttribute('aria-expanded', false);
+                    atualizarIconeSidebar(false);
+                }
+            }
+
+            // Fechar menu de idiomas
+            const menuIdiomas = document.querySelector('.menu-idiomas');
+            if (menuIdiomas) {
+                menuIdiomas.classList.remove('ativo');
+            }
+
+            // Fechar outros elementos que respondam a ESC (caso sejam adicionados no futuro)
+        }
+
+        // Controle de carrosséis com setas (movido para cá)
+        const focusIsInIdiomasCarousel = document.activeElement.closest('.idiomas-carrossel');
+        const focusIsInSkillsCarousel = document.activeElement.closest('.skills-carrossel');
+
+        // Carrossel de idiomas - setas
+        if (focusIsInIdiomasCarousel) {
+            const idiomasCarrossel = window.carrosseis?.idiomas;
+            if (idiomasCarrossel) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    idiomasCarrossel.mostrar(idiomasCarrossel.getAtual() - 1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    idiomasCarrossel.mostrar(idiomasCarrossel.getAtual() + 1);
+                }
+            }
+        }
+        // Carrossel de skills - setas
+        else if (focusIsInSkillsCarousel) {
+            const skillsCarrossel = window.carrosseis?.skills;
+            if (skillsCarrossel) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    skillsCarrossel.mostrar(skillsCarrossel.getAtual() - 1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    skillsCarrossel.mostrar(skillsCarrossel.getAtual() + 1);
+                }
+            }
+        }
+    });
+
+    console.log("Tratamento centralizado de teclas configurado");
 }
 
 // Função centralizada para gerenciar o popup de feedback
@@ -1172,100 +1317,4 @@ function gerenciarFeedbackPopup() {
         mensagemEnviando: atualizarMensagemEnviando,
         obterTituloTraduzido: obterTituloTraduzido
     };
-}
-
-// Função para configurar o formulário de contato e feedback
-function configurarFormularioContato() {
-    console.log("Configurando formulário de contato");
-
-    const formulario = document.getElementById('formulario-contato');
-    if (!formulario) {
-        console.error("Formulário de contato não encontrado");
-        return;
-    }
-
-    // Inicializar gerenciador de feedback (singleton)
-    const feedbackManager = gerenciarFeedbackPopup();
-
-    // Atualizar o assunto do email com base na seleção do dropdown
-    const assuntoDropdown = document.getElementById('assunto');
-    if (assuntoDropdown) {
-        assuntoDropdown.addEventListener('change', function () {
-            const assuntoSelecionado = this.value;
-            const subjectField = document.querySelector('input[name="_subject"]');
-            if (subjectField && assuntoSelecionado) {
-                subjectField.value = `${assuntoSelecionado}`;
-                console.log("Assunto atualizado para:", subjectField.value);
-            }
-        });
-    }
-
-    // Implementação para método tradicional POST
-    formulario.addEventListener('submit', async function (evento) {
-        // Garantir que o assunto esteja atualizado no momento do envio
-        const assuntoSelecionado = document.getElementById('assunto').value;
-        const subjectField = formulario.querySelector('input[name="_subject"]');
-        if (subjectField && assuntoSelecionado) {
-            subjectField.value = `${assuntoSelecionado}`;
-        }
-
-        // Armazenar dados em localStorage para personalização da mensagem
-        const nome = document.getElementById('nome').value;
-        localStorage.setItem('ultimo_contato_nome', nome);
-        localStorage.setItem('ultimo_assunto', assuntoSelecionado);
-
-        try {
-            // Obter mensagem traduzida para "enviando"
-            const mensagemEnviando = await feedbackManager.mensagemEnviando(nome);
-            // Obter título traduzido para "enviando"
-            const tituloEnviando = await feedbackManager.obterTituloTraduzido('enviando');
-
-            // Mostrar feedback "Enviando..." com título traduzido
-            feedbackManager.mostrar(mensagemEnviando, tituloEnviando);
-
-            // Permitir que o formulário continue o envio após um breve atraso
-            evento.preventDefault();
-            setTimeout(() => {
-                console.log("Enviando formulário pelo método POST tradicional");
-                formulario.submit();
-            }, 1500);
-        } catch (error) {
-            console.error("Erro ao mostrar mensagem de envio:", error);
-            // Fallback se a tradução falhar
-            feedbackManager.mostrar(
-                `"${nome}", Estamos enviando sua mensagem...`,
-                "Enviando Mensagem..."
-            );
-            evento.preventDefault();
-            setTimeout(() => formulario.submit(), 1500);
-        }
-    });
-
-    // Verificar URL para parâmetros de sucesso (quando retorna do FormSubmit)
-    if (window.location.search.includes('enviado=sucesso')) {
-        const nome = localStorage.getItem('ultimo_contato_nome');
-        const assunto = localStorage.getItem('ultimo_assunto');
-
-        // Função assíncrona auto-executável para lidar com as promises
-        (async function () {
-            try {
-                // Obter mensagem traduzida para "sucesso"
-                const mensagemSucesso = await feedbackManager.mensagemEnvio(nome, assunto);
-                // Obter título traduzido para "sucesso"
-                const tituloSucesso = await feedbackManager.obterTituloTraduzido('titulo');
-
-                // Mostrar feedback de mensagem enviada com sucesso com título traduzido
-                feedbackManager.mostrar(mensagemSucesso, tituloSucesso);
-            } catch (error) {
-                console.error("Erro ao mostrar mensagem de sucesso:", error);
-                // Fallback se a tradução falhar
-                feedbackManager.mostrar(
-                    `<strong>Olá ${nome || 'usuário'}!</strong><br>
-                    Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
-                    Agradecemos seu contato e entraremos em contato o mais breve possível.`,
-                    "Mensagem Enviada!"
-                );
-            }
-        })();
-    }
 }

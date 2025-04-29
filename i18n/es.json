@@ -146,23 +146,23 @@
             ]
         },
         "dashboard_rh": {
-            "titulo": "Dashboard de RRHH",
-            "descricao": "Visualización de indicadores de RRHH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
-            "alt": "Dashboard de RRHH con indicadores de rotación, ausentismo y satisfacción de los empleados",
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualización de indicadores de RH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
+            "alt": "Dashboard de RH con indicadores de rotación, ausentismo y satisfacción de los empleados",
             "tecnologias": [
                 "Power BI",
                 "Excel",
-                "RRHH"
+                "RH"
             ]
         },
         "dashboard_rh2": {
-            "titulo": "Dashboard de RRHH",
-            "descricao": "Visualización de indicadores de RRHH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
-            "alt": "Dashboard de RRHH con indicadores de rotación, ausentismo y satisfacción de los empleados",
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualización de indicadores de RH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
+            "alt": "Dashboard de RH con indicadores de rotación, ausentismo y satisfacción de los empleados",
             "tecnologias": [
                 "Power BI",
                 "Excel",
-                "RRHH"
+                "RH"
             ]
         },
         "previsao_casas2": {
@@ -176,13 +176,13 @@
             ]
         },
         "dashboard_rh3": {
-            "titulo": "Dashboard de RRHH",
-            "descricao": "Visualización de indicadores de RRHH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
-            "alt": "Dashboard de RRHH con indicadores de rotación, ausentismo y satisfacción de los empleados",
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualización de indicadores de RH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
+            "alt": "Dashboard de RH con indicadores de rotación, ausentismo y satisfacción de los empleados",
             "tecnologias": [
                 "Power BI",
                 "Excel",
-                "RRHH"
+                "RH"
             ]
         }
     },

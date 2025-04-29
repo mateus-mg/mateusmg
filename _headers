@@ -17,6 +17,11 @@
 /js/*.js
   Cache-Control: public, max-age=86400
 
+# Arquivos JSON - definir tipo MIME explicitamente
+/js/*.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=86400
+  
 # Outras imagens otimizadas
 /img/webp/*
   Cache-Control: public, max-age=31536000, immutable
@@ -35,7 +40,7 @@
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer-when-downgrade
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com 'sha256-5GvLRIoZunLHq/1ZxW3UH2E0G2pmjf7gh9BUUf0W0UY='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.fontawesome.com 'sha256-5gRANiz+29aqJKuL0ZQSc0f1UwdfYviZU9bZFbt+r2U=' 'sha256-EaZgLmIXxpP7xfPDxP3FO4QTsd0dmKSzz0ZOKa2hM6s=' 'sha256-hKDoxLDb3OpE3Af4HZ+uqErJUCA/tlXaF4zFm9txGb8=' 'sha256-Iv247Vnf2XJ4wHtQ7rl16HBP57C+0z1INsJwL2xaA74=' 'sha256-J69cGmbquPkVgyuow+EUZ7a9hsrt+rE1YYkubWH0dsI=' 'sha256-LgKlQj5V+Q5lH6y0DT8zGLQGEtlp/f6a/ES4FU+JPu0=' 'sha256-N6tSydZ64AHCaOWfwKbUhxXx2fRFDxHOaL3e3CO7GPI=' 'sha256-otva1f6wkDzV9WurEmTw97pTGspFB6xN+csaPY1e4zI=' 'sha256-zBbmyZbc/pcETv15w4K5wdeKFoPmeL5InSPiW2gBkpg='; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.fontawesome.com data:; img-src 'self' data: https://*.fontawesome.com https://cdnjs.cloudflare.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co/ https://formsubmit.co/mateusmarques2011@live.com; upgrade-insecure-requests;
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.fontawesome.com 'sha256-5gRANiz+29aqJKuL0ZQSc0f1UwdfYviZU9bZFbt+r2U=' 'sha256-EaZgLmIXxpP7xfPDxP3FO4QTsd0dmKSzz0ZOKa2hM6s=' 'sha256-hKDoxLDb3OpE3Af4HZ+uqErJUCA/tlXaF4zFm9txGb8=' 'sha256-Iv247Vnf2XJ4wHtQ7rl16HBP57C+0z1INsJwL2xaA74=' 'sha256-J69cGmbquPkVgyuow+EUZ7a9hsrt+rE1YYkubWH0dsI=' 'sha256-LgKlQj5V+Q5lH6y0DT8zGLQGEtlp/f6a/ES4FU+JPu0=' 'sha256-N6tSydZ64AHCaOWfwKbUhxXx2fRFDxHOaL3e3CO7GPI=' 'sha256-otva1f6wkDzV9WurEmTw97pTGspFB6xN+csaPY1e4zI=' 'sha256-zBbmyZbc/pcETv15w4K5wdeKFoPmeL5InSPiW2gBkpg='; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.fontawesome.com data:; img-src 'self' data: https://*.fontawesome.com https://cdnjs.cloudflare.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co/ https://formsubmit.co/mateusmarques2011@live.com; upgrade-insecure-requests;
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()
   Cross-Origin-Embedder-Policy: require-corp

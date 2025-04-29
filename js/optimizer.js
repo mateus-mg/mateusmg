@@ -13,20 +13,12 @@
         const lcpElement = document.querySelector('header p[data-i18n="header.role"]');
 
         if (lcpElement) {
-            // Aplicar otimizações diretamente ao elemento LCP
-            lcpElement.style.visibility = 'visible';
-            lcpElement.style.display = 'block';
-            lcpElement.style.opacity = '1';
-
-            // Remover qualquer animação que possa atrasar a renderização
-            lcpElement.style.animation = 'none';
-            lcpElement.style.transition = 'none';
+            // Usar classes CSS em vez de estilos inline
+            lcpElement.classList.add('lcp-priority');
+            lcpElement.classList.add('lcp-element');
 
             // Marcar como elemento de prioridade máxima
             lcpElement.setAttribute('fetchpriority', 'high');
-
-            // Adicionar classe para CSS identificar
-            lcpElement.classList.add('lcp-element');
         }
     };
 
@@ -47,21 +39,7 @@
     const loadBackgroundImage = () => {
         const header = document.querySelector('header');
         if (header) {
-            // Definir a imagem de fundo agora que o LCP já foi renderizado
-            const bgStyle = `
-                header::after {
-                    background-image: url('img/webp/header-bg.webp');
-                    background-position: center center;
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                }
-            `;
-
-            const styleElement = document.createElement('style');
-            styleElement.textContent = bgStyle;
-            document.head.appendChild(styleElement);
-
-            // Adicionar classe para efeito de fade-in na imagem de fundo
+            // Adicionar classe para carregar a imagem de fundo
             header.classList.add('bg-loaded');
             header.classList.add('imagem-carregada');
         }

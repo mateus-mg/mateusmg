@@ -614,7 +614,169 @@ footer a {
     grid-template-columns: repeat(3, 1fr);
     gap: 25px;
     margin-top: 30px;
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    will-change: opacity, transform;
+}
+
+/* Estilos para as transições de página do portfólio */
+.portfolio-transitioning {
+    pointer-events: none;
+}
+
+/* Adicionar classe específica para transições de navegação entre páginas */
+.portfolio-navegacao-ativa .portfolio-transitioning-avançar {
+    transform: translateX(-5%);
+}
+
+.portfolio-navegacao-ativa .portfolio-transitioning-voltar {
+    transform: translateX(5%);
+}
+
+.portfolio-navegacao-ativa .portfolio-entering-avançar,
+.portfolio-navegacao-ativa .portfolio-entering-voltar {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    will-change: opacity, transform;
+}
+
+/* Desativar as transformações quando não estiver em navegação ativa */
+.portfolio-transitioning-avançar,
+.portfolio-transitioning-voltar {
+    transform: translateX(0);
+    /* Reset para evitar animação durante troca de idioma */
+}
+
+/* Efeito de escala ao passar o mouse sobre os cards */
+.portfolio-card {
+    background-color: var(--cor-secundaria);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    will-change: transform, box-shadow;
+    /* Minimiza repaints durante animações */
+    contain: layout paint style;
+}
+
+.portfolio-card:hover {
+    transform: scale(1.03) translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    z-index: 2;
+}
+
+/* Fixando o conteúdo para evitar o borrão no texto */
+.portfolio-card-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* Propriedades para evitar borrão no texto durante animações */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.portfolio-title,
+.portfolio-desc,
+.portfolio-tags {
+    /* Mantém o texto nítido durante animações do card */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.portfolio-image-container {
+    display: block;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--cor-secundaria);
+    /* Evita que o conteúdo se rompa durante as animações */
+    contain: strict;
+    z-index: 1;
+}
+
+.portfolio-image-container img,
+.portfolio-image-container source {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    padding: 0;
+    background-color: var(--cor-secundaria);
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    /* Previne travamentos durante animações */
+    contain: paint;
+}
+
+.portfolio-title {
+    color: var(--cor-texto-claro);
+    font-size: 1.25rem;
+    margin-top: 10px;
+    margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
+}
+
+.portfolio-desc {
+    color: var(--cor-texto-claro);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.portfolio-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.portfolio-tag {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.portfolio-btn {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    margin-top: auto;
+    display: inline-block;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 3;
+}
+
+/* Animação do botão quando houver hover */
+.portfolio-btn:hover {
+    background-color: var(--cor-primaria);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 992px) {
@@ -1446,554 +1608,118 @@ section {
     }
 }
 
-/* Classes utilitárias para substituir estilos inline - Resolução de CSP */
-.d-none {
-    display: none !important;
-}
-
-.d-block {
-    display: block !important;
-}
-
-.d-flex {
-    display: flex !important;
-}
-
-.justify-center {
-    justify-content: center !important;
-}
-
-.align-center {
-    align-items: center !important;
-}
-
-.text-center {
-    text-align: center !important;
-}
-
-.w-100 {
-    width: 100% !important;
-}
-
-.w-auto {
-    width: auto !important;
-}
-
-.h-100 {
-    height: 100% !important;
-}
-
-.position-relative {
-    position: relative !important;
-}
-
-.position-absolute {
-    position: absolute !important;
-}
-
-.position-fixed {
-    position: fixed !important;
-}
-
-.top-0 {
-    top: 0 !important;
-}
-
-.left-0 {
-    left: 0 !important;
-}
-
-.right-0 {
-    right: 0 !important;
-}
-
-.bottom-0 {
-    bottom: 0 !important;
-}
-
-.z-10 {
-    z-index: 10 !important;
-}
-
-.z-50 {
-    z-index: 50 !important;
-}
-
-.z-100 {
-    z-index: 100 !important;
-}
-
-.z-1000 {
-    z-index: 1000 !important;
-}
-
-.opacity-0 {
-    opacity: 0 !important;
-}
-
-.opacity-1 {
-    opacity: 1 !important;
-}
-
-.overflow-hidden {
-    overflow: hidden !important;
-}
-
-.overflow-visible {
-    overflow: visible !important;
-}
-
-.visible {
-    visibility: visible !important;
-}
-
-.invisible {
-    visibility: hidden !important;
-}
-
-.m-0 {
-    margin: 0 !important;
-}
-
-.m-1 {
-    margin: 0.25rem !important;
-}
-
-.m-2 {
-    margin: 0.5rem !important;
-}
-
-.m-3 {
-    margin: 1rem !important;
-}
-
-.m-4 {
-    margin: 1.5rem !important;
-}
-
-.m-5 {
-    margin: 3rem !important;
-}
-
-.mt-0 {
-    margin-top: 0 !important;
-}
-
-.mt-1 {
-    margin-top: 0.25rem !important;
-}
-
-.mt-2 {
-    margin-top: 0.5rem !important;
-}
-
-.mt-3 {
-    margin-top: 1rem !important;
-}
-
-.mt-4 {
-    margin-top: 1.5rem !important;
-}
-
-.mt-5 {
-    margin-top: 3rem !important;
-}
-
-.mb-0 {
-    margin-bottom: 0 !important;
-}
-
-.mb-1 {
-    margin-bottom: 0.25rem !important;
-}
-
-.mb-2 {
-    margin-bottom: 0.5rem !important;
-}
-
-.mb-3 {
-    margin-bottom: 1rem !important;
-}
-
-.mb-4 {
-    margin-bottom: 1.5rem !important;
-}
-
-.mb-5 {
-    margin-bottom: 3rem !important;
-}
-
-.ml-0 {
-    margin-left: 0 !important;
-}
-
-.ml-1 {
-    margin-left: 0.25rem !important;
-}
-
-.ml-2 {
-    margin-left: 0.5rem !important;
-}
-
-.ml-3 {
-    margin-left: 1rem !important;
-}
-
-.ml-4 {
-    margin-left: 1.5rem !important;
-}
-
-.ml-5 {
-    margin-left: 3rem !important;
-}
-
-.mr-0 {
-    margin-right: 0 !important;
-}
-
-.mr-1 {
-    margin-right: 0.25rem !important;
-}
-
-.mr-2 {
-    margin-right: 0.5rem !important;
-}
-
-.mr-3 {
-    margin-right: 1rem !important;
-}
-
-.mr-4 {
-    margin-right: 1.5rem !important;
-}
-
-.mr-5 {
-    margin-right: 3rem !important;
-}
-
-.p-0 {
-    padding: 0 !important;
-}
-
-.p-1 {
-    padding: 0.25rem !important;
-}
-
-.p-2 {
-    padding: 0.5rem !important;
-}
-
-.p-3 {
-    padding: 1rem !important;
-}
-
-.p-4 {
-    padding: 1.5rem !important;
-}
-
-.p-5 {
-    padding: 3rem !important;
-}
-
-.pt-0 {
-    padding-top: 0 !important;
-}
-
-.pt-1 {
-    padding-top: 0.25rem !important;
-}
-
-.pt-2 {
-    padding-top: 0.5rem !important;
-}
-
-.pt-3 {
-    padding-top: 1rem !important;
-}
-
-.pt-4 {
-    padding-top: 1.5rem !important;
-}
-
-.pt-5 {
-    padding-top: 3rem !important;
-}
-
-.pb-0 {
-    padding-bottom: 0 !important;
-}
-
-.pb-1 {
-    padding-bottom: 0.25rem !important;
-}
-
-.pb-2 {
-    padding-bottom: 0.5rem !important;
-}
-
-.pb-3 {
-    padding-bottom: 1rem !important;
-}
-
-.pb-4 {
-    padding-bottom: 1.5rem !important;
-}
-
-.pb-5 {
-    padding-bottom: 3rem !important;
-}
-
-.pl-0 {
-    padding-left: 0 !important;
-}
-
-.pl-1 {
-    padding-left: 0.25rem !important;
-}
-
-.pl-2 {
-    padding-left: 0.5rem !important;
-}
-
-.pl-3 {
-    padding-left: 1rem !important;
-}
-
-.pl-4 {
-    padding-left: 1.5rem !important;
-}
-
-.pl-5 {
-    padding-left: 3rem !important;
-}
-
-.pr-0 {
-    padding-right: 0 !important;
-}
-
-.pr-1 {
-    padding-right: 0.25rem !important;
-}
-
-.pr-2 {
-    padding-right: 0.5rem !important;
-}
-
-.pr-3 {
-    padding-right: 1rem !important;
-}
-
-.pr-4 {
-    padding-right: 1.5rem !important;
-}
-
-.pr-5 {
-    padding-right: 3rem !important;
-}
-
-.font-bold {
-    font-weight: bold !important;
-}
-
-.font-normal {
-    font-weight: normal !important;
-}
-
-.text-sm {
-    font-size: 0.875rem !important;
-}
-
-.text-md {
-    font-size: 1rem !important;
-}
-
-.text-lg {
-    font-size: 1.125rem !important;
-}
-
-.text-xl {
-    font-size: 1.25rem !important;
-}
-
-.text-2xl {
-    font-size: 1.5rem !important;
-}
-
-.text-3xl {
-    font-size: 1.875rem !important;
-}
-
-.bg-primary {
-    background-color: var(--cor-primaria) !important;
-}
-
-.bg-secondary {
-    background-color: var(--cor-secundaria) !important;
-}
-
-.bg-highlight {
-    background-color: var(--cor-destaque) !important;
-}
-
-.bg-light {
-    background-color: var(--cor-fundo-claro) !important;
-}
-
-.text-dark {
-    color: var(--cor-texto-escuro) !important;
-}
-
-.text-light {
-    color: var(--cor-texto-claro) !important;
-}
-
-.rounded {
-    border-radius: 0.25rem !important;
-}
-
-.rounded-md {
-    border-radius: 0.375rem !important;
-}
-
-.rounded-lg {
-    border-radius: 0.5rem !important;
-}
-
-.rounded-full {
-    border-radius: 9999px !important;
-}
-
-.border {
-    border: 1px solid !important;
-}
-
-.border-primary {
-    border-color: var(--cor-primaria) !important;
-}
-
-.border-secondary {
-    border-color: var(--cor-secundaria) !important;
-}
-
-.border-highlight {
-    border-color: var(--cor-destaque) !important;
-}
-
-.cursor-pointer {
-    cursor: pointer !important;
-}
-
-.transition {
-    transition: all 0.3s ease !important;
-}
-
-.transform-scale-105:hover {
-    transform: scale(1.05) !important;
-}
-
-.transform-scale-110:hover {
-    transform: scale(1.1) !important;
-}
-
-.shadow-sm {
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-}
-
-.shadow {
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
-}
-
-.shadow-md {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-}
-
-.shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Classes específicas para elementos com animações */
-.fade-in {
-    animation: fadeIn 0.5s forwards;
-}
-
-.slide-in-left {
-    animation: slideInLeft 0.5s forwards;
-}
-
-.slide-in-right {
-    animation: slideInRight 0.5s forwards;
-}
-
-.slide-in-up {
-    animation: slideInUp 0.5s forwards;
-}
-
-.slide-in-down {
-    animation: slideInDown 0.5s forwards;
-}
-
-@keyframes slideInLeft {
-    from {
-        transform: translateX(-30px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(30px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInUp {
-    from {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInDown {
-    from {
-        transform: translateY(-30px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Classes para substituir estilos inline nos carrosséis de idiomas e skills */
-.carrossel-container {
-    flex: 1;
+/* Estilos para páginas de erro (404.html e 500.html) */
+.error-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    padding: 0 20px;
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-secundaria) 100%);
+    position: relative;
+    overflow: hidden;
 }
 
-.barras-container {
+.error-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../img/header-bg.jpg') center center/cover no-repeat;
+    opacity: 0.15;
+    z-index: 1;
+}
+
+.error-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px;
+    border-radius: 15px;
+    background-color: rgba(15, 32, 39, 0.7);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
     width: 100%;
 }
 
-/* Classes específicas para os níveis de barras de progresso 
-   (Essas classes já existem no final do arquivo, mas estamos mantendo aqui para referência) */
+.error-code {
+    font-size: 8rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--cor-destaque);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    display: inline-block;
+}
+
+.error-code::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--cor-destaque);
+    border-radius: 2px;
+}
+
+.error-message {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: var(--cor-texto-claro);
+    font-weight: 600;
+}
+
+.error-description {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: var(--cor-texto-claro);
+    line-height: 1.6;
+}
+
+.home-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.home-button:hover {
+    background-color: var(--cor-secundaria);
+    transform: scale(1.07);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animação de fadeIn para carrossel */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilos específicos para idiomas e skills */
+#idioma-barras-container,
+#skills-barras-container {
+    position: relative;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+/* Níveis para barras de habilidades e idiomas */
 .nivel-nativo,
 .nivel-avancado {
     width: 100%;
@@ -2009,4 +1735,22 @@ section {
 
 .nivel-basico {
     width: 33.33%;
+}
+
+/* Classes para substituir os estilos inline adicionados pelo optimizer.js */
+.lcp-priority {
+    visibility: visible !important;
+    display: block !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Classe para quando a imagem de fundo é carregada */
+header.bg-loaded::after,
+header.imagem-carregada::after {
+    background-image: url('../img/webp/header-bg.webp') !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
 }

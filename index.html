@@ -22,92 +22,6 @@
     <meta http-equiv="Permissions-Policy"
         content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), battery=(), display-capture=()">
 
-    <!-- Preload e inlining dos estilos críticos -->
-    <style>
-        /* Estilos críticos para renderização inicial */
-        :root {
-            --cor-primaria: #0F2027;
-            --cor-secundaria: #203A43;
-            --cor-destaque: #145C50;
-            --cor-fundo-claro: #ECE5DA;
-            --cor-texto-escuro: #1F1F1F;
-            --cor-texto-claro: #F2F2F2;
-        }
-
-        body {
-            margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--cor-fundo-claro);
-            color: var(--cor-texto-escuro);
-        }
-
-        /* Otimizações para o elemento LCP específico */
-        .main-content header p[data-i18n="header.role"] {
-            font-size: 1.2em;
-            color: var(--cor-texto-claro);
-            margin-bottom: 10px;
-            opacity: 1;
-            will-change: auto;
-            /* Evita consumo de recursos de GPU */
-            text-rendering: optimizeSpeed;
-        }
-
-        header {
-            text-align: center;
-            background-color: var(--cor-primaria);
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Melhorando a imagem de fundo para priorizar renderização de texto */
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--cor-primaria);
-            opacity: 0.9;
-            z-index: 2;
-        }
-
-        /* Carregamento de imagem de fundo após elementos críticos */
-        header::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: none;
-            /* Será carregada via JavaScript */
-            opacity: 0.4;
-            z-index: 1;
-        }
-
-        header>* {
-            position: relative;
-            z-index: 3;
-        }
-
-        header h1 {
-            font-size: 2.5em;
-            color: var(--cor-texto-claro);
-        }
-
-        header p {
-            font-size: 1.2em;
-            color: var(--cor-texto-claro);
-            margin-bottom: 10px;
-        }
-    </style>
-
     <!-- Carrega fonte do sistema primeiro para melhorar o tempo de renderização -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" as="style"
         crossorigin>
@@ -135,44 +49,8 @@
     <meta content="630" property="og:image:height" />
     <meta content="Conheça meus projetos em Python, Power BI e Machine Learning." property="og:description" />
 
-    <!-- SEO JSON-LD para portfólio -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Portfólio de Mateus Galvão",
-      "description": "Projetos de Data Science, Power BI, Python e Machine Learning.",
-      "hasPart": [
-        {
-          "@type": "CreativeWork",
-          "headline": "Análise de Vendas com Power BI",
-          "description": "Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.",
-          "image": "img/powerbi-projeto.jpg",
-          "keywords": ["Power BI", "DAX", "Visualização de Dados"],
-          "datePublished": "2024",
-          "url": "https://github.com/mateus-mg/powerbi-vendas"
-        },
-        {
-          "@type": "CreativeWork",
-          "headline": "Previsão de Preços de Casas (Python) ",
-          "description": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
-          "image": "img/casas-python.jpg",
-          "keywords": ["Python", "Pandas", "Scikit-learn", "Matplotlib"],
-          "datePublished": "2023",
-          "url": "https://github.com/mateus-mg/house-prices-prediction"
-        },
-        {
-          "@type": "CreativeWork",
-          "headline": "Dashboard de RH",
-          "description": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
-          "image": "img/dashboard-rh.jpg",
-          "keywords": ["Power BI", "Excel", "Recursos Humanos"],
-          "datePublished": "2023",
-          "url": "https://github.com/mateus-mg/dashboard-rh"
-        }
-      ]
-    }
-    </script>
+    <!-- Script para carregar o SEO JSON-LD (movido para arquivo externo) -->
+    <script src="js/seo-loader.js"></script>
 </head>
 
 <body>
@@ -581,44 +459,8 @@
     <a class="botao" href="#" id="btn-topo" title="Voltar ao início" data-i18n-title="botoes.voltarAoTopo"><span
             class="seta-topo">↑</span></a>
 
-    <!-- Script crítico inline para inicialização rápida -->
-    <script>
-        // Script de inicialização rápida para garantir interatividade básica sem bloquear o LCP
-        document.addEventListener('DOMContentLoaded', function () {
-            // Registrar elemento LCP para medição de performance
-            if (window.PerformanceObserver) {
-                const observer = new PerformanceObserver((list) => {
-                    const entries = list.getEntries();
-                    const lastEntry = entries[entries.length - 1];
-                    // Registrar no console para depuração
-                    console.log('LCP:', lastEntry.startTime, lastEntry);
-                });
-                observer.observe({ type: 'largest-contentful-paint', buffered: true });
-            }
-
-            // Função básica para sidebar que não depende do script principal
-            function atualizarIconeSidebar(aberto) {
-                const icone = aberto ? '✖' : '☰';
-                toggleButton.classList.add('trocando');
-                toggleButton.querySelector('.icone-menu')?.classList.remove('entrando');
-                setTimeout(() => {
-                    toggleButton.innerHTML = `<span class="icone-menu entrando">${icone}</span>`;
-                    setTimeout(() => {
-                        toggleButton.querySelector('.icone-menu')?.classList.add('entrando');
-                        toggleButton.classList.remove('trocando');
-                    }, 10);
-                }, 140);
-            }
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    document.getElementById('sidebar')?.classList.remove('open');
-                    document.getElementById('sidebar-overlay')?.classList.remove('ativo');
-                    atualizarIconeSidebar(false);
-                }
-            });
-        });
-    </script>
+    <!-- Script crítico para inicialização rápida (movido para arquivo externo) -->
+    <script src="js/init.js"></script>
 
     <!-- Scripts não críticos carregados de forma otimizada -->
     <script src="js/scripts.js" defer></script>

@@ -1,0 +1,48 @@
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Portfólio de Mateus Galvão",
+    "description": "Projetos de Data Science, Power BI, Python e Machine Learning.",
+    "hasPart": [
+        {
+            "@type": "CreativeWork",
+            "headline": "Análise de Vendas com Power BI",
+            "description": "Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.",
+            "image": "img/powerbi-projeto.jpg",
+            "keywords": [
+                "Power BI",
+                "DAX",
+                "Visualização de Dados"
+            ],
+            "datePublished": "2024",
+            "url": "https://github.com/mateus-mg/powerbi-vendas"
+        },
+        {
+            "@type": "CreativeWork",
+            "headline": "Previsão de Preços de Casas (Python) ",
+            "description": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
+            "image": "img/casas-python.jpg",
+            "keywords": [
+                "Python",
+                "Pandas",
+                "Scikit-learn",
+                "Matplotlib"
+            ],
+            "datePublished": "2023",
+            "url": "https://github.com/mateus-mg/house-prices-prediction"
+        },
+        {
+            "@type": "CreativeWork",
+            "headline": "Dashboard de RH",
+            "description": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+            "image": "img/dashboard-rh.jpg",
+            "keywords": [
+                "Power BI",
+                "Excel",
+                "Recursos Humanos"
+            ],
+            "datePublished": "2023",
+            "url": "https://github.com/mateus-mg/dashboard-rh"
+        }
+    ]
+}

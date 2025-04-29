@@ -514,63 +514,133 @@ function inicializarPortfolio() {
     // Configuração de paginação
     const projetosPorPagina = 3;
     let paginaAtual = 0;
+    let emTransicao = false; // Flag para controlar se há uma transição em andamento
 
     // Função para renderizar os projetos
-    function renderizarCards() {
-        portfolioContainer.innerHTML = '';
-        portfolioContainer.style.opacity = '0';
+    function renderizarCards(direcao = 'avançar', tipoTransicao = 'navegacao') {
+        // Se já estiver em transição, não fazer nada
+        if (emTransicao) {
+            return;
+        }
 
-        const projetos = window.projetosPortfolio[idiomaAtualProjetos];
-        const inicio = paginaAtual * projetosPorPagina;
-        const fim = Math.min(inicio + projetosPorPagina, projetos.length);
-        const projetosAtuais = projetos.slice(inicio, fim);
+        emTransicao = true;
 
-        console.log(`Renderizando ${projetosAtuais.length} projetos (página ${paginaAtual + 1})`);
+        try {
+            // Adicionar classe para estado de transição de saída
+            portfolioContainer.classList.add('portfolio-transitioning');
+            portfolioContainer.classList.add(`portfolio-transitioning-${direcao}`);
 
-        // Criar cards
-        projetosAtuais.forEach(projeto => {
-            const card = document.createElement('div');
-            card.className = 'portfolio-card';
-            card.setAttribute('data-id', projeto.id);
+            // Adicionar classe para indicar que é uma navegação ativa (não uma troca de idioma)
+            if (tipoTransicao === 'navegacao') {
+                portfolioContainer.classList.add('portfolio-navegacao-ativa');
+            }
 
-            // Criar tags HTML para as tecnologias
-            const tagsHTML = projeto.tecnologias.map(tech =>
-                `<span class="portfolio-tag">${tech}</span>`
-            ).join('');
+            // Fade out dos cards atuais
+            portfolioContainer.style.opacity = '0';
 
-            // WebP path
-            const webpPath = projeto.imagem.replace('img/', 'img/webp/').replace(/\.(jpg|jpeg|png|gif)$/, '.webp');
+            // Só aplicar a transformação se for uma navegação entre páginas
+            if (tipoTransicao === 'navegacao') {
+                portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(-5%)' : 'translateX(5%)';
+            }
 
-            // Template do card
-            card.innerHTML = `
-                <div class="portfolio-image-container">
-                    <picture>
-                        <source srcset="${webpPath}" type="image/webp" fetchpriority="low">
-                        <img src="${projeto.imagem}" alt="${projeto.alt}" loading="lazy" fetchpriority="low">
-                    </picture>
-                </div>
-                <div class="portfolio-card-content">
-                    <h3 class="portfolio-title">${projeto.titulo}</h3>
-                    <p class="portfolio-desc">${projeto.descricao}</p>
-                    <div class="portfolio-tags">
-                        ${tagsHTML}
-                    </div>
-                    <a href="${projeto.link}" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
-                        <i class="fas fa-external-link-alt"></i> Ver Projeto
-                    </a>
-                </div>
-            `;
+            setTimeout(() => {
+                try {
+                    // Limpar conteúdo após fade out
+                    portfolioContainer.innerHTML = '';
 
-            portfolioContainer.appendChild(card);
-        });
+                    const projetos = window.projetosPortfolio[idiomaAtualProjetos];
+                    const inicio = paginaAtual * projetosPorPagina;
+                    const fim = Math.min(inicio + projetosPorPagina, projetos.length);
+                    const projetosAtuais = projetos.slice(inicio, fim);
 
-        // Fade in dos cards
-        setTimeout(() => {
-            portfolioContainer.style.opacity = '1';
-        }, 50);
+                    console.log(`Renderizando ${projetosAtuais.length} projetos (página ${paginaAtual + 1})`);
 
-        // Renderizar navegação
-        renderizarBotoesNavegacao();
+                    // Criar cards
+                    projetosAtuais.forEach(projeto => {
+                        const card = document.createElement('div');
+                        card.className = 'portfolio-card';
+                        card.setAttribute('data-id', projeto.id);
+
+                        // Criar tags HTML para as tecnologias
+                        const tagsHTML = projeto.tecnologias.map(tech =>
+                            `<span class="portfolio-tag">${tech}</span>`
+                        ).join('');
+
+                        // WebP path
+                        const webpPath = projeto.imagem.replace('img/', 'img/webp/').replace(/\.(jpg|jpeg|png|gif)$/, '.webp');
+
+                        // Template do card
+                        card.innerHTML = `
+                            <div class="portfolio-image-container">
+                                <picture>
+                                    <source srcset="${webpPath}" type="image/webp" fetchpriority="low">
+                                    <img src="${projeto.imagem}" alt="${projeto.alt}" loading="lazy" fetchpriority="low">
+                                </picture>
+                            </div>
+                            <div class="portfolio-card-content">
+                                <h3 class="portfolio-title">${projeto.titulo}</h3>
+                                <p class="portfolio-desc">${projeto.descricao}</p>
+                                <div class="portfolio-tags">
+                                    ${tagsHTML}
+                                </div>
+                                <a href="${projeto.link}" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
+                                    <i class="fas fa-external-link-alt"></i> Ver Projeto
+                                </a>
+                            </div>
+                        `;
+
+                        portfolioContainer.appendChild(card);
+                    });
+
+                    // Remover a classe de transição e configurar o estado de entrada
+                    portfolioContainer.classList.remove('portfolio-transitioning');
+                    portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);
+                    portfolioContainer.classList.add(`portfolio-entering-${direcao}`);
+
+                    // Aplicar transformação inicial para entrada apenas se for navegação
+                    if (tipoTransicao === 'navegacao') {
+                        portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(5%)' : 'translateX(-5%)';
+                    } else {
+                        portfolioContainer.style.transform = 'translateX(0)';
+                    }
+
+                    // Fade in dos novos cards (com pequeno atraso para que a transformação seja aplicada)
+                    setTimeout(() => {
+                        try {
+                            portfolioContainer.style.opacity = '1';
+                            portfolioContainer.style.transform = 'translateX(0)';
+
+                            // Renderizar navegação
+                            renderizarBotoesNavegacao();
+
+                            // Remover a classe de entrada após a animação terminar
+                            setTimeout(() => {
+                                try {
+                                    portfolioContainer.classList.remove(`portfolio-entering-${direcao}`);
+                                    // Remover a classe de navegação ativa
+                                    portfolioContainer.classList.remove('portfolio-navegacao-ativa');
+                                    emTransicao = false;
+                                } catch (err) {
+                                    console.error("Erro ao finalizar transição:", err);
+                                    emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+                                }
+                            }, 400); // Duração da transição
+                        } catch (err) {
+                            console.error("Erro durante a transição de entrada:", err);
+                            emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+                        }
+                    }, 50);
+                } catch (err) {
+                    console.error("Erro durante a renderização dos cards:", err);
+                    portfolioContainer.style.opacity = '1'; // Garantir que o conteúdo fique visível
+                    emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+                    renderizarBotoesNavegacao(); // Tentar renderizar os botões de navegação
+                }
+            }, 400); // Duração da transição de saída
+        } catch (err) {
+            console.error("Erro inicial na transição:", err);
+            emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+        }
     }
 
     // Função para renderizar botões de navegação
@@ -597,9 +667,9 @@ function inicializarPortfolio() {
         btnAnterior.disabled = paginaAtual === 0;
         btnAnterior.addEventListener('click', () => {
             console.log("Botão anterior do portfólio clicado");
-            if (paginaAtual > 0) {
+            if (paginaAtual > 0 && !emTransicao) {
                 paginaAtual--;
-                renderizarCards();
+                renderizarCards('voltar');
             }
         });
 
@@ -610,9 +680,9 @@ function inicializarPortfolio() {
         btnProximo.disabled = paginaAtual >= totalPaginas - 1;
         btnProximo.addEventListener('click', () => {
             console.log("Botão próximo do portfólio clicado");
-            if (paginaAtual < totalPaginas - 1) {
+            if (paginaAtual < totalPaginas - 1 && !emTransicao) {
                 paginaAtual++;
-                renderizarCards();
+                renderizarCards('avançar');
             }
         });
 
@@ -646,15 +716,15 @@ function inicializarPortfolio() {
     adicionarSwipe(portfolioContainer,
         () => {
             const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtualProjetos].length / projetosPorPagina);
-            if (paginaAtual < totalPaginas - 1) {
+            if (paginaAtual < totalPaginas - 1 && !emTransicao) {
                 paginaAtual++;
-                renderizarCards();
+                renderizarCards('avançar');
             }
         },
         () => {
-            if (paginaAtual > 0) {
+            if (paginaAtual > 0 && !emTransicao) {
                 paginaAtual--;
-                renderizarCards();
+                renderizarCards('voltar');
             }
         }
     );
@@ -880,7 +950,7 @@ function traduzirPagina(idioma) {
                 // Renderizar projetos com o novo idioma
                 if (window.renderizarPortfolio) {
                     console.log("Renderizando portfólio após tradução");
-                    window.renderizarPortfolio();
+                    window.renderizarPortfolio('avançar', 'idioma');
                 } else {
                     console.warn("Função renderizarPortfolio não encontrada, reinicializando portfólio");
                     inicializarPortfolio();

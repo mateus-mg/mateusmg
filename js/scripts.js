@@ -332,6 +332,18 @@ function configurarOutrosEventos() {
         });
     }
 
+    // Botão "Sobre Mim" (header)
+    const btnSobreMim = document.querySelector('.sobre-mim-btn');
+    if (btnSobreMim) {
+        btnSobreMim.addEventListener('click', function (e) {
+            e.preventDefault();
+            const sobre = document.getElementById('sobre');
+            if (sobre) {
+                sobre.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
     // Ícone de e-mail
     const emailIcon = document.querySelector('.header-icons .icon-link[href="#contato"]');
     if (emailIcon) {

@@ -1754,3 +1754,76 @@ header.imagem-carregada::after {
     background-size: cover !important;
     background-repeat: no-repeat !important;
 }
+
+.sobre-mim-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+    margin-bottom: 0;
+    z-index: 4;
+}
+
+.sobre-mim-btn {
+    background: transparent;
+    color: var(--cor-texto-claro);
+    border: 2px solid var(--cor-texto-claro);
+    border-radius: 0;
+    font-weight: bold;
+    font-size: 1.1em;
+    letter-spacing: 2px;
+    padding: 14px 38px;
+    margin: 0 auto;
+    transition: background 0.3s, color 0.3s, border 0.3s, transform 0.18s;
+    box-shadow: none;
+    position: relative;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sobre-mim-btn .seta {
+    font-size: 1.2em;
+    margin-left: 10px;
+    font-weight: normal;
+    transition: transform 0.2s;
+}
+
+.sobre-mim-btn:hover,
+.sobre-mim-btn:focus {
+    background: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    border-color: var(--cor-destaque);
+    transform: scale(1.04);
+}
+
+.sobre-mim-btn:hover .seta,
+.sobre-mim-btn:focus .seta {
+    transform: translateY(3px) scale(1.15);
+}
+
+.header-icons-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 38px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 38px;
+    z-index: 4;
+}
+
+.header-icons-bottom .icon-link {
+    color: var(--cor-texto-claro);
+    font-size: 2.1em;
+    transition: color 0.25s, transform 0.25s;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header-icons-bottom .icon-link:hover {
+    color: var(--cor-destaque);
+    transform: scale(1.15);
+}

@@ -596,9 +596,16 @@ function inicializarPortfolio() {
                         // Garantir que o redimensionamento responsivo seja aplicado após o carregamento
                         const imgElement = card.querySelector('img');
                         if (imgElement && window.ImageManager && window.ImageManager.aplicarRedimensionamentoResponsivo) {
-                            imgElement.onload = function () {
-                                window.ImageManager.aplicarRedimensionamentoResponsivo(this);
-                            };
+                            // Verificar se a imagem já está carregada
+                            if (imgElement.complete) {
+                                // Dar tempo para o layout ser calculado
+                                setTimeout(() => window.ImageManager.aplicarRedimensionamentoResponsivo(imgElement), 100);
+                            } else {
+                                imgElement.onload = function () {
+                                    // Dar tempo para o layout ser calculado
+                                    setTimeout(() => window.ImageManager.aplicarRedimensionamentoResponsivo(this), 100);
+                                };
+                            }
                         }
 
                         portfolioContainer.appendChild(card);

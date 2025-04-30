@@ -98,6 +98,17 @@
                 return;
             }
 
+            // Verificar se o contêiner tem largura válida
+            if (containerWidth === 0) {
+                // Se o contêiner não tiver largura, agendar nova tentativa quando o documento estiver completamente carregado
+                if (document.readyState !== 'complete') {
+                    window.addEventListener('load', () => {
+                        setTimeout(() => this.aplicarRedimensionamentoResponsivo(img), 100);
+                    }, { once: true });
+                }
+                return;
+            }
+
             // Verificar se a imagem é significativamente maior que seu contêiner
             if (img.naturalWidth > containerWidth * 1.5) {
                 console.log(`Redimensionando imagem ${img.src} - tamanho atual: ${img.naturalWidth}px, contêiner: ${containerWidth}px`);

@@ -767,6 +767,8 @@ picture source {
     position: relative;
     overflow: hidden;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    justify-content: center;
 }
 
 .portfolio-nav-btn::before {
@@ -820,7 +822,33 @@ picture source {
     transform: translateX(4px);
 }
 
-/* Indicadores de página para o portfólio */
+/* Estilos para os ícones do banner no header */
+.header-icons-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 38px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 38px;
+    z-index: 4;
+}
+
+.header-icons-bottom .icon-link {
+    color: var(--cor-texto-claro);
+    font-size: 2.1em;
+    transition: color 0.25s, transform 0.25s;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header-icons-bottom .icon-link:hover {
+    color: var(--cor-destaque);
+    transform: scale(1.15);
+}
+
 .portfolio-indicadores {
     display: flex;
     justify-content: center;
@@ -842,6 +870,13 @@ picture source {
     transform: scale(1.3);
 }
 
+/* Por padrão, esconder os indicadores em desktop */
+@media (min-width: 769px) {
+    .portfolio-indicadores {
+        display: none;
+    }
+}
+
 /* Melhorias para portfólio em dispositivos móveis */
 @media (max-width: 768px) {
     .portfolio-navegacao {
@@ -854,14 +889,14 @@ picture source {
     .portfolio-nav-btn {
         padding: 10px 16px;
         font-size: 0.9rem;
-        width: 120px;
-        justify-content: center;
     }
 
     .portfolio-indicadores {
         width: 100%;
         order: -1;
         margin-bottom: 15px;
+        display: flex;
+        /* Garantir que seja exibido em mobile */
     }
 }
 

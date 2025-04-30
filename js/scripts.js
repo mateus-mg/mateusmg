@@ -719,27 +719,6 @@ function inicializarPortfolio() {
             }
         });
 
-        // Indicadores de página
-        const indicadoresContainer = document.createElement('div');
-        indicadoresContainer.className = 'portfolio-indicadores';
-
-        for (let i = 0; i < totalPaginas; i++) {
-            const indicador = document.createElement('div');
-            indicador.className = `portfolio-indicador ${i === paginaAtual ? 'ativo' : ''}`;
-            indicador.setAttribute('data-pagina', i);
-
-            // Adicionar evento de clique para ir diretamente para uma página
-            indicador.addEventListener('click', () => {
-                if (i !== paginaAtual && !emTransicao) {
-                    const direcao = i > paginaAtual ? 'avançar' : 'voltar';
-                    paginaAtual = i;
-                    renderizarCards(direcao);
-                }
-            });
-
-            indicadoresContainer.appendChild(indicador);
-        }
-
         // Botão Próximo
         const btnProximo = document.createElement('button');
         btnProximo.className = 'portfolio-nav-btn proximo';
@@ -753,8 +732,7 @@ function inicializarPortfolio() {
             }
         });
 
-        // Em dispositivos móveis, os indicadores vêm primeiro (ordem setada via CSS)
-        navegacao.appendChild(indicadoresContainer);
+        // Adicionar botões de navegação ao container
         navegacao.appendChild(btnAnterior);
         navegacao.appendChild(btnProximo);
 

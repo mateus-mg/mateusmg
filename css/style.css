@@ -565,6 +565,78 @@ footer a {
     contain: paint;
 }
 
+/* Otimizações para imagens WebP */
+.header-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+picture {
+    display: contents;
+    /* Permite que a tag picture herde as dimensões do container */
+}
+
+picture img,
+picture source {
+    width: 100%;
+    height: 100%;
+}
+
+/* Otimizações de redimensionamento de imagens */
+.portfolio-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+    will-change: transform;
+
+    /* Evitar layout shifts durante o carregamento */
+    aspect-ratio: 3/2;
+    contain: paint;
+}
+
+/* Estilos específicos para otimização responsiva de imagens */
+@media (max-width: 768px) {
+    .portfolio-image-container {
+        height: 180px;
+    }
+
+    .portfolio-img {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+/* Container específico para imagens responsivas */
+.responsive-image-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+}
+
+.responsive-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Configuração para evitar Layout Shift (LCP) */
+.lcp-element {
+    content-visibility: auto;
+    contain-intrinsic-size: auto;
+}
+
+/* Classe para dimensionar imagens corretamente */
+.img-dimensionada {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 .portfolio-title {
     color: var(--cor-texto-claro);
     font-size: 1.25rem;
@@ -1050,34 +1122,6 @@ footer a {
         right: 0;
         min-width: 110px;
     }
-}
-
-/* Otimizações para imagens WebP */
-.header-bg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-picture {
-    display: contents;
-    /* Permite que a tag picture herde as dimensões do container */
-}
-
-picture img,
-picture source {
-    width: 100%;
-    height: 100%;
-}
-
-.portfolio-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.3s ease;
-    will-change: transform;
 }
 
 /* Estilos para carrosséis de idiomas e skills */

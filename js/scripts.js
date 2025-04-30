@@ -550,15 +550,35 @@ function inicializarPortfolio() {
                             `<span class="portfolio-tag">${tech}</span>`
                         ).join('');
 
-                        // WebP path
-                        const webpPath = projeto.imagem.replace('img/', 'img/webp/').replace(/\.(jpg|jpeg|png|gif)$/, '.webp');
+                        // WebP path com suporte para diferentes tamanhos
+                        const imagemBase = projeto.imagem.replace(/\.(jpg|jpeg|png|gif)$/, '');
+                        const webpBase = imagemBase.replace('img/', 'img/webp/') + '.webp';
+                        const originalBase = projeto.imagem;
 
-                        // Template do card
+                        // Determinar fetchpriority com base na posição do card
+                        const fetchPriority = projetosAtuais.indexOf(projeto) === 0 ? 'high' : 'low';
+
+                        // Determinar loading com base na posição do card
+                        const loadingStrategy = projetosAtuais.indexOf(projeto) === 0 ? 'eager' : 'lazy';
+
+                        // Template do card com suporte a srcset para diferentes tamanhos
                         card.innerHTML = `
                             <div class="portfolio-image-container">
                                 <picture>
-                                    <source srcset="${webpPath}" type="image/webp" fetchpriority="low">
-                                    <img src="${projeto.imagem}" alt="${projeto.alt}" loading="lazy" fetchpriority="low">
+                                    <source 
+                                        srcset="${webpBase}"
+                                        type="image/webp"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        fetchpriority="${fetchPriority}">
+                                    <img 
+                                        src="${originalBase}" 
+                                        alt="${projeto.alt}" 
+                                        loading="${loadingStrategy}" 
+                                        fetchpriority="${fetchPriority}"
+                                        width="600"
+                                        height="400"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        class="portfolio-img">
                                 </picture>
                             </div>
                             <div class="portfolio-card-content">
@@ -572,6 +592,14 @@ function inicializarPortfolio() {
                                 </a>
                             </div>
                         `;
+
+                        // Garantir que o redimensionamento responsivo seja aplicado após o carregamento
+                        const imgElement = card.querySelector('img');
+                        if (imgElement && window.ImageManager && window.ImageManager.aplicarRedimensionamentoResponsivo) {
+                            imgElement.onload = function () {
+                                window.ImageManager.aplicarRedimensionamentoResponsivo(this);
+                            };
+                        }
 
                         portfolioContainer.appendChild(card);
                     });

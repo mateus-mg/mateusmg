@@ -73,11 +73,70 @@
                         // Construir caminho para versão WebP
                         const novoCaminho = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
                         img.setAttribute('src', novoCaminho);
+
+                        // Aplicar redimensionamento responsivo
+                        this.aplicarRedimensionamentoResponsivo(img);
                     }
                 });
             } else {
                 console.log("Navegador não suporta WebP, mantendo formato original das imagens");
+                // Mesmo sem WebP, aplicar redimensionamento
+                document.querySelectorAll('img:not([src^="data:"])').forEach(img => {
+                    this.aplicarRedimensionamentoResponsivo(img);
+                });
             }
+        },
+
+        // Nova função para aplicar redimensionamento responsivo
+        aplicarRedimensionamentoResponsivo: function (img) {
+            // Obter dimensões do contêiner pai
+            const container = img.parentElement;
+            const containerWidth = container.clientWidth;
+
+            // Não redimensionar imagens de ícones/logos pequenos
+            if (img.naturalWidth < 100 || img.src.includes('favicon')) {
+                return;
+            }
+
+            // Verificar se a imagem é significativamente maior que seu contêiner
+            if (img.naturalWidth > containerWidth * 1.5) {
+                console.log(`Redimensionando imagem ${img.src} - tamanho atual: ${img.naturalWidth}px, contêiner: ${containerWidth}px`);
+
+                // Definir largura adequada baseada no contêiner
+                img.style.maxWidth = '100%';
+
+                // Adicionar srcset para diferentes densidades de pixel
+                if (!img.srcset) {
+                    const baseSrc = img.src;
+
+                    // Não adicionar srcset se o arquivo não existir nos tamanhos esperados
+                    // Esta é uma abordagem simples - idealmente você teria versões redimensionadas das imagens
+                    img.sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
+
+                    // Adicionar loading="lazy" se ainda não estiver definido
+                    if (!img.loading) {
+                        img.loading = 'lazy';
+                    }
+                }
+            }
+        },
+
+        // Nova função para precarregar imagens críticas
+        precarregarImagensCriticas: function () {
+            // Identificar imagens críticas (acima da dobra)
+            const imagensCriticas = [
+                'img/webp/header-bg.webp',
+                'img/webp/favicon.webp'
+            ];
+
+            // Adicionar links de preload ao head
+            imagensCriticas.forEach(src => {
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'image';
+                link.href = src;
+                document.head.appendChild(link);
+            });
         },
 
         // Carrega a imagem de fundo do cabeçalho

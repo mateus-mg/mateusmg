@@ -11,4 +11,25 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         observer.observe({ type: 'largest-contentful-paint', buffered: true });
     }
+
+    // Iniciar precarregamento de imagens críticas imediatamente
+    if (window.ImageManager && window.ImageManager.precarregarImagensCriticas) {
+        console.log("Iniciando precarregamento de imagens críticas");
+        window.ImageManager.precarregarImagensCriticas();
+    }
+
+    // Garantir que o redimensionamento de imagens seja aplicado
+    if (window.ImageManager && window.ImageManager.aplicarRedimensionamentoResponsivo) {
+        console.log("Aplicando redimensionamento responsivo a todas as imagens");
+        document.querySelectorAll('img:not([src^="data:"])').forEach(img => {
+            // Quando a imagem for carregada, aplicar redimensionamento responsivo
+            if (img.complete) {
+                window.ImageManager.aplicarRedimensionamentoResponsivo(img);
+            } else {
+                img.onload = function () {
+                    window.ImageManager.aplicarRedimensionamentoResponsivo(this);
+                };
+            }
+        });
+    }
 });

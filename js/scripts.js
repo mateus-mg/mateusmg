@@ -1,57 +1,99 @@
+// Cache de elementos DOM frequentemente usados
+const domCache = {
+    sidebar: null,
+    toggleButton: null,
+    menuIdiomas: null,
+    portfolioContainer: null,
+    form: null
+};
+
 // Variáveis globais importantes
-let sidebar;
-let toggleButton;
 let idiomaAtualProjetos = 'pt';
 
-// Garantir que window.carrosseis existe globalmente antes de ser usado
+// Garantir que window.carrosseis existe globalmente
 window.carrosseis = window.carrosseis || {};
 
-// Garantir que código crítico é executado antes de referenciar os elementos
+// Função para inicializar cache do DOM
+function initDOMCache() {
+    domCache.sidebar = document.getElementById('sidebar');
+    domCache.toggleButton = document.getElementById('toggle-button');
+    domCache.menuIdiomas = document.querySelector('.menu-idiomas');
+    domCache.portfolioContainer = document.querySelector('.portfolio-container');
+    domCache.form = document.getElementById('formulario-contato');
+}
+
+// Event handlers reutilizáveis
+const handlers = {
+    toggleSidebar: () => {
+        if (!domCache.sidebar) return;
+
+        domCache.sidebar.classList.toggle('open');
+        const isOpen = domCache.sidebar.classList.contains('open');
+        domCache.sidebar.setAttribute('aria-hidden', !isOpen);
+        domCache.toggleButton.setAttribute('aria-expanded', isOpen);
+        atualizarIconeSidebar(isOpen);
+
+        const overlay = document.getElementById('sidebar-overlay');
+        if (overlay) overlay.classList.toggle('ativo');
+    },
+
+    closeMenus: (event) => {
+        // Fechar sidebar se clicar fora
+        if (domCache.sidebar && domCache.sidebar.classList.contains('open')) {
+            if (!domCache.sidebar.contains(event.target) && !domCache.toggleButton.contains(event.target)) {
+                handlers.toggleSidebar();
+            }
+        }
+
+        // Fechar menu de idiomas se clicar fora
+        if (domCache.menuIdiomas && domCache.menuIdiomas.classList.contains('ativo')) {
+            const toggleIdiomas = document.querySelector('.menu-idiomas-toggle');
+            if (!toggleIdiomas.contains(event.target) && !domCache.menuIdiomas.contains(event.target)) {
+                domCache.menuIdiomas.classList.remove('ativo');
+            }
+        }
+    },
+
+    handleEscape: (event) => {
+        if (event.key === 'Escape') {
+            if (domCache.sidebar && domCache.sidebar.classList.contains('open')) {
+                handlers.toggleSidebar();
+            }
+            if (domCache.menuIdiomas) {
+                domCache.menuIdiomas.classList.remove('ativo');
+            }
+        }
+    }
+};
+
+// Inicialização do site
 document.addEventListener('DOMContentLoaded', function () {
     console.log("Inicializando o site...");
 
-    // Inicializar elementos importantes do DOM
-    sidebar = document.getElementById('sidebar');
-    toggleButton = document.getElementById('toggle-button');
+    // Inicializar cache do DOM
+    initDOMCache();
 
-    if (!sidebar || !toggleButton) {
-        console.error('Elementos críticos não encontrados: sidebar ou toggleButton');
+    if (!domCache.sidebar || !domCache.toggleButton) {
+        console.error('Elementos críticos não encontrados');
         return;
     }
 
-    console.log("Elementos críticos inicializados com sucesso");
+    // Event Listeners
+    domCache.toggleButton.addEventListener('click', handlers.toggleSidebar);
+    document.addEventListener('click', handlers.closeMenus);
+    document.addEventListener('keydown', handlers.handleEscape);
 
-    // Configurar botão toggle
-    toggleButton.addEventListener('click', function () {
-        console.log("Botão toggle clicado");
-        toggleSidebar();
-    });
-
-    // Garantir que o overlay existe
-    const overlay = criarOverlaySidebar();
-
-    // Iniciar configuração centralizada de eventos de teclado
+    // Inicializações
+    criarOverlaySidebar();
     configurarEventosTeclado();
-
-    // Iniciar animações
     iniciarAnimacaoSections();
-
-    // Configurar seletor de idiomas
     configurarSeletorIdiomas();
-
-    // Inicializar carrosséis
     inicializarCarrosseis();
-
-    // Inicializar o portfólio
     inicializarPortfolio();
-
-    // Configurar formulário de contato
     configurarFormularioContato();
-
-    // Configurar demais eventos da UI
     configurarOutrosEventos();
 
-    // Verificar se há um idioma salvo no localStorage
+    // Verificar idioma salvo
     const idiomaArmazenado = localStorage.getItem('idioma');
     if (idiomaArmazenado) {
         traduzirPagina(idiomaArmazenado);
@@ -76,62 +118,17 @@ function criarOverlaySidebar() {
     // Garantir que o evento de clique está atribuído
     overlay.addEventListener('click', function () {
         console.log("Overlay clicado - fechando sidebar");
-        if (sidebar) {
-            sidebar.classList.remove('open');
+        if (domCache.sidebar) {
+            domCache.sidebar.classList.remove('open');
             overlay.classList.remove('ativo');
-            if (toggleButton) {
-                toggleButton.setAttribute('aria-expanded', 'false');
-                toggleButton.innerHTML = `<span class="icone-menu entrando">☰</span>`;
+            if (domCache.toggleButton) {
+                domCache.toggleButton.setAttribute('aria-expanded', 'false');
+                domCache.toggleButton.innerHTML = `<span class="icone-menu entrando">☰</span>`;
             }
         }
     });
 
     return overlay;
-}
-
-// Função para abrir/fechar o sidebar
-function toggleSidebar() {
-    console.log("Executando toggleSidebar()");
-    if (!sidebar) {
-        console.error("Sidebar não encontrado");
-        return;
-    }
-
-    const overlay = document.getElementById('sidebar-overlay');
-
-    // Toggle das classes
-    sidebar.classList.toggle('open');
-    if (overlay) overlay.classList.toggle('ativo');
-
-    // Atualizar atributos ARIA
-    const isOpen = sidebar.classList.contains('open');
-    sidebar.setAttribute('aria-hidden', !isOpen);
-    toggleButton.setAttribute('aria-expanded', isOpen);
-
-    // Atualizar ícone
-    atualizarIconeSidebar(isOpen);
-
-    console.log("Sidebar " + (isOpen ? "aberto" : "fechado"));
-}
-
-// Função para atualizar o ícone do botão toggle
-function atualizarIconeSidebar(aberto) {
-    if (!toggleButton) return;
-
-    const icone = aberto ? '✖' : '☰';
-    toggleButton.classList.add('trocando');
-
-    const iconeAtual = toggleButton.querySelector('.icone-menu');
-    if (iconeAtual) iconeAtual.classList.remove('entrando');
-
-    setTimeout(() => {
-        toggleButton.innerHTML = `<span class="icone-menu entrando">${icone}</span>`;
-        setTimeout(() => {
-            const novoIcone = toggleButton.querySelector('.icone-menu');
-            if (novoIcone) novoIcone.classList.add('entrando');
-            toggleButton.classList.remove('trocando');
-        }, 10);
-    }, 140);
 }
 
 // Exportar para uso global (referenciada em init.js)
@@ -258,17 +255,17 @@ function configurarOutrosEventos() {
     console.log("Configurando outros eventos da UI");
 
     // Links do sidebar
-    if (sidebar) {
-        const sidebarLinks = sidebar.querySelectorAll('a');
+    if (domCache.sidebar) {
+        const sidebarLinks = domCache.sidebar.querySelectorAll('a');
         sidebarLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault(); // Previne o comportamento padrão
 
                 // Fecha o menu lateral
-                sidebar.classList.remove('open');
+                domCache.sidebar.classList.remove('open');
                 document.getElementById('sidebar-overlay')?.classList.remove('ativo');
-                sidebar.setAttribute('aria-hidden', true);
-                toggleButton.setAttribute('aria-expanded', false);
+                domCache.sidebar.setAttribute('aria-hidden', true);
+                domCache.toggleButton.setAttribute('aria-expanded', false);
                 atualizarIconeSidebar(false);
 
                 // Rola suavemente até a seção de destino
@@ -429,8 +426,7 @@ function iniciarAnimacaoSections() {
 function inicializarPortfolio() {
     console.log("Inicializando cards do portfólio");
 
-    const portfolioContainer = document.querySelector('.portfolio-container');
-    if (!portfolioContainer) {
+    if (!domCache.portfolioContainer) {
         console.error("Container do portfólio não encontrado");
         return;
     }
@@ -466,33 +462,6 @@ function inicializarPortfolio() {
                     link: 'https://github.com/mateus-mg/dashboard-rh',
                     descricao: 'Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.',
                     tecnologias: ['Power BI', 'Excel', 'RH']
-                },
-                {
-                    id: "dashboard_rh2",
-                    titulo: 'Dashboard de RH',
-                    imagem: 'img/rh.jpg',
-                    alt: 'Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores',
-                    link: 'https://github.com/mateus-mg/dashboard-rh',
-                    descricao: 'Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.',
-                    tecnologias: ['Power BI', 'Excel', 'RH']
-                },
-                {
-                    id: "previsao_casas2",
-                    titulo: 'Previsão de Preços de Casas (Python)',
-                    imagem: 'img/preços-casas.jpg',
-                    alt: 'Gráfico de dispersão de preços de casas previsto por modelo de machine learning',
-                    link: 'https://github.com/mateus-mg/house-prices-prediction',
-                    descricao: 'Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.',
-                    tecnologias: ['Python', 'Pandas', 'Scikit-learn']
-                },
-                {
-                    id: "dashboard_rh3",
-                    titulo: 'Dashboard de RH',
-                    imagem: 'img/rh.jpg',
-                    alt: 'Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores',
-                    link: 'https://github.com/mateus-mg/dashboard-rh',
-                    descricao: 'Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.',
-                    tecnologias: ['Power BI', 'Excel', 'RH']
                 }
             ],
             en: [],
@@ -503,7 +472,7 @@ function inicializarPortfolio() {
     // Verificar se temos projetos para exibir
     if (!window.projetosPortfolio || !window.projetosPortfolio[idiomaAtualProjetos] || window.projetosPortfolio[idiomaAtualProjetos].length === 0) {
         console.warn("Nenhum projeto encontrado para o idioma atual:", idiomaAtualProjetos);
-        portfolioContainer.innerHTML = '<p class="portfolio-sem-projetos">Nenhum projeto disponível no momento.</p>';
+        domCache.portfolioContainer.innerHTML = '<p class="portfolio-sem-projetos">Nenhum projeto disponível no momento.</p>';
         return;
     }
 
@@ -550,26 +519,26 @@ function inicializarPortfolio() {
 
         try {
             // Adicionar classe para estado de transição de saída
-            portfolioContainer.classList.add('portfolio-transitioning');
-            portfolioContainer.classList.add(`portfolio-transitioning-${direcao}`);
+            domCache.portfolioContainer.classList.add('portfolio-transitioning');
+            domCache.portfolioContainer.classList.add(`portfolio-transitioning-${direcao}`);
 
             // Adicionar classe para indicar que é uma navegação ativa (não uma troca de idioma)
             if (tipoTransicao === 'navegacao') {
-                portfolioContainer.classList.add('portfolio-navegacao-ativa');
+                domCache.portfolioContainer.classList.add('portfolio-navegacao-ativa');
             }
 
             // Fade out dos cards atuais
-            portfolioContainer.style.opacity = '0';
+            domCache.portfolioContainer.style.opacity = '0';
 
             // Só aplicar a transformação se for uma navegação entre páginas
             if (tipoTransicao === 'navegacao') {
-                portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(-5%)' : 'translateX(5%)';
+                domCache.portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(-5%)' : 'translateX(5%)';
             }
 
             setTimeout(() => {
                 try {
                     // Limpar conteúdo após fade out
-                    portfolioContainer.innerHTML = '';
+                    domCache.portfolioContainer.innerHTML = '';
 
                     const projetos = window.projetosPortfolio[idiomaAtualProjetos];
                     const inicio = paginaAtual * projetosPorPagina;
@@ -647,26 +616,26 @@ function inicializarPortfolio() {
                             }
                         }
 
-                        portfolioContainer.appendChild(card);
+                        domCache.portfolioContainer.appendChild(card);
                     });
 
                     // Remover a classe de transição e configurar o estado de entrada
-                    portfolioContainer.classList.remove('portfolio-transitioning');
-                    portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);
-                    portfolioContainer.classList.add(`portfolio-entering-${direcao}`);
+                    domCache.portfolioContainer.classList.remove('portfolio-transitioning');
+                    domCache.portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);
+                    domCache.portfolioContainer.classList.add(`portfolio-entering-${direcao}`);
 
                     // Aplicar transformação inicial para entrada apenas se for navegação
                     if (tipoTransicao === 'navegacao') {
-                        portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(5%)' : 'translateX(-5%)';
+                        domCache.portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(5%)' : 'translateX(-5%)';
                     } else {
-                        portfolioContainer.style.transform = 'translateX(0)';
+                        domCache.portfolioContainer.style.transform = 'translateX(0)';
                     }
 
                     // Fade in dos novos cards (com pequeno atraso para que a transformação seja aplicada)
                     setTimeout(() => {
                         try {
-                            portfolioContainer.style.opacity = '1';
-                            portfolioContainer.style.transform = 'translateX(0)';
+                            domCache.portfolioContainer.style.opacity = '1';
+                            domCache.portfolioContainer.style.transform = 'translateX(0)';
 
                             // Renderizar navegação
                             renderizarBotoesNavegacao();
@@ -674,9 +643,9 @@ function inicializarPortfolio() {
                             // Remover a classe de entrada após a animação terminar
                             setTimeout(() => {
                                 try {
-                                    portfolioContainer.classList.remove(`portfolio-entering-${direcao}`);
+                                    domCache.portfolioContainer.classList.remove(`portfolio-entering-${direcao}`);
                                     // Remover a classe de navegação ativa
-                                    portfolioContainer.classList.remove('portfolio-navegacao-ativa');
+                                    domCache.portfolioContainer.classList.remove('portfolio-navegacao-ativa');
                                     emTransicao = false;
                                 } catch (err) {
                                     console.error("Erro ao finalizar transição:", err);
@@ -690,7 +659,7 @@ function inicializarPortfolio() {
                     }, 50);
                 } catch (err) {
                     console.error("Erro durante a renderização dos cards:", err);
-                    portfolioContainer.style.opacity = '1'; // Garantir que o conteúdo fique visível
+                    domCache.portfolioContainer.style.opacity = '1'; // Garantir que o conteúdo fique visível
                     emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
                     renderizarBotoesNavegacao(); // Tentar renderizar os botões de navegação
                 }
@@ -749,7 +718,7 @@ function inicializarPortfolio() {
         navegacao.appendChild(btnProximo);
 
         // Adicionar navegação após o container
-        portfolioContainer.parentNode.insertBefore(navegacao, portfolioContainer.nextSibling);
+        domCache.portfolioContainer.parentNode.insertBefore(navegacao, domCache.portfolioContainer.nextSibling);
     }
 
     // Função genérica para o swipe
@@ -772,7 +741,7 @@ function inicializarPortfolio() {
     renderizarCards();
 
     // Adicionar swipe para navegação em dispositivos móveis
-    adicionarSwipe(portfolioContainer,
+    adicionarSwipe(domCache.portfolioContainer,
         () => {
             const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtualProjetos].length / projetosPorPagina);
             if (paginaAtual < totalPaginas - 1 && !emTransicao) {
@@ -885,21 +854,29 @@ function traduzirPagina(idioma) {
                 contatoDesc.textContent = traducoes.contato_descricao;
             }
 
-            // Botões
-            const botaoContato = document.querySelector('.botao.fale-comigo');
-            if (botaoContato) {
-                botaoContato.textContent = traducoes.botoes.faleComigo.traducao;
-            }
+            // Botões com data-i18n-botao - CORREÇÃO: Adicionando suporte para diferentes formatos de tradução
+            document.querySelectorAll('[data-i18n-botao]').forEach(botao => {
+                const chave = botao.getAttribute('data-i18n-botao');
+                const chaveBotao = chave.split('.').pop();
 
-            const botaoCV = document.querySelector('.botao[download]');
-            if (botaoCV) {
-                botaoCV.textContent = traducoes.botoes.baixeCV.traducao;
-            }
-
-            const botaoEnviar = document.querySelector('#botao-enviar');
-            if (botaoEnviar) {
-                botaoEnviar.textContent = traducoes.botoes.enviarMensagem.traducao;
-            }
+                // Verificar se a chave existe na estrutura de traducoes.botoes
+                if (traducoes.botoes && traducoes.botoes[chaveBotao]) {
+                    // Verificar se o valor é um objeto (formato usado em outros idiomas)
+                    if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
+                        // Se for objeto, usar a propriedade "traducao"
+                        if (traducoes.botoes[chaveBotao].traducao) {
+                            botao.textContent = traducoes.botoes[chaveBotao].traducao;
+                            console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
+                        }
+                    } else {
+                        // Se for string direta (formato usado em português)
+                        botao.textContent = traducoes.botoes[chaveBotao];
+                        console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
+                    }
+                } else {
+                    console.warn(`Tradução não encontrada para o botão: ${chave}`);
+                }
+            });
 
             // Elementos com atributo data-i18n
             document.querySelectorAll('[data-i18n]').forEach(elemento => {
@@ -1041,8 +1018,7 @@ function traduzirPagina(idioma) {
 function configurarFormularioContato() {
     console.log("Configurando formulário de contato");
 
-    const formulario = document.getElementById('formulario-contato');
-    if (!formulario) {
+    if (!domCache.form) {
         console.error("Formulário de contato não encontrado");
         return;
     }
@@ -1082,10 +1058,10 @@ function configurarFormularioContato() {
     };
 
     // Implementação para método tradicional POST
-    formulario.addEventListener('submit', async function (evento) {
+    domCache.form.addEventListener('submit', async function (evento) {
         // Garantir que o assunto esteja atualizado no momento do envio
         const assuntoSelecionado = document.getElementById('assunto').value;
-        const subjectField = formulario.querySelector('input[name="_subject"]');
+        const subjectField = domCache.form.querySelector('input[name="_subject"]');
         if (subjectField && assuntoSelecionado) {
             subjectField.value = `${assuntoSelecionado}`;
         }
@@ -1108,14 +1084,14 @@ function configurarFormularioContato() {
             evento.preventDefault();
             setTimeout(() => {
                 console.log("Enviando formulário pelo método POST tradicional");
-                formulario.submit();
+                domCache.form.submit();
             }, 3000);
         } catch (error) {
             console.error("Erro ao mostrar mensagem de envio:", error);
             // Fallback comum se a tradução falhar
             evento.preventDefault();
             aplicarFallbackMensagem('enviando', nome);
-            setTimeout(() => formulario.submit(), 3000);
+            setTimeout(() => domCache.form.submit(), 3000);
         }
     });
 
@@ -1152,19 +1128,13 @@ function configurarEventosTeclado() {
         // Tratamento da tecla ESC
         if (e.key === 'Escape') {
             // Fechar sidebar
-            if (sidebar) {
-                sidebar.classList.remove('open');
-                document.getElementById('sidebar-overlay')?.classList.remove('ativo');
-                if (toggleButton) {
-                    toggleButton.setAttribute('aria-expanded', false);
-                    atualizarIconeSidebar(false);
-                }
+            if (domCache.sidebar && domCache.sidebar.classList.contains('open')) {
+                handlers.toggleSidebar();
             }
 
             // Fechar menu de idiomas
-            const menuIdiomas = document.querySelector('.menu-idiomas');
-            if (menuIdiomas) {
-                menuIdiomas.classList.remove('ativo');
+            if (domCache.menuIdiomas) {
+                domCache.menuIdiomas.classList.remove('ativo');
             }
 
             // Fechar outros elementos que respondam a ESC (caso sejam adicionados no futuro)

@@ -18,40 +18,14 @@
     "portfolio": "Portfólio",
     "servicos": "Serviços",
     "contato": "Contato",
-    "sobre_descricao": "Sou um amante da computação que busca explorar a capacidade de processamento das máquinas na extração de informações úteis de grandes massas de dados.",
-    "experiencias_descricao": "Professor de Big Data, certificado em Data Analysis e Engenheiro de Dados com pós-graduação.",
-    "portfolio_descricao": "Confira alguns dos meus projetos de Data Science.",
-    "servicos_descricao": "Ofereço soluções completas em análise de dados para o seu negócio:",
-    "contato_descricao": "Fale comigo! Será uma honra poder te ajudar.",
     "botoes": {
-        "faleComigo": {
-            "original": "Fale Comigo",
-            "traducao": "Fale Comigo"
-        },
-        "baixeCV": {
-            "original": "Baixe meu CV",
-            "traducao": "Baixe meu CV"
-        },
-        "enviarMensagem": {
-            "original": "Enviar Mensagem",
-            "traducao": "Enviar Mensagem"
-        },
-        "verProjeto": {
-            "original": "Ver Projeto",
-            "traducao": "Ver Projeto"
-        },
-        "anterior": {
-            "original": "Anterior",
-            "traducao": "Anterior"
-        },
-        "proximo": {
-            "original": "Próximo",
-            "traducao": "Próximo"
-        },
-        "voltarAoTopo": {
-            "original": "Voltar ao topo",
-            "traducao": "Voltar ao topo"
-        }
+        "faleComigo": "Fale Comigo",
+        "baixeCV": "Baixe meu CV",
+        "enviarMensagem": "Enviar Mensagem",
+        "verProjeto": "Ver Projeto",
+        "anterior": "Anterior",
+        "proximo": "Próximo",
+        "voltarAoTopo": "Voltar ao topo"
     },
     "perfil": {
         "titulo": "Perfil",
@@ -145,36 +119,6 @@
             ]
         },
         "dashboard_rh": {
-            "titulo": "Dashboard de RH",
-            "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
-            "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
-            "tecnologias": [
-                "Power BI",
-                "Excel",
-                "RH"
-            ]
-        },
-        "dashboard_rh2": {
-            "titulo": "Dashboard de RH",
-            "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
-            "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
-            "tecnologias": [
-                "Power BI",
-                "Excel",
-                "RH"
-            ]
-        },
-        "previsao_casas2": {
-            "titulo": "Previsão de Preços de Casas (Python)",
-            "descricao": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
-            "alt": "Gráfico de dispersão de preços de casas previsto por modelo de machine learning",
-            "tecnologias": [
-                "Python",
-                "Pandas",
-                "Scikit-learn"
-            ]
-        },
-        "dashboard_rh3": {
             "titulo": "Dashboard de RH",
             "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
             "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",

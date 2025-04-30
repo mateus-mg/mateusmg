@@ -44,6 +44,19 @@
     }
 }
 
+/* Classes utilitárias para reutilização */
+.anti-blur {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+.webkit-anti-blur {
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    transform: translateZ(0) scale(1.0, 1.0);
+}
+
 section {
     opacity: 0;
     transform: translateY(20px);
@@ -55,6 +68,15 @@ section.visivel {
     opacity: 1;
     transform: translateY(0);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Fallback para tornar as seções visíveis quando o JavaScript falhar */
+@media (prefers-reduced-motion: reduce) {
+    section {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        transition: none !important;
+    }
 }
 
 body {
@@ -520,17 +542,17 @@ footer a {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    /* Propriedades para evitar borrão no texto durante animações */
     transform: translateZ(0);
     backface-visibility: hidden;
+    will-change: transform;
 }
 
 .portfolio-title,
 .portfolio-desc,
 .portfolio-tags {
-    /* Mantém o texto nítido durante animações do card */
     transform: translateZ(0);
     backface-visibility: hidden;
+    will-change: transform;
 }
 
 .portfolio-image-container {
@@ -1405,27 +1427,12 @@ picture source {
     min-width: 300px;
 }
 
-/* Fallback para tornar as seções visíveis quando o JavaScript falhar */
-@media (prefers-reduced-motion: reduce) {
-    section {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        transition: none !important;
-    }
-}
-
 /* Garantir que as seções sejam visíveis após um determinado tempo, mesmo sem JavaScript */
 section {
     animation: forcaVisibilidade 0s 1s forwards;
 }
 
-@keyframes forcaVisibilidade {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* Usando a animação já definida no topo do arquivo - removendo a duplicação */
 .sobre .botao {
     margin: 10px 15px;
     min-width: 200px;

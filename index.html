@@ -464,6 +464,21 @@
     <a class="botao" href="#" id="btn-topo" title="Voltar ao início" data-i18n-title="botoes.voltarAoTopo"><span
             class="seta-topo">↑</span></a>
 
+    <!-- Registro do Service Worker para cache e suporte offline -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+
     <!-- Script crítico para inicialização rápida (movido para arquivo externo) -->
     <script src="js/init.js"></script>
 

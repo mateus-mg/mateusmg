@@ -1269,6 +1269,21 @@ function gerenciarFeedbackPopup() {
         // Obter o idioma atual
         const idiomaAtual = localStorage.getItem('idioma') || 'pt';
 
+        // Verificar se temos a tradução em cache no localStorage
+        const cacheKey = `feedback_popup_${idiomaAtual}`;
+        const cachedTranslation = localStorage.getItem(cacheKey);
+
+        if (cachedTranslation) {
+            // Usar tradução em cache para resposta imediata
+            const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
+            if (fecharBtn) {
+                fecharBtn.textContent = cachedTranslation;
+            }
+
+            console.log(`Usando tradução em cache para o botão fechar (${idiomaAtual})`);
+            return;
+        }
+
         // Buscar as traduções para o botão de fechar
         fetch(`i18n/${idiomaAtual}.json`)
             .then(response => response.json())
@@ -1276,6 +1291,9 @@ function gerenciarFeedbackPopup() {
                 const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
                 if (fecharBtn && traducoes.formulario?.feedback?.fechar) {
                     fecharBtn.textContent = traducoes.formulario.feedback.fechar;
+
+                    // Armazenar em cache para uso futuro
+                    localStorage.setItem(cacheKey, traducoes.formulario.feedback.fechar);
                 }
             })
             .catch(error => {

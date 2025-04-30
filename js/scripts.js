@@ -1253,6 +1253,14 @@ function gerenciarFeedbackPopup() {
         feedbackPopup.classList.remove('ativo');
         setTimeout(() => {
             feedbackPopup.style.display = 'none';
+
+            // Remover o parâmetro "enviado=sucesso" da URL
+            if (window.location.search.includes('enviado=sucesso')) {
+                // Usar History API para mudar a URL sem recarregar a página
+                const urlSemParametro = window.location.pathname + window.location.hash;
+                history.replaceState(null, '', urlSemParametro);
+                console.log("Parâmetro 'enviado=sucesso' removido da URL");
+            }
         }, 300);
     }
 

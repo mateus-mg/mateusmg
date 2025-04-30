@@ -264,7 +264,7 @@ header p {
 }
 
 .header-icons .icon-link:hover {
-    color: var(--cor-secundaria);
+    color: var(--cor-destaque);
     transform: scale(1.12);
 }
 

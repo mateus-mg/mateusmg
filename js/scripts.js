@@ -340,6 +340,18 @@ function configurarOutrosEventos() {
         });
     }
 
+    // Ícone de e-mail no banner
+    const emailIconBanner = document.querySelector('.header-icons-bottom .icon-link[href="#contato"]');
+    if (emailIconBanner) {
+        emailIconBanner.addEventListener('click', function (e) {
+            e.preventDefault();
+            const contato = document.getElementById('contato');
+            if (contato) {
+                contato.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
     console.log("Outros eventos da UI configurados");
 }
 

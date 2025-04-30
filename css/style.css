@@ -27,9 +27,28 @@
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes forcaVisibilidade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 section {
     opacity: 0;
     transform: translateY(20px);
+    /* Garantir que as seções sejam visíveis após um determinado tempo, mesmo sem JavaScript */
+    animation: forcaVisibilidade 0s 1s forwards;
 }
 
 section.visivel {
@@ -386,29 +405,33 @@ footer a {
     overflow: visible;
 }
 
-/* Corrigindo larguras específicas para garantir que as barras 100% sejam preenchidas corretamente */
-#skills-barras-container .nivel[data-nivel="Avançado"],
-#idioma-barras-container .nivel[data-nivel="Nativo"] {
-    width: 100% !important;
+/* Unificação dos níveis para barras de habilidades e idiomas */
+/* Definição única de larguras para os níveis */
+.nivel-nativo,
+.nivel-avancado {
+    width: 100%;
 }
 
-#idioma-barras-container .nivel[data-nivel="Fluente"] {
-    width: 75% !important;
+.nivel-fluente {
+    width: 75%;
 }
 
-#idioma-barras-container .nivel[data-nivel="Intermediário"],
-#skills-barras-container .nivel[data-nivel="Intermediário"] {
-    width: 66.66% !important;
+.nivel-intermediario {
+    width: 66.66%;
 }
 
-#idioma-barras-container .nivel[data-nivel="Básico"],
-#skills-barras-container .nivel[data-nivel="Básico"] {
-    width: 33.33% !important;
+.nivel-basico {
+    width: 33.33%;
 }
 
-/* Estilos comuns para tooltips */
-.idioma-barra .nivel .tooltip-container,
-.skills-barra .nivel .tooltip-container {
+/* Remoção do !important desnecessário e uso de classes em vez de atributos data */
+#skills-barras-container .nivel-avancado,
+#idioma-barras-container .nivel-nativo {
+    width: 100%;
+}
+
+/* Unificação dos estilos de tooltips */
+.tooltip-container {
     position: absolute;
     top: -45px;
     right: 0;
@@ -417,11 +440,9 @@ footer a {
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
     display: block;
-    /* Importante para posicionamento correto */
     pointer-events: none;
 }
 
-/* Diferenças específicas entre tooltips */
 .idioma-barra .nivel .tooltip-container {
     z-index: 100;
 }
@@ -430,8 +451,7 @@ footer a {
     z-index: 200;
 }
 
-.idioma-barra .nivel .tooltip,
-.skills-barra .nivel .tooltip {
+.tooltip {
     background-color: var(--cor-secundaria);
     color: var(--cor-texto-claro);
     padding: 5px 10px;
@@ -440,13 +460,11 @@ footer a {
     white-space: nowrap;
     position: relative;
     display: block;
-    /* Importante para posicionamento do pseudoelemento ::after */
     transform: translateZ(0);
 }
 
 /* Conector (seta) dos tooltips */
-.idioma-barra .nivel .tooltip::after,
-.skills-barra .nivel .tooltip::after {
+.tooltip::after {
     content: '';
     position: absolute;
     bottom: -7px;
@@ -460,8 +478,7 @@ footer a {
 }
 
 /* Garantindo que o tooltip apareça ao passar o mouse */
-.idioma-barra .nivel:hover .tooltip-container,
-.skills-barra .nivel:hover .tooltip-container {
+.nivel:hover .tooltip-container {
     opacity: 1;
     visibility: visible;
 }
@@ -750,58 +767,7 @@ footer a {
     }
 }
 
-/* Estilos do formulário de contato */
-.contato form {
-    background: var(--cor-fundo-claro);
-    padding: 24px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 16px #0001;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.contato label {
-    font-weight: 600;
-    color: var(--cor-destaque);
-    margin-bottom: 4px;
-}
-
-.contato input,
-.contato textarea {
-    border: 1px solid var(--cor-secundaria);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1em;
-    transition: border 0.2s;
-    outline: none;
-    background: var(--cor-fundo-claro);
-    color: var();
-}
-
-.contato input:focus,
-.contato textarea:focus {
-    border-color: var(--cor-destaque);
-    background: var(--cor-texto-claro);
-}
-
-.contato .botao {
-    background: var(--cor-destaque);
-    color: var(--cor-texto-claro);
-    border: none;
-    border-radius: 5px;
-    padding: 12px 0;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.2s;
-}
-
-.contato .botao:hover {
-    background: var(--cor-secundaria);
-    color: var(--cor-texto-claro);
-}
-
+/* Unificação dos estilos de formulário */
 .form-contato {
     display: flex;
     flex-direction: column;
@@ -811,7 +777,7 @@ footer a {
     background: var(--cor-fundo-claro);
     padding: 24px 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 16px #0001;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
 }
 
 .form-contato label {
@@ -827,7 +793,7 @@ footer a {
     border-radius: 5px;
     padding: 10px;
     font-size: 1em;
-    transition: border 0.2s;
+    transition: border 0.2s, background 0.2s;
     outline: none;
     background: var(--cor-texto-claro);
     color: var(--cor-texto-escuro);
@@ -1487,24 +1453,6 @@ section {
     transition: all 0.3s ease;
 }
 
-/* Níveis para barras de habilidades e idiomas */
-.nivel-nativo,
-.nivel-avancado {
-    width: 100%;
-}
-
-.nivel-fluente {
-    width: 75%;
-}
-
-.nivel-intermediario {
-    width: 66.66%;
-}
-
-.nivel-basico {
-    width: 33.33%;
-}
-
 /* Classes para substituir os estilos inline adicionados pelo optimizer.js */
 .lcp-priority {
     visibility: visible !important;
@@ -1514,8 +1462,7 @@ section {
     transition: none !important;
 }
 
-/* Classe para quando a imagem de fundo é carregada */
-header.bg-loaded::after,
+/* Alias de classe para compatibilidade */
 header.imagem-carregada::after {
     background-image: url('../img/webp/header-bg.webp') !important;
     background-position: center center !important;
@@ -1523,6 +1470,7 @@ header.imagem-carregada::after {
     background-repeat: no-repeat !important;
 }
 
+/* Estilização para o botão "Sobre Mim" no header */
 .sobre-mim-btn-container {
     display: flex;
     justify-content: center;
@@ -1570,33 +1518,7 @@ header.imagem-carregada::after {
     transform: translateY(3px) scale(1.15);
 }
 
-.header-icons-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 38px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 38px;
-    z-index: 4;
-}
-
-.header-icons-bottom .icon-link {
-    color: var(--cor-texto-claro);
-    font-size: 2.1em;
-    transition: color 0.25s, transform 0.25s;
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.header-icons-bottom .icon-link:hover {
-    color: var(--cor-destaque);
-    transform: scale(1.15);
-}
-
-/* Animações para controles de navegação do portfólio */
+/* Estilizações para botões de navegação do portfólio */
 .portfolio-navegacao {
     display: flex;
     justify-content: center;
@@ -1672,4 +1594,31 @@ header.imagem-carregada::after {
 
 .portfolio-nav-btn.proximo:hover i {
     transform: translateX(4px);
+}
+
+/* Estilizações para os ícones do banner no header */
+.header-icons-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 38px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 38px;
+    z-index: 4;
+}
+
+.header-icons-bottom .icon-link {
+    color: var(--cor-texto-claro);
+    font-size: 2.1em;
+    transition: color 0.25s, transform 0.25s;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header-icons-bottom .icon-link:hover {
+    color: var(--cor-destaque);
+    transform: scale(1.15);
 }

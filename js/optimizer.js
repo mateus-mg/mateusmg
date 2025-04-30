@@ -85,9 +85,8 @@
             console.log("Carregando imagem de fundo do cabeçalho");
             const header = document.querySelector('header');
             if (header) {
-                // Adicionar classe para carregar a imagem de fundo
+                // Adicionar apenas a classe unificada para evitar redundância
                 header.classList.add('bg-loaded');
-                header.classList.add('imagem-carregada');
             }
         },
 

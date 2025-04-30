@@ -707,6 +707,21 @@ picture source {
     will-change: opacity, transform;
 }
 
+/* Layout responsivo para portfolio em diferentes tamanhos de tela */
+@media (max-width: 992px) {
+    .portfolio-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .portfolio-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
 /* Estilos para as transições de página do portfólio */
 .portfolio-transitioning {
     pointer-events: none;
@@ -727,7 +742,129 @@ picture source {
     will-change: opacity, transform;
 }
 
-/* Estilos para seção de serviços */
+/* Estilizações para botões de navegação do portfólio */
+.portfolio-navegacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding: 10px 0;
+}
+
+.portfolio-nav-btn {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease-out;
+}
+
+.portfolio-nav-btn:hover:not(:disabled) {
+    background-color: var(--cor-primaria);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.portfolio-nav-btn:hover:not(:disabled)::before {
+    transform: translateX(0);
+    opacity: 0.5;
+}
+
+.portfolio-nav-btn:active:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.portfolio-nav-btn.anterior i {
+    margin-right: 5px;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-nav-btn.proximo i {
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-nav-btn.anterior:hover i {
+    transform: translateX(-4px);
+}
+
+.portfolio-nav-btn.proximo:hover i {
+    transform: translateX(4px);
+}
+
+/* Indicadores de página para o portfólio */
+.portfolio-indicadores {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.portfolio-indicador {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(32, 58, 67, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.portfolio-indicador.ativo {
+    background-color: var(--cor-destaque);
+    transform: scale(1.3);
+}
+
+/* Melhorias para portfólio em dispositivos móveis */
+@media (max-width: 768px) {
+    .portfolio-navegacao {
+        position: relative;
+        padding: 15px 0;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .portfolio-nav-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        width: 120px;
+        justify-content: center;
+    }
+
+    .portfolio-indicadores {
+        width: 100%;
+        order: -1;
+        margin-bottom: 15px;
+    }
+}
+
 .servicos-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1560,109 +1697,4 @@ header.imagem-carregada::after {
 .sobre-mim-btn:hover .seta,
 .sobre-mim-btn:focus .seta {
     transform: translateY(3px) scale(1.15);
-}
-
-/* Estilizações para botões de navegação do portfólio */
-.portfolio-navegacao {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    margin-top: 30px;
-    padding: 10px 0;
-}
-
-.portfolio-nav-btn {
-    background-color: var(--cor-destaque);
-    color: var(--cor-texto-claro);
-    border: none;
-    border-radius: 5px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
-
-.portfolio-nav-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(-100%);
-    transition: transform 0.5s ease-out;
-}
-
-.portfolio-nav-btn:hover:not(:disabled) {
-    background-color: var(--cor-primaria);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-}
-
-.portfolio-nav-btn:hover:not(:disabled)::before {
-    transform: translateX(0);
-    opacity: 0.5;
-}
-
-.portfolio-nav-btn:active:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.portfolio-nav-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.portfolio-nav-btn.anterior i {
-    margin-right: 5px;
-    transition: transform 0.3s ease;
-}
-
-.portfolio-nav-btn.proximo i {
-    margin-left: 5px;
-    transition: transform 0.3s ease;
-}
-
-.portfolio-nav-btn.anterior:hover i {
-    transform: translateX(-4px);
-}
-
-.portfolio-nav-btn.proximo:hover i {
-    transform: translateX(4px);
-}
-
-/* Estilizações para os ícones do banner no header */
-.header-icons-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 38px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 38px;
-    z-index: 4;
-}
-
-.header-icons-bottom .icon-link {
-    color: var(--cor-texto-claro);
-    font-size: 2.1em;
-    transition: color 0.25s, transform 0.25s;
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.header-icons-bottom .icon-link:hover {
-    color: var(--cor-destaque);
-    transform: scale(1.15);
 }

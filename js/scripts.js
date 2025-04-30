@@ -496,9 +496,36 @@ function inicializarPortfolio() {
     }
 
     // Configuração de paginação
-    const projetosPorPagina = 3;
+    const getProjetosPorPagina = () => {
+        // Adaptar o número de projetos por página com base no tamanho da tela
+        if (window.innerWidth <= 768) {
+            return 1; // Em dispositivos móveis, mostrar apenas 1 projeto por página
+        } else if (window.innerWidth <= 992) {
+            return 2; // Em tablets, mostrar 2 projetos por página
+        } else {
+            return 3; // Em desktops, mostrar 3 projetos por página
+        }
+    };
+
+    let projetosPorPagina = getProjetosPorPagina();
     let paginaAtual = 0;
     let emTransicao = false; // Flag para controlar se há uma transição em andamento
+
+    // Atualizar o número de projetos por página quando a janela for redimensionada
+    window.addEventListener('resize', () => {
+        const novoProjetosPorPagina = getProjetosPorPagina();
+        if (novoProjetosPorPagina !== projetosPorPagina) {
+            projetosPorPagina = novoProjetosPorPagina;
+            // Recalcular a página atual para manter a posição proporcional
+            const projetos = window.projetosPortfolio[idiomaAtualProjetos];
+            const totalPaginas = Math.ceil(projetos.length / projetosPorPagina);
+            if (paginaAtual >= totalPaginas) {
+                paginaAtual = Math.max(0, totalPaginas - 1);
+            }
+            // Re-renderizar com a nova configuração
+            renderizarCards('avançar', 'redimensionamento');
+        }
+    });
 
     // Função para renderizar os projetos
     function renderizarCards(direcao = 'avançar', tipoTransicao = 'navegacao') {
@@ -692,6 +719,27 @@ function inicializarPortfolio() {
             }
         });
 
+        // Indicadores de página
+        const indicadoresContainer = document.createElement('div');
+        indicadoresContainer.className = 'portfolio-indicadores';
+
+        for (let i = 0; i < totalPaginas; i++) {
+            const indicador = document.createElement('div');
+            indicador.className = `portfolio-indicador ${i === paginaAtual ? 'ativo' : ''}`;
+            indicador.setAttribute('data-pagina', i);
+
+            // Adicionar evento de clique para ir diretamente para uma página
+            indicador.addEventListener('click', () => {
+                if (i !== paginaAtual && !emTransicao) {
+                    const direcao = i > paginaAtual ? 'avançar' : 'voltar';
+                    paginaAtual = i;
+                    renderizarCards(direcao);
+                }
+            });
+
+            indicadoresContainer.appendChild(indicador);
+        }
+
         // Botão Próximo
         const btnProximo = document.createElement('button');
         btnProximo.className = 'portfolio-nav-btn proximo';
@@ -705,6 +753,8 @@ function inicializarPortfolio() {
             }
         });
 
+        // Em dispositivos móveis, os indicadores vêm primeiro (ordem setada via CSS)
+        navegacao.appendChild(indicadoresContainer);
         navegacao.appendChild(btnAnterior);
         navegacao.appendChild(btnProximo);
 

@@ -8,6 +8,7 @@
         "servicos": "Serviços",
         "contato": "Contato"
     },
+    "sobreMim": "Sobre mim",
     "header": {
         "welcome": "Olá, seja bem-vindo!",
         "role": "Engenheiro de Dados | Cientista de Dados | Arquiteto de Dados",
@@ -18,7 +19,13 @@
     "portfolio": "Portfólio",
     "servicos": "Serviços",
     "contato": "Contato",
+    "sobre_descricao": "Sou um entusiasta da computação que busca explorar a capacidade de processamento das máquinas para extrair informações úteis de grandes massas de dados.",
+    "experiencias_descricao": "Professor de Big Data, certificado em Análise de Dados e Engenheiro de Dados com pós-graduação.",
+    "portfolio_descricao": "Confira alguns dos meus projetos de Data Science.",
+    "servicos_descricao": "Ofereço soluções completas em análise de dados para o seu negócio:",
+    "contato_descricao": "Fale comigo! Será uma honra ajudá-lo.",
     "botoes": {
+        "sobreMim": "SOBRE MIM <span class=\"seta\">▼</span>",
         "faleComigo": "Fale Comigo",
         "baixeCV": "Baixe meu CV",
         "enviarMensagem": "Enviar Mensagem",
@@ -126,6 +133,36 @@
                 "Power BI",
                 "Excel",
                 "RH"
+            ]
+        },
+        "dashboard_rh2": {
+            "titulo": "Dashboard de RH - Versão 2",
+            "descricao": "Versão avançada do dashboard de RH com indicadores adicionais e análise preditiva de rotatividade de funcionários.",
+            "alt": "Dashboard avançado de RH com indicadores de previsão de rotatividade",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "RH Analytics"
+            ]
+        },
+        "previsao_casas2": {
+            "titulo": "Previsão de Preços de Imóveis Comerciais",
+            "descricao": "Extensão do modelo de machine learning para o mercado imobiliário comercial, com fatores específicos de localização e zoneamento.",
+            "alt": "Gráfico de dispersão de preços de imóveis comerciais previsto por modelo de machine learning",
+            "tecnologias": [
+                "Python",
+                "TensorFlow",
+                "Análise Espacial"
+            ]
+        },
+        "dashboard_rh3": {
+            "titulo": "Análise de Engajamento de Funcionários",
+            "descricao": "Dashboard específico para análise de pesquisas de engajamento, com métricas de satisfação, produtividade e retenção.",
+            "alt": "Dashboard de engajamento de funcionários com indicadores de satisfação e produtividade",
+            "tecnologias": [
+                "Power BI",
+                "R",
+                "Psicometria"
             ]
         }
     },

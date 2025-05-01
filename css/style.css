@@ -47,12 +47,14 @@
 /* Classes utilitárias para reutilização */
 .anti-blur {
     transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     will-change: transform;
 }
 
 .webkit-anti-blur {
     -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     -webkit-transform: translateZ(0) scale(1.0, 1.0);
     transform: translateZ(0) scale(1.0, 1.0);
 }

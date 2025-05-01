@@ -22,17 +22,47 @@ function initDOMCache() {
     domCache.form = document.getElementById('formulario-contato');
 }
 
+// Função para gerenciar o ícone do menu
+// Esta função é definida primeiro para garantir que esteja disponível para uso
+function atualizarIconeSidebar(isOpen) {
+    console.log("Atualizando ícone do sidebar para:", isOpen ? "X" : "☰");
+
+    if (!domCache.toggleButton) return;
+
+    // Adiciona a classe 'trocando' para iniciar a animação de fade out
+    domCache.toggleButton.classList.add('trocando');
+
+    // Espera a animação de fade out terminar antes de trocar o ícone
+    setTimeout(function () {
+        // Atualiza o ícone baseado no estado do menu
+        domCache.toggleButton.innerHTML = isOpen
+            ? `<span class="icone-menu entrando">✕</span>`
+            : `<span class="icone-menu entrando">☰</span>`;
+
+        // Remove a classe 'trocando' após um pequeno delay para permitir a animação de fade in
+        setTimeout(function () {
+            domCache.toggleButton.classList.remove('trocando');
+        }, 50);
+    }, 140); // Tempo correspondente à duração da transição CSS
+}
+
 // Event handlers reutilizáveis
 const handlers = {
     toggleSidebar: () => {
         if (!domCache.sidebar) return;
 
+        // Toggle da classe 'open' no sidebar
         domCache.sidebar.classList.toggle('open');
         const isOpen = domCache.sidebar.classList.contains('open');
+
+        // Atualizar atributos ARIA
         domCache.sidebar.setAttribute('aria-hidden', !isOpen);
         domCache.toggleButton.setAttribute('aria-expanded', isOpen);
+
+        // Chamar a função para atualizar o ícone
         atualizarIconeSidebar(isOpen);
 
+        // Toggle da classe 'ativo' no overlay
         const overlay = document.getElementById('sidebar-overlay');
         if (overlay) overlay.classList.toggle('ativo');
     },
@@ -123,12 +153,37 @@ function criarOverlaySidebar() {
             overlay.classList.remove('ativo');
             if (domCache.toggleButton) {
                 domCache.toggleButton.setAttribute('aria-expanded', 'false');
-                domCache.toggleButton.innerHTML = `<span class="icone-menu entrando">☰</span>`;
+                // Em vez de usar atualizarIconeSidebar, usar a mesma lógica do toggleSidebar
+                domCache.toggleButton.innerHTML = `<span class="icone-menu">☰</span>`;
+                domCache.toggleButton.classList.remove('menu-aberto');
             }
         }
     });
 
     return overlay;
+}
+
+// Função para atualizar o ícone do botão de toggle do sidebar
+function atualizarIconeSidebar(isOpen) {
+    console.log("Atualizando ícone do sidebar para:", isOpen ? "X" : "☰");
+
+    if (!domCache.toggleButton) return;
+
+    // Adiciona a classe 'trocando' para iniciar a animação de fade out
+    domCache.toggleButton.classList.add('trocando');
+
+    // Espera a animação de fade out terminar antes de trocar o ícone
+    setTimeout(() => {
+        // Atualiza o ícone baseado no estado do menu
+        domCache.toggleButton.innerHTML = isOpen
+            ? `<span class="icone-menu entrando">✕</span>`
+            : `<span class="icone-menu entrando">☰</span>`;
+
+        // Remove a classe 'trocando' após um pequeno delay para permitir a animação de fade in
+        setTimeout(() => {
+            domCache.toggleButton.classList.remove('trocando');
+        }, 50);
+    }, 140); // Tempo correspondente à duração da transição CSS
 }
 
 // Exportar para uso global (referenciada em init.js)
@@ -266,7 +321,10 @@ function configurarOutrosEventos() {
                 document.getElementById('sidebar-overlay')?.classList.remove('ativo');
                 domCache.sidebar.setAttribute('aria-hidden', true);
                 domCache.toggleButton.setAttribute('aria-expanded', false);
-                atualizarIconeSidebar(false);
+
+                // Usar a mesma implementação direta em vez de chamar atualizarIconeSidebar
+                domCache.toggleButton.innerHTML = `<span class="icone-menu">☰</span>`;
+                domCache.toggleButton.classList.remove('menu-aberto');
 
                 // Rola suavemente até a seção de destino
                 const targetId = link.getAttribute('href').substring(1);
@@ -865,12 +923,12 @@ function traduzirPagina(idioma) {
                     if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
                         // Se for objeto, usar a propriedade "traducao"
                         if (traducoes.botoes[chaveBotao].traducao) {
-                            botao.textContent = traducoes.botoes[chaveBotao].traducao;
+                            botao.innerHTML = traducoes.botoes[chaveBotao].traducao;
                             console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
                         }
                     } else {
                         // Se for string direta (formato usado em português)
-                        botao.textContent = traducoes.botoes[chaveBotao];
+                        botao.innerHTML = traducoes.botoes[chaveBotao];
                         console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
                     }
                 } else {

@@ -62,9 +62,13 @@ const handlers = {
         domCache.sidebar.classList.toggle('open');
         const isOpen = domCache.sidebar.classList.contains('open');
 
-        // Atualizar atributos ARIA
-        domCache.sidebar.setAttribute('aria-hidden', !isOpen);
+        // Atualizar atributos ARIA - Corrigido para melhorar acessibilidade
+        // Não usar aria-hidden em elementos com conteúdo focável
+        // Em vez disso, usar aria-expanded para indicar estado
         domCache.toggleButton.setAttribute('aria-expanded', isOpen);
+        
+        // Adicionar aria-label para leitores de tela
+        domCache.sidebar.setAttribute('aria-label', isOpen ? 'Menu de navegação aberto' : 'Menu de navegação fechado');
 
         // Chamar a função para atualizar o ícone
         atualizarIconeSidebar(isOpen);
@@ -657,10 +661,6 @@ function inicializarPortfolio() {
                                 };
                             }
                         }
-
-                        domCache.portfolioContainer.appendChild(card);
-                    });
-
                     // Remover a classe de transição e configurar o estado de entrada
                     domCache.portfolioContainer.classList.remove('portfolio-transitioning');
                     domCache.portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);

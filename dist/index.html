@@ -8,7 +8,7 @@
     <title>Mateus Galvão</title>
 
     <!-- Script de otimização LCP - carregado com defer para não bloquear renderização -->
-    <script src="js/optimizer.js" defer></script>
+    <script src="js/scripts.combined.min.js"></script>
 
     <!-- Preload crítico da imagem header (LCP) -->
     <link rel="preload" href="img/webp/header-bg.webp" as="image" type="image/webp" fetchpriority="high">
@@ -23,7 +23,7 @@
         content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), battery=(), display-capture=()">
 
     <!-- Carregando CSS de fontes primeiro, sem preload desnecessário -->
-    <link href="css/fonts.css" rel="stylesheet" />
+    
 
     <!-- Apenas ícones essenciais para primeira renderização -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style"
@@ -32,7 +32,7 @@
         crossorigin />
 
     <!-- Referência ao arquivo CSS original com crossorigin -->
-    <link href="css/styles.combined.min.css" rel="stylesheet" />
+    <link href="css/styles.combined.min.css" rel="stylesheet">
 
     <!-- Configuração dos favicons sem preload desnecessário -->
     <link rel="icon" href="img/webp/favicon.webp" type="image/webp">
@@ -47,7 +47,7 @@
     <meta content="Conheça meus projetos em Python, Power BI e Machine Learning." property="og:description" />
 
     <!-- Script para carregar o SEO JSON-LD (movido para arquivo externo) -->
-    <script src="js/scripts.combined.min.js"></script>
+    
 </head>
 
 <body>
@@ -485,7 +485,7 @@
     
 
     <!-- Scripts não críticos carregados de forma otimizada -->
-    <script src="js/scripts.js" defer></script>
+    
 </body>
 
 </html>

@@ -142,56 +142,82 @@ async function minifyAllJS() {
  */
 function updateHTML() {
     const distHtmlPath = path.join(DIST_DIR, 'index.html');
-
+    
     if (!fs.existsSync(distHtmlPath)) {
         console.error('❌ Arquivo HTML não encontrado em dist/');
         return;
     }
-
+    
     try {
         let html = fs.readFileSync(distHtmlPath, 'utf8');
-
+        let htmlOriginal = html; // Para comparar mudanças no final
+        
         // Substituir referências aos arquivos CSS
+        // 1. Remover a tag fonts.css completamente
         html = html.replace(
-            /<link href="css\/style\.css" rel="stylesheet">/g,
+            /<link href="css\/fonts\.css" rel="stylesheet".*?>/g,
+            ''
+        );
+        
+        // 2. Substituir style.css pelo arquivo combinado - atualiza a tag já existente
+        html = html.replace(
+            /<link href="css\/style\.css" rel="stylesheet".*?>/g,
             '<link href="css/styles.combined.min.css" rel="stylesheet">'
         );
-
-        html = html.replace(
-            /<link href="css\/fonts\.css" rel="stylesheet">/g,
-            '' // Removemos a referência já que será combinada
-        );
-
-        // Buscar e substituir todas as referências a scripts
-        const scriptTags = [];
-        let scriptMatch;
-        const scriptRegex = /<script src="js\/(.*?)\.js"><\/script>/g;
-
-        while ((scriptMatch = scriptRegex.exec(html)) !== null) {
-            scriptTags.push(scriptMatch[0]);
-        }
-
-        if (scriptTags.length > 0) {
-            // Substituir a primeira ocorrência pelo script combinado
+        
+        // 3. Garantir que não haja referências duplicadas ao arquivo combinado
+        if (!html.includes('<link href="css/styles.combined.min.css" rel="stylesheet">')) {
+            // Se ainda não tem a referência ao CSS combinado, adicionar após a tag head
             html = html.replace(
-                scriptTags[0],
+                /<head>/,
+                '<head>\n    <link href="css/styles.combined.min.css" rel="stylesheet">'
+            );
+        }
+        
+        // Lidar com todos os scripts: reunir todas as ocorrências primeiro
+        const scriptTags = [];
+        let match;
+        const scriptRegex = /<script.*?src="js\/(.*?)\.js".*?><\/script>/g;
+        
+        // Encontrar todas as tags de script
+        while ((match = scriptRegex.exec(html)) !== null) {
+            scriptTags.push({
+                fullMatch: match[0],
+                filename: match[1],
+                position: match.index
+            });
+        }
+        
+        console.log(`   - Encontradas ${scriptTags.length} tags de script`);
+        
+        if (scriptTags.length > 0) {
+            // Ordenar por posição no documento para substituir na ordem correta
+            scriptTags.sort((a, b) => a.position - b.position);
+            
+            // Adicionar o script combinado no lugar do primeiro script
+            html = html.replace(
+                scriptTags[0].fullMatch,
                 '<script src="js/scripts.combined.min.js"></script>'
             );
-
-            // Remover todas as demais ocorrências
+            
+            // Remover todas as demais tags de script JS
             for (let i = 1; i < scriptTags.length; i++) {
-                html = html.replace(scriptTags[i], '');
+                html = html.replace(scriptTags[i].fullMatch, '');
             }
         }
-
+        
+        // Verificar se foram feitas alterações
+        const tagsAlteradas = htmlOriginal !== html;
+        
         // Salvar o HTML atualizado
         fs.writeFileSync(distHtmlPath, html);
-        console.log('✅ HTML atualizado para usar arquivos minificados e combinados');
-
-        // Para verificação, mostrar as alterações feitas
-        console.log(`   Script tags encontradas: ${scriptTags.length}`);
-        console.log(`   HTML atualizado: ${html.includes('scripts.combined.min.js') ? 'Sim' : 'Não'}`);
-
+        console.log(`✅ HTML atualizado para usar arquivos minificados e combinados (${tagsAlteradas ? 'alterações aplicadas' : 'sem alterações'})`);
+        
+        // Informações detalhadas sobre as alterações
+        console.log(`   - ${scriptTags.length} tags de script manipuladas`);
+        console.log(`   - Arquivo CSS combinado: ${html.includes('styles.combined.min.css') ? 'Aplicado' : 'Não aplicado'}`);
+        console.log(`   - Arquivo JS combinado: ${html.includes('scripts.combined.min.js') ? 'Aplicado' : 'Não aplicado'}`);
+        
     } catch (error) {
         console.error('❌ Erro ao atualizar HTML:', error.message);
     }

@@ -1,0 +1,176 @@
+{
+    "tituloDocumento": "Mateus Galvão - Portfólio",
+    "metaDescricao": "Portfólio de Mateus Galvão, engenheiro e cientista de dados.",
+    "nav": {
+        "sobreMim": "Sobre mim",
+        "experiencias": "Experiências",
+        "portfolio": "Portfólio",
+        "servicos": "Serviços",
+        "contato": "Contato"
+    },
+    "sobreMim": "Sobre mim",
+    "header": {
+        "welcome": "Olá, seja bem-vindo!",
+        "role": "Engenheiro de Dados | Cientista de Dados | Arquiteto de Dados",
+        "name": "Eu sou Mateus Galvão"
+    },
+    "sobre": "Sobre mim",
+    "experiencias": "Experiências",
+    "portfolio": "Portfólio",
+    "servicos": "Serviços",
+    "contato": "Contato",
+    "sobre_descricao": "Sou um entusiasta da computação que busca explorar a capacidade de processamento das máquinas para extrair informações úteis de grandes massas de dados.",
+    "experiencias_descricao": "Professor de Big Data, certificado em Análise de Dados e Engenheiro de Dados com pós-graduação.",
+    "portfolio_descricao": "Confira alguns dos meus projetos de Data Science.",
+    "servicos_descricao": "Ofereço soluções completas em análise de dados para o seu negócio:",
+    "contato_descricao": "Fale comigo! Será uma honra ajudá-lo.",
+    "botoes": {
+        "sobreMim": "SOBRE MIM <span class=\"seta\">▼</span>",
+        "faleComigo": "Fale Comigo",
+        "baixeCV": "Baixe meu CV",
+        "enviarMensagem": "Enviar Mensagem",
+        "verProjeto": "Ver Projeto",
+        "anterior": "Anterior",
+        "proximo": "Próximo",
+        "voltarAoTopo": "Voltar ao topo"
+    },
+    "perfil": {
+        "titulo": "Perfil",
+        "nome": "Nome",
+        "nascimento": "Data de Nascimento",
+        "profissao": "Profissão"
+    },
+    "skills": {
+        "titulo": "Skills",
+        "niveis": {
+            "avancado": "Avançado",
+            "intermediario": "Intermediário",
+            "basico": "Básico"
+        }
+    },
+    "idiomas": {
+        "Portuguese": "Português",
+        "ingles": "Inglês",
+        "espanhol": "Espanhol",
+        "frances": "Francês",
+        "nativo": "Nativo",
+        "fluente": "Fluente",
+        "intermediario": "Intermediário",
+        "basico": "Básico"
+    },
+    "servicos_cards": {
+        "analise_descritiva": {
+            "titulo": "Análise Descritiva",
+            "descricao": "Transformação de dados brutos em insights visuais através de dashboards dinâmicos, permitindo a compreensão clara do desempenho atual dos seus negócios."
+        },
+        "analise_diagnostica": {
+            "titulo": "Análise Diagnóstica",
+            "descricao": "Identificação das causas raiz por trás dos resultados dos negócios, permitindo entender o \"porquê\" de tendências e padrões nos seus dados."
+        },
+        "machine_learning": {
+            "titulo": "Machine Learning",
+            "descricao": "Desenvolvimento de modelos preditivos para antecipar tendências, comportamentos e resultados, apoiando decisões estratégicas baseadas em dados."
+        },
+        "engenharia_dados": {
+            "titulo": "Engenharia de Dados",
+            "descricao": "Construção de pipelines robustos para extração, transformação e carregamento (ETL) de dados, garantindo informações confiáveis e atualizadas."
+        },
+        "treinamento": {
+            "titulo": "Treinamento e Consultoria",
+            "descricao": "Capacitação de equipes em ferramentas de análise de dados (Python, Power BI, Excel) e consultoria para implementação de cultura data-driven."
+        },
+        "arquitetura_dados": {
+            "titulo": "Arquitetura de Dados",
+            "descricao": "Desenvolvimento de modelos de dados eficientes, projetando estruturas escaláveis que otimizam o armazenamento e a recuperação de informações."
+        }
+    },
+    "formulario": {
+        "nome": "Nome:",
+        "email": "E-mail:",
+        "assunto": "Assunto:",
+        "selecioneAssunto": "Selecione um assunto",
+        "orcamento": "Orçamento",
+        "parceria": "Parceria",
+        "proposta": "Proposta de Emprego",
+        "outro": "Outro",
+        "mensagem": "Mensagem:",
+        "feedback": {
+            "titulo": "Mensagem Enviada!",
+            "enviando_titulo": "Enviando Mensagem...",
+            "mensagem": "Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.",
+            "enviando": "\"{{nome}}\", Estamos enviando sua mensagem...",
+            "sucesso": "<strong>Olá {{nome}}!</strong><br>Sua mensagem sobre \"<em>{{assunto}}</em>\" foi enviada com sucesso!<br>Agradecemos seu contato e entraremos em contato o mais breve possível.",
+            "sucesso_sem_assunto": "<strong>Olá {{nome}}!</strong><br>Sua mensagem foi enviada com sucesso!<br>Agradecemos seu contato e entraremos em contato o mais breve possível.",
+            "fechar": "Fechar"
+        }
+    },
+    "projetos": {
+        "analise_vendas": {
+            "titulo": "Análise de Vendas com Power BI",
+            "descricao": "Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.",
+            "alt": "Dashboard de vendas criado no Power BI mostrando gráficos de faturamento, produtos e regiões",
+            "tecnologias": [
+                "Power BI",
+                "DAX",
+                "Visualização"
+            ]
+        },
+        "previsao_casas": {
+            "titulo": "Previsão de Preços de Casas (Python)",
+            "descricao": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
+            "alt": "Gráfico de dispersão de preços de casas previsto por modelo de machine learning",
+            "tecnologias": [
+                "Python",
+                "Pandas",
+                "Scikit-learn"
+            ]
+        },
+        "dashboard_rh": {
+            "titulo": "Dashboard de RH",
+            "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+            "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "RH"
+            ]
+        },
+        "dashboard_rh2": {
+            "titulo": "Dashboard de RH - Versão 2",
+            "descricao": "Versão avançada do dashboard de RH com indicadores adicionais e análise preditiva de rotatividade de funcionários.",
+            "alt": "Dashboard avançado de RH com indicadores de previsão de rotatividade",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "RH Analytics"
+            ]
+        },
+        "previsao_casas2": {
+            "titulo": "Previsão de Preços de Imóveis Comerciais",
+            "descricao": "Extensão do modelo de machine learning para o mercado imobiliário comercial, com fatores específicos de localização e zoneamento.",
+            "alt": "Gráfico de dispersão de preços de imóveis comerciais previsto por modelo de machine learning",
+            "tecnologias": [
+                "Python",
+                "TensorFlow",
+                "Análise Espacial"
+            ]
+        },
+        "dashboard_rh3": {
+            "titulo": "Análise de Engajamento de Funcionários",
+            "descricao": "Dashboard específico para análise de pesquisas de engajamento, com métricas de satisfação, produtividade e retenção.",
+            "alt": "Dashboard de engajamento de funcionários com indicadores de satisfação e produtividade",
+            "tecnologias": [
+                "Power BI",
+                "R",
+                "Psicometria"
+            ]
+        }
+    },
+    "footer": "© 2025 Mateus Galvão",
+    "acessibilidade": {
+        "idioma_anterior": "Idioma anterior",
+        "proximo_idioma": "Próximo idioma",
+        "abrir_menu_navegacao": "Abrir menu de navegação",
+        "abrir_menu_idiomas": "Abrir menu de idiomas"
+    }
+}

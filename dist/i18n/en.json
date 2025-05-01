@@ -1,0 +1,196 @@
+{
+    "tituloDocumento": "Mateus Galvão - Portfolio",
+    "metaDescricao": "Portfolio of Mateus Galvão, data engineer and data scientist.",
+    "nav": {
+        "sobreMim": "About me",
+        "experiencias": "Experience",
+        "portfolio": "Portfolio",
+        "servicos": "Services",
+        "contato": "Contact"
+    },
+    "header": {
+        "welcome": "Hello, welcome!",
+        "role": "Data Engineer | Data Scientist | Data Architect",
+        "name": "I am Mateus Galvão"
+    },
+    "sobre": "About me",
+    "experiencias": "Experience",
+    "portfolio": "Portfolio",
+    "servicos": "Services",
+    "contato": "Contact",
+    "sobre_descricao": "I am a computer enthusiast who seeks to explore the processing capacity of machines in extracting useful information from large masses of data.",
+    "experiencias_descricao": "Big Data Professor, certified in Data Analysis and Data Engineer with postgraduate degree.",
+    "portfolio_descricao": "Check out some of my Data Science projects.",
+    "servicos_descricao": "I offer complete data analysis solutions for your business:",
+    "contato_descricao": "Talk to me! It will be an honor to help you.",
+    "botoes": {
+        "faleComigo": {
+            "original": "Fale Comigo",
+            "traducao": "Contact Me"
+        },
+        "baixeCV": {
+            "original": "Baixe meu CV",
+            "traducao": "Download my CV"
+        },
+        "enviarMensagem": {
+            "original": "Enviar Mensagem",
+            "traducao": "Send Message"
+        },
+        "verProjeto": {
+            "original": "Ver Projeto",
+            "traducao": "View Project"
+        },
+        "anterior": {
+            "original": "Anterior",
+            "traducao": "Previous"
+        },
+        "proximo": {
+            "original": "Próximo",
+            "traducao": "Next"
+        },
+        "voltarAoTopo": {
+            "original": "Voltar ao topo",
+            "traducao": "Back to top"
+        }
+    },
+    "perfil": {
+        "titulo": "Profile",
+        "nome": "Name",
+        "nascimento": "Date of Birth",
+        "profissao": "Profession"
+    },
+    "skills": {
+        "titulo": "Skills",
+        "niveis": {
+            "avancado": "Advanced",
+            "intermediario": "Intermediate",
+            "basico": "Basic"
+        }
+    },
+    "idiomas": {
+        "Portuguese": "Portuguese",
+        "ingles": "English",
+        "espanhol": "Spanish",
+        "frances": "French",
+        "nativo": "Native",
+        "fluente": "Fluent",
+        "intermediario": "Intermediate",
+        "basico": "Basic"
+    },
+    "servicos_cards": {
+        "analise_descritiva": {
+            "titulo": "Descriptive Analysis",
+            "descricao": "Transformation of raw data into visual insights through dynamic dashboards, allowing a clear understanding of the current performance of your business."
+        },
+        "analise_diagnostica": {
+            "titulo": "Diagnostic Analysis",
+            "descricao": "Identification of root causes behind business results, allowing understanding the \"why\" of trends and patterns in your data."
+        },
+        "machine_learning": {
+            "titulo": "Machine Learning",
+            "descricao": "Development of predictive models to anticipate trends, behaviors and results, supporting strategic decisions based on data."
+        },
+        "engenharia_dados": {
+            "titulo": "Data Engineering",
+            "descricao": "Construction of robust pipelines for extraction, transformation and loading (ETL) of data, ensuring reliable and up-to-date information."
+        },
+        "treinamento": {
+            "titulo": "Training and Consulting",
+            "descricao": "Training teams in data analysis tools (Python, Power BI, Excel) and consulting for implementation of data-driven culture."
+        },
+        "arquitetura_dados": {
+            "titulo": "Data Architecture",
+            "descricao": "Development of efficient data models, designing scalable structures that optimize the storage and retrieval of information."
+        }
+    },
+    "formulario": {
+        "nome": "Name:",
+        "email": "Email:",
+        "assunto": "Subject:",
+        "selecioneAssunto": "Select a subject",
+        "orcamento": "Budget",
+        "parceria": "Partnership",
+        "proposta": "Job Offer",
+        "outro": "Other",
+        "mensagem": "Message:",
+        "feedback": {
+            "erro": "An error occurred. Please try again or contact me by email.",
+            "titulo": "Message Sent!",
+            "enviando_titulo": "Sending Message...",
+            "mensagem": "Your message has been received and will be reviewed with priority. Please wait for a response soon.",
+            "enviando": "\"{{nome}}\", We are sending your message...",
+            "sucesso": "<strong>Hello {{nome}}!</strong><br>Your message about \"<em>{{assunto}}</em>\" has been successfully sent!<br>We appreciate your contact and will get back to you as soon as possible.",
+            "sucesso_sem_assunto": "<strong>Hello {{nome}}!</strong><br>Your message has been successfully sent!<br>We appreciate your contact and will get back to you as soon as possible.",
+            "fechar": "Close"
+        }
+    },
+    "projetos": {
+        "analise_vendas": {
+            "titulo": "Sales Analysis with Power BI",
+            "descricao": "Interactive dashboard for sales analysis using Power BI. Includes segmentation by period, products and regions, with visual insights for decision making.",
+            "alt": "Sales dashboard created in Power BI showing charts of revenue, products and regions",
+            "tecnologias": [
+                "Power BI",
+                "DAX",
+                "Visualization"
+            ]
+        },
+        "previsao_casas": {
+            "titulo": "House Price Prediction (Python)",
+            "descricao": "Machine learning model to predict house prices with Python. Uses regression, exploratory analysis and cross-validation.",
+            "alt": "Scatter plot of house prices predicted by machine learning model",
+            "tecnologias": [
+                "Python",
+                "Pandas",
+                "Scikit-learn"
+            ]
+        },
+        "dashboard_rh": {
+            "titulo": "HR Dashboard",
+            "descricao": "Visualization of HR indicators in a dynamic dashboard. Allows analysis of turnover, absenteeism and employee satisfaction.",
+            "alt": "HR dashboard with turnover, absenteeism and employee satisfaction indicators",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "HR"
+            ]
+        },
+        "dashboard_rh2": {
+            "titulo": "HR Dashboard",
+            "descricao": "Visualization of HR indicators in a dynamic dashboard. Allows analysis of turnover, absenteeism and employee satisfaction.",
+            "alt": "HR dashboard with turnover, absenteeism and employee satisfaction indicators",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "HR"
+            ]
+        },
+        "previsao_casas2": {
+            "titulo": "House Price Prediction (Python)",
+            "descricao": "Machine learning model to predict house prices with Python. Uses regression, exploratory analysis and cross-validation.",
+            "alt": "Scatter plot of house prices predicted by machine learning model",
+            "tecnologias": [
+                "Python",
+                "Pandas",
+                "Scikit-learn"
+            ]
+        },
+        "dashboard_rh3": {
+            "titulo": "HR Dashboard",
+            "descricao": "Visualization of HR indicators in a dynamic dashboard. Allows analysis of turnover, absenteeism and employee satisfaction.",
+            "alt": "HR dashboard with turnover, absenteeism and employee satisfaction indicators",
+            "tecnologias": [
+                "Power BI",
+                "Excel",
+                "HR"
+            ]
+        }
+    },
+    "footer": "© 2025 Mateus Galvão",
+    "acessibilidade": {
+        "idioma_anterior": "Previous language",
+        "proximo_idioma": "Next language",
+        "abrir_menu_navegacao": "Open navigation menu",
+        "abrir_menu_idiomas": "Open language menu"
+    }
+}

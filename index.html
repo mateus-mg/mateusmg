@@ -7,8 +7,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Mateus Galvão</title>
 
-    <!-- Script de otimização LCP - carregado imediatamente -->
-    <script src="js/optimizer.js"></script>
+    <!-- Script de otimização LCP - carregado com defer para não bloquear renderização -->
+    <script src="js/optimizer.js" defer></script>
 
     <!-- Preload crítico da imagem header (LCP) -->
     <link rel="preload" href="img/webp/header-bg.webp" as="image" type="image/webp" fetchpriority="high">

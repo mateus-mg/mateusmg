@@ -163,29 +163,6 @@ function criarOverlaySidebar() {
     return overlay;
 }
 
-// Função para atualizar o ícone do botão de toggle do sidebar
-function atualizarIconeSidebar(isOpen) {
-    console.log("Atualizando ícone do sidebar para:", isOpen ? "X" : "☰");
-
-    if (!domCache.toggleButton) return;
-
-    // Adiciona a classe 'trocando' para iniciar a animação de fade out
-    domCache.toggleButton.classList.add('trocando');
-
-    // Espera a animação de fade out terminar antes de trocar o ícone
-    setTimeout(() => {
-        // Atualiza o ícone baseado no estado do menu
-        domCache.toggleButton.innerHTML = isOpen
-            ? `<span class="icone-menu entrando">✕</span>`
-            : `<span class="icone-menu entrando">☰</span>`;
-
-        // Remove a classe 'trocando' após um pequeno delay para permitir a animação de fade in
-        setTimeout(() => {
-            domCache.toggleButton.classList.remove('trocando');
-        }, 50);
-    }, 140); // Tempo correspondente à duração da transição CSS
-}
-
 // Exportar para uso global (referenciada em init.js)
 window.atualizarIconeSidebar = atualizarIconeSidebar;
 

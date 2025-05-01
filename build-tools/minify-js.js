@@ -141,7 +141,6 @@ async function minifyAllJS() {
  * Atualiza o HTML para usar versões minificadas na produção
  */
 function updateHTML() {
-    const htmlPath = path.join(ROOT_DIR, 'index.html');
     const distHtmlPath = path.join(DIST_DIR, 'index.html');
 
     if (!fs.existsSync(distHtmlPath)) {
@@ -152,33 +151,47 @@ function updateHTML() {
     try {
         let html = fs.readFileSync(distHtmlPath, 'utf8');
 
-        // Substituir referências aos arquivos CSS por versão combinada
+        // Substituir referências aos arquivos CSS
         html = html.replace(
-            /<link href="css\/style\.css" rel="stylesheet" \/>/g,
-            '<link href="css/styles.combined.min.css" rel="stylesheet" />'
+            /<link href="css\/style\.css" rel="stylesheet">/g,
+            '<link href="css/styles.combined.min.css" rel="stylesheet">'
         );
 
-        // Substituir referências aos arquivos JS individuais por versão combinada
-        const scriptPattern = /<script src="js\/(.*?)\.js"><\/script>/g;
-        const scriptMatches = [...html.matchAll(scriptPattern)];
+        html = html.replace(
+            /<link href="css\/fonts\.css" rel="stylesheet">/g,
+            '' // Removemos a referência já que será combinada
+        );
 
-        if (scriptMatches.length > 0) {
-            // Encontrar a primeira ocorrência para substituir pela versão combinada
-            const firstScript = scriptMatches[0][0];
+        // Buscar e substituir todas as referências a scripts
+        const scriptTags = [];
+        let scriptMatch;
+        const scriptRegex = /<script src="js\/(.*?)\.js"><\/script>/g;
+
+        while ((scriptMatch = scriptRegex.exec(html)) !== null) {
+            scriptTags.push(scriptMatch[0]);
+        }
+
+        if (scriptTags.length > 0) {
+            // Substituir a primeira ocorrência pelo script combinado
             html = html.replace(
-                firstScript,
+                scriptTags[0],
                 '<script src="js/scripts.combined.min.js"></script>'
             );
 
-            // Remover as demais ocorrências
-            for (let i = 1; i < scriptMatches.length; i++) {
-                html = html.replace(scriptMatches[i][0], '');
+            // Remover todas as demais ocorrências
+            for (let i = 1; i < scriptTags.length; i++) {
+                html = html.replace(scriptTags[i], '');
             }
         }
 
         // Salvar o HTML atualizado
         fs.writeFileSync(distHtmlPath, html);
         console.log('✅ HTML atualizado para usar arquivos minificados e combinados');
+
+        // Para verificação, mostrar as alterações feitas
+        console.log(`   Script tags encontradas: ${scriptTags.length}`);
+        console.log(`   HTML atualizado: ${html.includes('scripts.combined.min.js') ? 'Sim' : 'Não'}`);
+
     } catch (error) {
         console.error('❌ Erro ao atualizar HTML:', error.message);
     }

@@ -25,11 +25,19 @@ jobs:
       - name: Build project
         run: npm run build
         
+      - name: Create Wrangler config
+        run: |
+          echo "Creating Wrangler config file..."
+          cat > wrangler.toml << EOF
+          account_id = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          EOF
+          
+      - name: Install Wrangler
+        run: npm install -g wrangler
+      
       - name: Deploy to Cloudflare Pages
-        id: cloudflare_deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          echo "Deploying to Cloudflare Pages..."
-          npx wrangler@latest pages deploy dist --project-name=mateusmg --commit-dirty=true
+          echo "Deploying to Cloudflare Pages with API token..."
+          wrangler pages publish dist --project-name=mateusmg

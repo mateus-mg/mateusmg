@@ -10,6 +10,13 @@ const domCache = {
 // Variáveis globais importantes
 let idiomaAtualProjetos = 'pt';
 
+// Configuração de cache com versionamento
+const CONFIG_CACHE = {
+    versao: '1.0.1', // Incrementar esta versão quando atualizar traduções
+    tempoExpiracaoCache: 7 * 24 * 60 * 60 * 1000, // 7 dias em milissegundos
+    prefixoChave: 'portfolio_'
+};
+
 // Garantir que window.carrosseis existe globalmente
 window.carrosseis = window.carrosseis || {};
 
@@ -802,13 +809,43 @@ function inicializarPortfolio() {
 function traduzirPagina(idioma) {
     console.log("Traduzindo página para:", idioma);
 
-    // Salvar o idioma selecionado no localStorage
+    // Salvar o idioma selecionado no localStorage com controle de versão
     localStorage.setItem('idioma', idioma);
+    localStorage.setItem('idioma_versao', CONFIG_CACHE.versao);
+    localStorage.setItem('idioma_data', Date.now().toString());
 
     // Atualizar o idioma atual dos projetos
     idiomaAtualProjetos = idioma;
 
-    // Carregar arquivo de tradução
+    // Verificar cache da tradução
+    const cacheKey = `${CONFIG_CACHE.prefixoChave}traducao_${idioma}`;
+    const cacheKeyVersao = `${CONFIG_CACHE.prefixoChave}traducao_versao_${idioma}`;
+    const cacheKeyData = `${CONFIG_CACHE.prefixoChave}traducao_data_${idioma}`;
+
+    const cachedVersion = localStorage.getItem(cacheKeyVersao);
+    const cachedDate = localStorage.getItem(cacheKeyData);
+    const cachedTranslation = localStorage.getItem(cacheKey);
+
+    // Verificar se o cache está válido baseado na versão e na data
+    const isCacheValid = cachedVersion === CONFIG_CACHE.versao &&
+        cachedDate &&
+        (Date.now() - parseInt(cachedDate)) < CONFIG_CACHE.tempoExpiracaoCache &&
+        cachedTranslation;
+
+    if (isCacheValid) {
+        console.log(`Usando traduções em cache para o idioma ${idioma} (versão ${cachedVersion})`);
+        try {
+            const traducoes = JSON.parse(cachedTranslation);
+            aplicarTraducoes(traducoes, idioma);
+            return; // Saimos da função pois o cache foi aplicado com sucesso
+        } catch (error) {
+            console.error("Erro ao processar cache de traduções:", error);
+            // Caso ocorra erro no processamento do cache, continuamos para buscar as traduções do servidor
+        }
+    }
+
+    // Se o cache não for válido, busca traduções do servidor
+    console.log(`Buscando traduções do servidor para o idioma ${idioma}`);
     fetch(`i18n/${idioma}.json`)
         .then(response => {
             if (!response.ok) {
@@ -819,234 +856,295 @@ function traduzirPagina(idioma) {
         .then(traducoes => {
             console.log("Arquivo de tradução carregado com sucesso:", idioma);
 
-            // Título da página
-            document.title = traducoes.tituloDocumento;
-
-            // Meta descrição
-            const metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) metaDesc.setAttribute('content', traducoes.metaDescricao);
-
-            // Navegação
-            const links = document.querySelectorAll('nav.sidebar a');
-            if (links.length > 0) {
-                links[0].textContent = traducoes.nav.sobre;
-                links[1].textContent = traducoes.nav.experiencias;
-                links[2].textContent = traducoes.nav.portfolio;
-                links[3].textContent = traducoes.nav.servicos;
-                links[4].textContent = traducoes.nav.contato;
+            // Salvar traduções no cache
+            try {
+                localStorage.setItem(cacheKey, JSON.stringify(traducoes));
+                localStorage.setItem(cacheKeyVersao, CONFIG_CACHE.versao);
+                localStorage.setItem(cacheKeyData, Date.now().toString());
+                console.log(`Traduções para ${idioma} armazenadas em cache (versão ${CONFIG_CACHE.versao})`);
+            } catch (error) {
+                console.error("Erro ao salvar traduções em cache:", error);
+                // Limpando itens que possam estar ocupando espaço
+                limparCacheAntigo();
             }
 
-            // Cabeçalho
-            const header = document.querySelector('header');
-            if (header) {
-                const paragrafos = header.querySelectorAll('p');
-                if (paragrafos.length > 0) {
-                    paragrafos[0].textContent = traducoes.header.welcome;
-                    if (paragrafos.length > 1) {
-                        paragrafos[1].textContent = traducoes.header.role;
-                    }
-                }
-
-                const h1 = header.querySelector('h1');
-                if (h1) {
-                    h1.textContent = traducoes.header.name;
-                }
-            }
-
-            // Títulos de seções
-            const titulosSecoes = document.querySelectorAll('.titulo-section');
-            if (titulosSecoes.length > 0) {
-                titulosSecoes[0].textContent = traducoes.sobre;
-                if (titulosSecoes.length > 1) titulosSecoes[1].textContent = traducoes.experiencias;
-                if (titulosSecoes.length > 2) titulosSecoes[2].textContent = traducoes.portfolio;
-                if (titulosSecoes.length > 3) titulosSecoes[3].textContent = traducoes.servicos;
-                if (titulosSecoes.length > 4) titulosSecoes[4].textContent = traducoes.contato;
-            }
-
-            // Descrições de seções
-            const sobreDesc = document.querySelector('#sobre .conteudo-section > p');
-            if (sobreDesc) {
-                sobreDesc.textContent = traducoes.sobre_descricao;
-            }
-
-            const expDesc = document.querySelector('#experiencias .conteudo-section > p');
-            if (expDesc) {
-                expDesc.textContent = traducoes.experiencias_descricao;
-            }
-
-            const portfolioDesc = document.querySelector('#portfolio .conteudo-section > p');
-            if (portfolioDesc) {
-                portfolioDesc.textContent = traducoes.portfolio_descricao;
-            }
-
-            const servicosDesc = document.querySelector('#servicos .conteudo-section > p');
-            if (servicosDesc) {
-                servicosDesc.textContent = traducoes.servicos_descricao;
-            }
-
-            const contatoDesc = document.querySelector('#contato .conteudo-section > p');
-            if (contatoDesc) {
-                contatoDesc.textContent = traducoes.contato_descricao;
-            }
-
-            // Botões com data-i18n-botao - CORREÇÃO: Adicionando suporte para diferentes formatos de tradução
-            document.querySelectorAll('[data-i18n-botao]').forEach(botao => {
-                const chave = botao.getAttribute('data-i18n-botao');
-                const chaveBotao = chave.split('.').pop();
-
-                // Verificar se a chave existe na estrutura de traducoes.botoes
-                if (traducoes.botoes && traducoes.botoes[chaveBotao]) {
-                    // Verificar se o valor é um objeto (formato usado em outros idiomas)
-                    if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
-                        // Se for objeto, usar a propriedade "traducao"
-                        if (traducoes.botoes[chaveBotao].traducao) {
-                            botao.innerHTML = traducoes.botoes[chaveBotao].traducao;
-                            console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
-                        }
-                    } else {
-                        // Se for string direta (formato usado em português)
-                        botao.innerHTML = traducoes.botoes[chaveBotao];
-                        console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
-                    }
-                } else {
-                    console.warn(`Tradução não encontrada para o botão: ${chave}`);
-                }
-            });
-
-            // Elementos com atributo data-i18n
-            document.querySelectorAll('[data-i18n]').forEach(elemento => {
-                const chave = elemento.getAttribute('data-i18n');
-
-                // Navegar pela estrutura de chaves usando o caminho da chave
-                const caminhoChaves = chave.split('.');
-                let valor = traducoes;
-
-                // Percorrer caminho de chaves para encontrar o valor final
-                for (const key of caminhoChaves) {
-                    if (valor && valor[key] !== undefined) {
-                        valor = valor[key];
-                    } else {
-                        console.warn(`Chave de tradução não encontrada: ${chave}`);
-                        valor = null;
-                        break;
-                    }
-                }
-
-                // Se encontrou um valor e é uma string, aplicar tradução
-                if (valor !== null && typeof valor === 'string') {
-                    elemento.textContent = valor;
-                }
-                // Se for um objeto com propriedade "titulo" (para cards de serviços)
-                else if (valor !== null && typeof valor === 'object' && valor.titulo) {
-                    elemento.textContent = valor.titulo;
-                }
-            });
-
-            // Formulário de contato
-            document.querySelectorAll('[data-i18n^="formulario."]').forEach(elemento => {
-                const chave = elemento.getAttribute('data-i18n');
-                const partes = chave.split('.');
-                if (partes.length >= 2) {
-                    const campoFormulario = partes[1];
-                    if (traducoes.formulario && traducoes.formulario[campoFormulario]) {
-                        elemento.textContent = traducoes.formulario[campoFormulario];
-                    }
-                }
-            });
-
-            // Traduzir opções do select
-            document.querySelectorAll('option[data-i18n^="formulario."]').forEach(opcao => {
-                const chave = opcao.getAttribute('data-i18n');
-                const partes = chave.split('.');
-                if (partes.length >= 2) {
-                    const campoFormulario = partes[1];
-                    if (traducoes.formulario && traducoes.formulario[campoFormulario]) {
-                        opcao.textContent = traducoes.formulario[campoFormulario];
-                    }
-                }
-            });
-
-            // Cards de serviços
-            document.querySelectorAll('[data-i18n^="servicos_cards."]').forEach(elemento => {
-                const chave = elemento.getAttribute('data-i18n');
-                const partes = chave.split('.');
-                if (partes.length >= 3) {
-                    const cardServico = partes[1];
-                    const propriedade = partes[2];
-                    if (traducoes.servicos_cards &&
-                        traducoes.servicos_cards[cardServico] &&
-                        traducoes.servicos_cards[cardServico][propriedade]) {
-                        elemento.textContent = traducoes.servicos_cards[cardServico][propriedade];
-                    }
-                }
-            });
-
-            // Carregar projetos do idioma selecionado
-            if (traducoes.projetos) {
-                // Converter estrutura de projetos para o formato esperado
-                const projetosConvertidos = [];
-
-                Object.keys(traducoes.projetos).forEach(id => {
-                    const proj = traducoes.projetos[id];
-
-                    // Mapeamento correto das imagens baseado no ID do projeto
-                    let imagemPath;
-                    if (id.includes('vendas')) {
-                        imagemPath = 'img/vendas.jpg';
-                    } else if (id.includes('previsao_casas') || id.includes('casas')) {
-                        imagemPath = 'img/preços-casas.jpg';
-                    } else if (id.includes('rh')) {
-                        imagemPath = 'img/rh.jpg';
-                    } else {
-                        // Imagem padrão caso não encontre correspondência
-                        imagemPath = `img/${id}.jpg`;
-                    }
-
-                    projetosConvertidos.push({
-                        id: id,
-                        titulo: proj.titulo,
-                        imagem: imagemPath,
-                        alt: proj.alt,
-                        link: `https://github.com/mateus-mg/${id}`,
-                        descricao: proj.descricao,
-                        tecnologias: proj.tecnologias
-                    });
-                });
-
-                // Atualizar os projetos para o idioma atual
-                window.projetosPortfolio[idioma] = projetosConvertidos;
-
-                console.log(`${projetosConvertidos.length} projetos carregados para o idioma ${idioma}`);
-
-                // Renderizar projetos com o novo idioma
-                if (window.renderizarPortfolio) {
-                    console.log("Renderizando portfólio após tradução");
-                    window.renderizarPortfolio('avançar', 'navegacao');
-                } else {
-                    console.warn("Função renderizarPortfolio não encontrada, reinicializando portfólio");
-                    inicializarPortfolio();
-                }
-            } else {
-                console.warn("Nenhum projeto encontrado para o idioma:", idioma);
-            }
-
-            // Marcar o botão do idioma atual como ativo
-            document.querySelectorAll('.seletor-idioma').forEach(botao => {
-                const botaoIdioma = botao.getAttribute('data-idioma');
-                if (botaoIdioma === idioma) {
-                    botao.classList.add('ativo');
-                    console.log(`Botão de idioma ${idioma} marcado como ativo`);
-                } else {
-                    botao.classList.remove('ativo');
-                }
-            });
-
-            console.log("Tradução concluída para:", idioma);
+            // Aplicar traduções à página
+            aplicarTraducoes(traducoes, idioma);
         })
         .catch(error => {
             console.error('Erro ao traduzir a página:', error);
             alert(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
         });
+}
+
+// Função para limpar cache antigo quando o armazenamento estiver cheio
+function limparCacheAntigo() {
+    console.log("Limpando cache antigo para liberar espaço");
+
+    try {
+        // Coletar todas as chaves relacionadas a traduções
+        const chavesDeTradução = [];
+        const prefixo = `${CONFIG_CACHE.prefixoChave}traducao_`;
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const chave = localStorage.key(i);
+            if (chave && chave.startsWith(prefixo)) {
+                // Coletar informações para decidir o que remover
+                const idioma = chave.replace(prefixo, '').split('_')[0]; // Extrair o idioma
+                const data = localStorage.getItem(`${CONFIG_CACHE.prefixoChave}traducao_data_${idioma}`);
+
+                chavesDeTradução.push({
+                    chave,
+                    idioma,
+                    data: data ? parseInt(data) : 0
+                });
+            }
+        }
+
+        // Ordenar por data (mais antigas primeiro)
+        chavesDeTradução.sort((a, b) => a.data - b.data);
+
+        // Remover a metade mais antiga
+        const removerQuantidade = Math.ceil(chavesDeTradução.length / 2);
+        for (let i = 0; i < removerQuantidade && i < chavesDeTradução.length; i++) {
+            const item = chavesDeTradução[i];
+            localStorage.removeItem(item.chave); // Remover a tradução
+            localStorage.removeItem(`${CONFIG_CACHE.prefixoChave}traducao_versao_${item.idioma}`); // Remover a versão
+            localStorage.removeItem(`${CONFIG_CACHE.prefixoChave}traducao_data_${item.idioma}`); // Remover a data
+            console.log(`Cache removido: ${item.chave}`);
+        }
+
+        console.log(`${removerQuantidade} itens de cache antigos removidos`);
+    } catch (error) {
+        console.error("Erro ao limpar cache:", error);
+    }
+}
+
+// Função que aplica as traduções à página
+function aplicarTraducoes(traducoes, idioma) {
+    // Título da página
+    document.title = traducoes.tituloDocumento;
+
+    // Meta descrição
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', traducoes.metaDescricao);
+
+    // Navegação
+    const links = document.querySelectorAll('nav.sidebar a');
+    if (links.length > 0) {
+        links[0].textContent = traducoes.nav.sobre;
+        links[1].textContent = traducoes.nav.experiencias;
+        links[2].textContent = traducoes.nav.portfolio;
+        links[3].textContent = traducoes.nav.servicos;
+        links[4].textContent = traducoes.nav.contato;
+    }
+
+    // Cabeçalho
+    const header = document.querySelector('header');
+    if (header) {
+        const paragrafos = header.querySelectorAll('p');
+        if (paragrafos.length > 0) {
+            paragrafos[0].textContent = traducoes.header.welcome;
+            if (paragrafos.length > 1) {
+                paragrafos[1].textContent = traducoes.header.role;
+            }
+        }
+
+        const h1 = header.querySelector('h1');
+        if (h1) {
+            h1.textContent = traducoes.header.name;
+        }
+    }
+
+    // Títulos de seções
+    const titulosSecoes = document.querySelectorAll('.titulo-section');
+    if (titulosSecoes.length > 0) {
+        titulosSecoes[0].textContent = traducoes.sobre;
+        if (titulosSecoes.length > 1) titulosSecoes[1].textContent = traducoes.experiencias;
+        if (titulosSecoes.length > 2) titulosSecoes[2].textContent = traducoes.portfolio;
+        if (titulosSecoes.length > 3) titulosSecoes[3].textContent = traducoes.servicos;
+        if (titulosSecoes.length > 4) titulosSecoes[4].textContent = traducoes.contato;
+    }
+
+    // Descrições de seções
+    const sobreDesc = document.querySelector('#sobre .conteudo-section > p');
+    if (sobreDesc) {
+        sobreDesc.textContent = traducoes.sobre_descricao;
+    }
+
+    const expDesc = document.querySelector('#experiencias .conteudo-section > p');
+    if (expDesc) {
+        expDesc.textContent = traducoes.experiencias_descricao;
+    }
+
+    const portfolioDesc = document.querySelector('#portfolio .conteudo-section > p');
+    if (portfolioDesc) {
+        portfolioDesc.textContent = traducoes.portfolio_descricao;
+    }
+
+    const servicosDesc = document.querySelector('#servicos .conteudo-section > p');
+    if (servicosDesc) {
+        servicosDesc.textContent = traducoes.servicos_descricao;
+    }
+
+    const contatoDesc = document.querySelector('#contato .conteudo-section > p');
+    if (contatoDesc) {
+        contatoDesc.textContent = traducoes.contato_descricao;
+    }
+
+    // Botões com data-i18n-botao - CORREÇÃO: Adicionando suporte para diferentes formatos de tradução
+    document.querySelectorAll('[data-i18n-botao]').forEach(botao => {
+        const chave = botao.getAttribute('data-i18n-botao');
+        const chaveBotao = chave.split('.').pop();
+
+        // Verificar se a chave existe na estrutura de traducoes.botoes
+        if (traducoes.botoes && traducoes.botoes[chaveBotao]) {
+            // Verificar se o valor é um objeto (formato usado em outros idiomas)
+            if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
+                // Se for objeto, usar a propriedade "traducao"
+                if (traducoes.botoes[chaveBotao].traducao) {
+                    botao.innerHTML = traducoes.botoes[chaveBotao].traducao;
+                    console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
+                }
+            } else {
+                // Se for string direta (formato usado em português)
+                botao.innerHTML = traducoes.botoes[chaveBotao];
+                console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
+            }
+        } else {
+            console.warn(`Tradução não encontrada para o botão: ${chave}`);
+        }
+    });
+
+    // Elementos com atributo data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(elemento => {
+        const chave = elemento.getAttribute('data-i18n');
+
+        // Navegar pela estrutura de chaves usando o caminho da chave
+        const caminhoChaves = chave.split('.');
+        let valor = traducoes;
+
+        // Percorrer caminho de chaves para encontrar o valor final
+        for (const key of caminhoChaves) {
+            if (valor && valor[key] !== undefined) {
+                valor = valor[key];
+            } else {
+                console.warn(`Chave de tradução não encontrada: ${chave}`);
+                valor = null;
+                break;
+            }
+        }
+
+        // Se encontrou um valor e é uma string, aplicar tradução
+        if (valor !== null && typeof valor === 'string') {
+            elemento.textContent = valor;
+        }
+        // Se for um objeto com propriedade "titulo" (para cards de serviços)
+        else if (valor !== null && typeof valor === 'object' && valor.titulo) {
+            elemento.textContent = valor.titulo;
+        }
+    });
+
+    // Formulário de contato
+    document.querySelectorAll('[data-i18n^="formulario."]').forEach(elemento => {
+        const chave = elemento.getAttribute('data-i18n');
+        const partes = chave.split('.');
+        if (partes.length >= 2) {
+            const campoFormulario = partes[1];
+            if (traducoes.formulario && traducoes.formulario[campoFormulario]) {
+                elemento.textContent = traducoes.formulario[campoFormulario];
+            }
+        }
+    });
+
+    // Traduzir opções do select
+    document.querySelectorAll('option[data-i18n^="formulario."]').forEach(opcao => {
+        const chave = opcao.getAttribute('data-i18n');
+        const partes = chave.split('.');
+        if (partes.length >= 2) {
+            const campoFormulario = partes[1];
+            if (traducoes.formulario && traducoes.formulario[campoFormulario]) {
+                opcao.textContent = traducoes.formulario[campoFormulario];
+            }
+        }
+    });
+
+    // Cards de serviços
+    document.querySelectorAll('[data-i18n^="servicos_cards."]').forEach(elemento => {
+        const chave = elemento.getAttribute('data-i18n');
+        const partes = chave.split('.');
+        if (partes.length >= 3) {
+            const cardServico = partes[1];
+            const propriedade = partes[2];
+            if (traducoes.servicos_cards &&
+                traducoes.servicos_cards[cardServico] &&
+                traducoes.servicos_cards[cardServico][propriedade]) {
+                elemento.textContent = traducoes.servicos_cards[cardServico][propriedade];
+            }
+        }
+    });
+
+    // Carregar projetos do idioma selecionado
+    if (traducoes.projetos) {
+        // Converter estrutura de projetos para o formato esperado
+        const projetosConvertidos = [];
+
+        Object.keys(traducoes.projetos).forEach(id => {
+            const proj = traducoes.projetos[id];
+
+            // Mapeamento correto das imagens baseado no ID do projeto
+            let imagemPath;
+            if (id.includes('vendas')) {
+                imagemPath = 'img/vendas.jpg';
+            } else if (id.includes('previsao_casas') || id.includes('casas')) {
+                imagemPath = 'img/preços-casas.jpg';
+            } else if (id.includes('rh')) {
+                imagemPath = 'img/rh.jpg';
+            } else {
+                // Imagem padrão caso não encontre correspondência
+                imagemPath = `img/${id}.jpg`;
+            }
+
+            projetosConvertidos.push({
+                id: id,
+                titulo: proj.titulo,
+                imagem: imagemPath,
+                alt: proj.alt,
+                link: `https://github.com/mateus-mg/${id}`,
+                descricao: proj.descricao,
+                tecnologias: proj.tecnologias
+            });
+        });
+
+        // Atualizar os projetos para o idioma atual
+        window.projetosPortfolio[idioma] = projetosConvertidos;
+
+        console.log(`${projetosConvertidos.length} projetos carregados para o idioma ${idioma}`);
+
+        // Renderizar projetos com o novo idioma
+        if (window.renderizarPortfolio) {
+            console.log("Renderizando portfólio após tradução");
+            window.renderizarPortfolio('avançar', 'navegacao');
+        } else {
+            console.warn("Função renderizarPortfolio não encontrada, reinicializando portfólio");
+            inicializarPortfolio();
+        }
+    } else {
+        console.warn("Nenhum projeto encontrado para o idioma:", idioma);
+    }
+
+    // Marcar o botão do idioma atual como ativo
+    document.querySelectorAll('.seletor-idioma').forEach(botao => {
+        const botaoIdioma = botao.getAttribute('data-idioma');
+        if (botaoIdioma === idioma) {
+            botao.classList.add('ativo');
+            console.log(`Botão de idioma ${idioma} marcado como ativo`);
+        } else {
+            botao.classList.remove('ativo');
+        }
+    });
+
+    console.log("Tradução concluída para:", idioma);
 }
 
 // Função para configurar o formulário de contato e feedback

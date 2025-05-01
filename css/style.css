@@ -14,7 +14,7 @@
     /* Neve acinzentada */
 }
 
-/* Animações para seções */
+/* Animações para seções - melhoradas para usar transform */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -64,6 +64,7 @@ section {
     transform: translateY(20px);
     /* Garantir que as seções sejam visíveis após um determinado tempo, mesmo sem JavaScript */
     animation: forcaVisibilidade 0s 1s forwards;
+    will-change: opacity, transform;
 }
 
 section.visivel {
@@ -516,6 +517,7 @@ footer a {
     }
 }
 
+/* Otimização da transição dos cards de portfólio */
 .portfolio-card {
     background-color: var(--cor-secundaria);
     border-radius: 10px;
@@ -528,12 +530,13 @@ footer a {
     position: relative;
     z-index: 1;
     will-change: transform, box-shadow;
-    /* Minimiza repaints durante animações */
     contain: layout paint style;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .portfolio-card:hover {
-    transform: scale(1.03) translateY(-3px);
+    transform: translateY(-3px) scale(1.02);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
     z-index: 2;
 }
@@ -784,7 +787,9 @@ picture source {
     padding: 12px 24px;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+        background-color 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+        box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -793,6 +798,10 @@ picture source {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     min-width: 120px;
     justify-content: center;
+    will-change: transform, background-color, box-shadow;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .portfolio-nav-btn::before {
@@ -805,22 +814,13 @@ picture source {
     background: rgba(255, 255, 255, 0.15);
     transform: translateX(-100%);
     transition: transform 0.5s ease-out;
+    will-change: transform, opacity;
 }
 
 .portfolio-nav-btn:hover:not(:disabled) {
     background-color: var(--cor-primaria);
     transform: translateY(-3px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-}
-
-.portfolio-nav-btn:hover:not(:disabled)::before {
-    transform: translateX(0);
-    opacity: 0.5;
-}
-
-.portfolio-nav-btn:active:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .portfolio-nav-btn:disabled {
@@ -943,6 +943,7 @@ picture source {
     }
 }
 
+/* Melhoria nas transições do card de serviço */
 .servico-card {
     background-color: var(--cor-texto-claro);
     border-radius: 12px;
@@ -958,10 +959,12 @@ picture source {
     position: relative;
     z-index: 1;
     will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .servico-card:hover {
-    transform: scale(1.03);
+    transform: translateY(-3px) scale(1.02);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     z-index: 2;
 }
@@ -974,6 +977,7 @@ picture source {
     backface-visibility: hidden;
 }
 
+/* Melhorias no ícone de serviço para usar transform */
 .servico-icone {
     width: 65px;
     height: 65px;
@@ -986,21 +990,12 @@ picture source {
     color: var(--cor-texto-claro);
     font-size: 1.8rem;
     transition: transform 0.3s, background-color 0.3s;
+    will-change: transform, background-color;
 }
 
-.servico-titulo {
-    color: var(--cor-primaria);
-    font-size: 1.15rem;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.servico-descricao {
-    color: var(--cor-secundaria);
-    font-size: 0.9rem;
-    line-height: 1.5;
-    flex-grow: 1;
+.servico-card:hover .servico-icone {
+    transform: translateY(-5px) scale(1.1);
+    background-color: var(--cor-primaria);
 }
 
 /* Responsividade para seção de serviços */
@@ -1256,12 +1251,17 @@ picture source {
     overflow: hidden;
     opacity: 0;
     transform: translateY(-20px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+        transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+        visibility 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     pointer-events: none;
     display: block;
     visibility: hidden;
     list-style: none;
     padding: 0;
+    will-change: transform, opacity, visibility;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .menu-idiomas.ativo {
@@ -1832,4 +1832,13 @@ header.imagem-carregada::after {
     .bio-texto p {
         text-align: center;
     }
+}
+
+/* Classe para melhorar animações do site */
+.smooth-animate {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.2, 0, 0.2, 1);
 }

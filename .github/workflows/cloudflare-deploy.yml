@@ -24,14 +24,14 @@ jobs:
       - name: Build site
         run: npm run build
       
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: mateusmg
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          # Garante que o deploy seja feito mesmo em caso de erros não críticos
-          wranglerVersion: '3'
-          branch: main
+      - name: Install Wrangler
+        run: npm install -g wrangler
+      
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Deploy diretamente com Wrangler em vez de usar a Action
+          echo "Deploying to Cloudflare Pages..."
+          wrangler pages publish dist --project-name mateusmg --commit-message "Deploy from GitHub Actions" --branch main

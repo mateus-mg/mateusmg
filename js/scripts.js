@@ -661,6 +661,11 @@ function inicializarPortfolio() {
                                 };
                             }
                         }
+                        
+                        // Adicionar o card ao container
+                        domCache.portfolioContainer.appendChild(card);
+                    });
+                    
                     // Remover a classe de transição e configurar o estado de entrada
                     domCache.portfolioContainer.classList.remove('portfolio-transitioning');
                     domCache.portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);
@@ -995,9 +1000,13 @@ function aplicarTraducoes(traducoes, idioma) {
     // Botões com data-i18n-botao - CORREÇÃO: Adicionando suporte para diferentes formatos de tradução
     document.querySelectorAll('[data-i18n-botao]').forEach(botao => {
         const chave = botao.getAttribute('data-i18n-botao');
-        const chaveBotao = chave.split('.').pop();
+        // Extrair a parte após o ponto (ex: de "botoes.sobreMim" extrai "sobreMim")
+        const partes = chave.split('.');
+        const chaveBotao = partes.length > 1 ? partes[partes.length - 1] : chave;
 
-        // Verificar se a chave existe na estrutura de traducoes.botoes
+        console.log(`Processando botão com chave: ${chave}, chaveBotao extraída: ${chaveBotao}`);
+
+        // Verificar se a chave existe na estrutura de traducoes.botoes (respeitando case-sensitivity)
         if (traducoes.botoes && traducoes.botoes[chaveBotao]) {
             // Verificar se o valor é um objeto (formato usado em outros idiomas)
             if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
@@ -1012,7 +1021,25 @@ function aplicarTraducoes(traducoes, idioma) {
                 console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
             }
         } else {
-            console.warn(`Tradução não encontrada para o botão: ${chave}`);
+            // Tentar buscar a tradução usando toLowerCase para compatibilidade com versões anteriores
+            const chaveLowercase = chaveBotao.toLowerCase();
+            
+            // Procurar uma chave correspondente ignorando maiúsculas/minúsculas
+            const chaveEquivalente = Object.keys(traducoes.botoes || {}).find(
+                k => k.toLowerCase() === chaveLowercase
+            );
+            
+            if (chaveEquivalente) {
+                // Encontrou uma chave equivalente, usar esse valor
+                if (typeof traducoes.botoes[chaveEquivalente] === 'object') {
+                    botao.innerHTML = traducoes.botoes[chaveEquivalente].traducao || '';
+                } else {
+                    botao.innerHTML = traducoes.botoes[chaveEquivalente];
+                }
+                console.log(`Botão ${chave} traduzido usando chave equivalente: ${chaveEquivalente}`);
+            } else {
+                console.warn(`Tradução não encontrada para o botão: ${chave}`);
+            }
         }
     });
 

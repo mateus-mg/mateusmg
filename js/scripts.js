@@ -810,6 +810,103 @@ function inicializarPortfolio() {
     console.log("Inicialização do portfólio concluída");
 }
 
+// Código para o sistema de navegação das subseções de experiências
+document.addEventListener('DOMContentLoaded', function () {
+    // Configuração do sistema de navegação para as experiências
+    const setupExperienciaNavegacao = (containerId) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const paginas = container.querySelectorAll('.experiencia-pagina');
+        const totalPaginas = paginas.length;
+        const btnAnterior = document.querySelector(`.experiencia-nav-btn.anterior[data-target="${containerId}"]`);
+        const btnProximo = document.querySelector(`.experiencia-nav-btn.proximo[data-target="${containerId}"]`);
+
+        let paginaAtual = 1;
+
+        // Inicializar páginas e garantir que apenas a primeira esteja visível
+        paginas.forEach((pagina, index) => {
+            if (index === 0) {
+                pagina.classList.add('ativo');
+                pagina.style.display = 'block';
+                pagina.style.opacity = '1';
+                pagina.style.transform = 'translateX(0)';
+            } else {
+                pagina.classList.remove('ativo');
+                pagina.style.display = 'none';
+                pagina.style.opacity = '0';
+            }
+        });
+
+        // Função para atualizar os botões
+        const atualizarBotoes = () => {
+            if (btnAnterior) btnAnterior.disabled = paginaAtual === 1;
+            if (btnProximo) btnProximo.disabled = paginaAtual === totalPaginas;
+        };
+
+        // Função para navegar para uma página específica
+        const navegarPara = (pagina) => {
+            if (pagina < 1 || pagina > totalPaginas || pagina === paginaAtual) return;
+
+            const direcao = pagina > paginaAtual ? 'proximo' : 'anterior';
+            const paginaAnteriorEl = container.querySelector(`.experiencia-pagina[data-pagina="${paginaAtual}"]`);
+            const proximaPaginaEl = container.querySelector(`.experiencia-pagina[data-pagina="${pagina}"]`);
+
+            if (!paginaAnteriorEl || !proximaPaginaEl) return;
+
+            // Esconder a página atual com fade-out
+            paginaAnteriorEl.style.opacity = '0';
+            paginaAnteriorEl.style.transform = direcao === 'proximo' ? 'translateX(-30px)' : 'translateX(30px)';
+
+            // Aguardar a animação de saída terminar
+            setTimeout(() => {
+                // Remover a página anterior da visualização
+                paginaAnteriorEl.classList.remove('ativo');
+                paginaAnteriorEl.style.display = 'none';
+
+                // Preparar a próxima página para entrada
+                proximaPaginaEl.style.display = 'block';
+                proximaPaginaEl.style.opacity = '0';
+                proximaPaginaEl.style.transform = direcao === 'proximo' ? 'translateX(30px)' : 'translateX(-30px)';
+
+                // Forçar reflow para garantir que a transição ocorra
+                void proximaPaginaEl.offsetWidth;
+
+                // Mostrar a nova página com fade-in
+                proximaPaginaEl.style.opacity = '1';
+                proximaPaginaEl.style.transform = 'translateX(0)';
+
+                // Atualizar a página atual e os botões
+                paginaAtual = pagina;
+                atualizarBotoes();
+
+                // Adicionar classe ativo após a animação
+                proximaPaginaEl.classList.add('ativo');
+            }, 300); // Tempo para completar a animação de saída
+        };
+
+        // Configura os event listeners para os botões
+        if (btnAnterior) {
+            btnAnterior.addEventListener('click', () => {
+                navegarPara(paginaAtual - 1);
+            });
+        }
+
+        if (btnProximo) {
+            btnProximo.addEventListener('click', () => {
+                navegarPara(paginaAtual + 1);
+            });
+        }
+
+        // Inicializa o estado dos botões
+        atualizarBotoes();
+    };
+
+    // Configura a navegação para cada container
+    setupExperienciaNavegacao('formacoes-container');
+    setupExperienciaNavegacao('cursos-container');
+});
+
 // Função de tradução completa
 function traduzirPagina(idioma) {
     console.log("Traduzindo página para:", idioma);

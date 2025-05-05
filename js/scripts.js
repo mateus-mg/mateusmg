@@ -66,7 +66,7 @@ const handlers = {
         // Não usar aria-hidden em elementos com conteúdo focável
         // Em vez disso, usar aria-expanded para indicar estado
         domCache.toggleButton.setAttribute('aria-expanded', isOpen);
-        
+
         // Adicionar aria-label para leitores de tela
         domCache.sidebar.setAttribute('aria-label', isOpen ? 'Menu de navegação aberto' : 'Menu de navegação fechado');
 
@@ -661,11 +661,11 @@ function inicializarPortfolio() {
                                 };
                             }
                         }
-                        
+
                         // Adicionar o card ao container
                         domCache.portfolioContainer.appendChild(card);
                     });
-                    
+
                     // Remover a classe de transição e configurar o estado de entrada
                     domCache.portfolioContainer.classList.remove('portfolio-transitioning');
                     domCache.portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);
@@ -937,7 +937,7 @@ function aplicarTraducoes(traducoes, idioma) {
     // Navegação
     const links = document.querySelectorAll('nav.sidebar a');
     if (links.length > 0) {
-        links[0].textContent = traducoes.nav.sobre;
+        links[0].textContent = traducoes.nav.sobreMim;
         links[1].textContent = traducoes.nav.experiencias;
         links[2].textContent = traducoes.nav.portfolio;
         links[3].textContent = traducoes.nav.servicos;
@@ -997,7 +997,7 @@ function aplicarTraducoes(traducoes, idioma) {
         contatoDesc.textContent = traducoes.contato_descricao;
     }
 
-    // Botões com data-i18n-botao - CORREÇÃO: Adicionando suporte para diferentes formatos de tradução
+    // Botões com data-i18n-botao
     document.querySelectorAll('[data-i18n-botao]').forEach(botao => {
         const chave = botao.getAttribute('data-i18n-botao');
         // Extrair a parte após o ponto (ex: de "botoes.sobreMim" extrai "sobreMim")
@@ -1006,40 +1006,43 @@ function aplicarTraducoes(traducoes, idioma) {
 
         console.log(`Processando botão com chave: ${chave}, chaveBotao extraída: ${chaveBotao}`);
 
-        // Verificar se a chave existe na estrutura de traducoes.botoes (respeitando case-sensitivity)
-        if (traducoes.botoes && traducoes.botoes[chaveBotao]) {
-            // Verificar se o valor é um objeto (formato usado em outros idiomas)
-            if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
-                // Se for objeto, usar a propriedade "traducao"
-                if (traducoes.botoes[chaveBotao].traducao) {
-                    botao.innerHTML = traducoes.botoes[chaveBotao].traducao;
-                    console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
+        // Verificar se o objeto botoes existe
+        if (traducoes.botoes) {
+            // Verificar se a chave existe diretamente no objeto botoes
+            if (traducoes.botoes[chaveBotao] !== undefined) {
+                // Verificar se o valor é um objeto (formato usado em outros idiomas) ou uma string direta
+                if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
+                    // Se for objeto, usar a propriedade "traducao"
+                    if (traducoes.botoes[chaveBotao].traducao) {
+                        botao.innerHTML = traducoes.botoes[chaveBotao].traducao;
+                        console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
+                    }
+                } else {
+                    // Se for string direta (formato usado em português)
+                    botao.innerHTML = traducoes.botoes[chaveBotao];
+                    console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
                 }
             } else {
-                // Se for string direta (formato usado em português)
-                botao.innerHTML = traducoes.botoes[chaveBotao];
-                console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
+                // Buscar ignorando case sensitivity
+                const chaveEncontrada = Object.keys(traducoes.botoes).find(
+                    k => k.toLowerCase() === chaveBotao.toLowerCase()
+                );
+
+                if (chaveEncontrada) {
+                    // Verificar o formato da tradução encontrada
+                    if (typeof traducoes.botoes[chaveEncontrada] === 'object' && traducoes.botoes[chaveEncontrada] !== null) {
+                        botao.innerHTML = traducoes.botoes[chaveEncontrada].traducao || '';
+                        console.log(`Botão ${chave} traduzido usando case-insensitive match (formato objeto): ${chaveEncontrada}`);
+                    } else {
+                        botao.innerHTML = traducoes.botoes[chaveEncontrada];
+                        console.log(`Botão ${chave} traduzido usando case-insensitive match (formato string): ${chaveEncontrada}`);
+                    }
+                } else {
+                    console.warn(`Tradução não encontrada para o botão: ${chave}`);
+                }
             }
         } else {
-            // Tentar buscar a tradução usando toLowerCase para compatibilidade com versões anteriores
-            const chaveLowercase = chaveBotao.toLowerCase();
-            
-            // Procurar uma chave correspondente ignorando maiúsculas/minúsculas
-            const chaveEquivalente = Object.keys(traducoes.botoes || {}).find(
-                k => k.toLowerCase() === chaveLowercase
-            );
-            
-            if (chaveEquivalente) {
-                // Encontrou uma chave equivalente, usar esse valor
-                if (typeof traducoes.botoes[chaveEquivalente] === 'object') {
-                    botao.innerHTML = traducoes.botoes[chaveEquivalente].traducao || '';
-                } else {
-                    botao.innerHTML = traducoes.botoes[chaveEquivalente];
-                }
-                console.log(`Botão ${chave} traduzido usando chave equivalente: ${chaveEquivalente}`);
-            } else {
-                console.warn(`Tradução não encontrada para o botão: ${chave}`);
-            }
+            console.warn("Objeto 'botoes' não encontrado nas traduções.");
         }
     });
 

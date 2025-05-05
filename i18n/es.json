@@ -24,6 +24,10 @@
     "servicos_descricao": "Ofrezco soluciones completas de análisis de datos para tu negocio:",
     "contato_descricao": "¡Habla conmigo! Será un honor poder ayudarte.",
     "botoes": {
+        "sobreMim": {
+            "original": "SOBRE MIM <span class=\"seta\">▼</span>",
+            "traducao": "SOBRE MÍ <span class=\"seta\">▼</span>"
+        },
         "faleComigo": {
             "original": "Fale Comigo",
             "traducao": "Contáctame"

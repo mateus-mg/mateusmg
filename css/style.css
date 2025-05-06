@@ -338,6 +338,55 @@ header p {
     transform: scale(1.12);
 }
 
+/* Estilos para os ícones do banner no footer do header */
+.header-icons-bottom {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    /* Aumentei o espaçamento entre os ícones */
+    z-index: 5;
+}
+
+.header-icons-bottom .icon-link {
+    color: var(--cor-texto-claro);
+    font-size: 2.2em;
+    /* Aumentei o tamanho da fonte dos ícones */
+    transition: color 0.25s, transform 0.25s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    /* Removi width, height, border-radius, background-color e backdrop-filter */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Mantive uma sombra mais leve */
+}
+
+.header-icons-bottom .icon-link:hover {
+    color: var(--cor-destaque);
+    transform: translateY(-5px) scale(1.15);
+    /* Mantive o efeito hover com escala um pouco maior */
+    /* Removi background-color */
+}
+
+/* Responsividade para os ícones do banner em dispositivos móveis */
+@media (max-width: 768px) {
+    .header-icons-bottom {
+        bottom: 20px;
+        gap: 22px;
+        /* Ajustei o espaçamento para mobile */
+    }
+
+    .header-icons-bottom .icon-link {
+        font-size: 1.8em;
+        /* Ajustei o tamanho para mobile, mas ainda maior que o anterior */
+        /* Removi width e height */
+    }
+}
+
 section {
     padding: 60px 20px;
     background-color: var(--cor-fundo-claro);

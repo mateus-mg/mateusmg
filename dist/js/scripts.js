@@ -600,7 +600,7 @@ function inicializarPortfolio() {
                             `<span class="portfolio-tag">${tech}</span>`
                         ).join('');
 
-                        // WebP path com suporte para diferentes tamanhos
+                        // WebP path with support for different tamanhos
                         const imagemBase = projeto.imagem.replace(/\.(jpg|jpeg|png|gif)$/, '');
                         const webpBase = imagemBase.replace('img/', 'img/webp/') + '.webp';
                         const originalBase = projeto.imagem;
@@ -809,711 +809,90 @@ function inicializarPortfolio() {
 function traduzirPagina(idioma) {
     console.log("Traduzindo página para:", idioma);
 
-    // Salvar o idioma selecionado no localStorage com controle de versão
-    localStorage.setItem('idioma', idioma);
-    localStorage.setItem('idioma_versao', CONFIG_CACHE.versao);
-    localStorage.setItem('idioma_data', Date.now().toString());
+    // Usar o sistema de internacionalização centralizado
+    window.alterarIdioma(idioma).then(sucesso => {
+        if (sucesso) {
+            // Atualizar o idioma atual dos projetos
+            idiomaAtualProjetos = idioma;
 
-    // Atualizar o idioma atual dos projetos
-    idiomaAtualProjetos = idioma;
+            // Carregar projetos do idioma selecionado
+            carregarProjetosPorIdioma(idioma);
 
-    // Verificar cache da tradução
-    const cacheKey = `${CONFIG_CACHE.prefixoChave}traducao_${idioma}`;
-    const cacheKeyVersao = `${CONFIG_CACHE.prefixoChave}traducao_versao_${idioma}`;
-    const cacheKeyData = `${CONFIG_CACHE.prefixoChave}traducao_data_${idioma}`;
-
-    const cachedVersion = localStorage.getItem(cacheKeyVersao);
-    const cachedDate = localStorage.getItem(cacheKeyData);
-    const cachedTranslation = localStorage.getItem(cacheKey);
-
-    // Verificar se o cache está válido baseado na versão e na data
-    const isCacheValid = cachedVersion === CONFIG_CACHE.versao &&
-        cachedDate &&
-        (Date.now() - parseInt(cachedDate)) < CONFIG_CACHE.tempoExpiracaoCache &&
-        cachedTranslation;
-
-    if (isCacheValid) {
-        console.log(`Usando traduções em cache para o idioma ${idioma} (versão ${cachedVersion})`);
-        try {
-            const traducoes = JSON.parse(cachedTranslation);
-            aplicarTraducoes(traducoes, idioma);
-            return; // Saimos da função pois o cache foi aplicado com sucesso
-        } catch (error) {
-            console.error("Erro ao processar cache de traduções:", error);
-            // Caso ocorra erro no processamento do cache, continuamos para buscar as traduções do servidor
-        }
-    }
-
-    // Se o cache não for válido, busca traduções do servidor
-    console.log(`Buscando traduções do servidor para o idioma ${idioma}`);
-    fetch(`i18n/${idioma}.json`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erro ao carregar arquivo de tradução: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(traducoes => {
-            console.log("Arquivo de tradução carregado com sucesso:", idioma);
-
-            // Salvar traduções no cache
-            try {
-                localStorage.setItem(cacheKey, JSON.stringify(traducoes));
-                localStorage.setItem(cacheKeyVersao, CONFIG_CACHE.versao);
-                localStorage.setItem(cacheKeyData, Date.now().toString());
-                console.log(`Traduções para ${idioma} armazenadas em cache (versão ${CONFIG_CACHE.versao})`);
-            } catch (error) {
-                console.error("Erro ao salvar traduções em cache:", error);
-                // Limpando itens que possam estar ocupando espaço
-                limparCacheAntigo();
-            }
-
-            // Aplicar traduções à página
-            aplicarTraducoes(traducoes, idioma);
-        })
-        .catch(error => {
-            console.error('Erro ao traduzir a página:', error);
+            // Marcar o botão do idioma atual como ativo
+            document.querySelectorAll('.seletor-idioma').forEach(botao => {
+                const botaoIdioma = botao.getAttribute('data-idioma');
+                botao.classList.toggle('ativo', botaoIdioma === idioma);
+            });
+        } else {
+            console.error(`Falha ao alterar para o idioma: ${idioma}`);
             alert(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
-        });
+        }
+    });
 }
 
-// Função para limpar cache antigo quando o armazenamento estiver cheio
-function limparCacheAntigo() {
-    console.log("Limpando cache antigo para liberar espaço");
-
+// Nova função para carregar e renderizar projetos por idioma
+async function carregarProjetosPorIdioma(idioma) {
     try {
-        // Coletar todas as chaves relacionadas a traduções
-        const chavesDeTradução = [];
-        const prefixo = `${CONFIG_CACHE.prefixoChave}traducao_`;
+        // Verificar se as traduções estão carregadas
+        if (!window.i18n.traducoes[idioma] || !window.i18n.traducoes[idioma].projetos) {
+            // Carregar traduções se necessário
+            await window.i18n.carregarTraducoes(idioma);
+        }
 
-        for (let i = 0; i < localStorage.length; i++) {
-            const chave = localStorage.key(i);
-            if (chave && chave.startsWith(prefixo)) {
-                // Coletar informações para decidir o que remover
-                const idioma = chave.replace(prefixo, '').split('_')[0]; // Extrair o idioma
-                const data = localStorage.getItem(`${CONFIG_CACHE.prefixoChave}traducao_data_${idioma}`);
+        const traducoes = window.i18n.traducoes[idioma];
 
-                chavesDeTradução.push({
-                    chave,
-                    idioma,
-                    data: data ? parseInt(data) : 0
+        if (traducoes && traducoes.projetos) {
+            // Converter estrutura de projetos para o formato esperado
+            const projetosConvertidos = [];
+
+            Object.keys(traducoes.projetos).forEach(id => {
+                const proj = traducoes.projetos[id];
+
+                // Mapeamento correto das imagens baseado no ID do projeto
+                let imagemPath;
+                if (id.includes('vendas')) {
+                    imagemPath = 'img/vendas.jpg';
+                } else if (id.includes('previsao_casas') || id.includes('casas')) {
+                    imagemPath = 'img/preços-casas.jpg';
+                } else if (id.includes('rh')) {
+                    imagemPath = 'img/rh.jpg';
+                } else {
+                    // Imagem padrão caso não encontre correspondência
+                    imagemPath = `img/${id}.jpg`;
+                }
+
+                projetosConvertidos.push({
+                    id: id,
+                    titulo: proj.titulo,
+                    imagem: imagemPath,
+                    alt: proj.alt,
+                    link: `https://github.com/mateus-mg/${id}`,
+                    descricao: proj.descricao,
+                    tecnologias: proj.tecnologias
                 });
+            });
+
+            // Atualizar os projetos para o idioma atual
+            window.projetosPortfolio[idioma] = projetosConvertidos;
+
+            console.log(`${projetosConvertidos.length} projetos carregados para o idioma ${idioma}`);
+
+            // Renderizar projetos com o novo idioma
+            if (window.renderizarPortfolio) {
+                console.log("Renderizando portfólio após tradução");
+                window.renderizarPortfolio('avançar', 'navegacao');
+            } else {
+                console.warn("Função renderizarPortfolio não encontrada, reinicializando portfólio");
+                inicializarPortfolio();
             }
+        } else {
+            console.warn("Nenhum projeto encontrado para o idioma:", idioma);
         }
-
-        // Ordenar por data (mais antigas primeiro)
-        chavesDeTradução.sort((a, b) => a.data - b.data);
-
-        // Remover a metade mais antiga
-        const removerQuantidade = Math.ceil(chavesDeTradução.length / 2);
-        for (let i = 0; i < removerQuantidade && i < chavesDeTradução.length; i++) {
-            const item = chavesDeTradução[i];
-            localStorage.removeItem(item.chave); // Remover a tradução
-            localStorage.removeItem(`${CONFIG_CACHE.prefixoChave}traducao_versao_${item.idioma}`); // Remover a versão
-            localStorage.removeItem(`${CONFIG_CACHE.prefixoChave}traducao_data_${item.idioma}`); // Remover a data
-            console.log(`Cache removido: ${item.chave}`);
-        }
-
-        console.log(`${removerQuantidade} itens de cache antigos removidos`);
     } catch (error) {
-        console.error("Erro ao limpar cache:", error);
+        console.error("Erro ao carregar projetos para o idioma:", idioma, error);
     }
 }
 
-// Função que aplica as traduções à página
-function aplicarTraducoes(traducoes, idioma) {
-    // Título da página
-    document.title = traducoes.tituloDocumento;
-
-    // Meta descrição
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', traducoes.metaDescricao);
-
-    // Navegação
-    const links = document.querySelectorAll('nav.sidebar a');
-    if (links.length > 0) {
-        links[0].textContent = traducoes.nav.sobre;
-        links[1].textContent = traducoes.nav.experiencias;
-        links[2].textContent = traducoes.nav.portfolio;
-        links[3].textContent = traducoes.nav.servicos;
-        links[4].textContent = traducoes.nav.contato;
-    }
-
-    // Cabeçalho
-    const header = document.querySelector('header');
-    if (header) {
-        const paragrafos = header.querySelectorAll('p');
-        if (paragrafos.length > 0) {
-            paragrafos[0].textContent = traducoes.header.welcome;
-            if (paragrafos.length > 1) {
-                paragrafos[1].textContent = traducoes.header.role;
-            }
-        }
-
-        const h1 = header.querySelector('h1');
-        if (h1) {
-            h1.textContent = traducoes.header.name;
-        }
-    }
-
-    // Títulos de seções
-    const titulosSecoes = document.querySelectorAll('.titulo-section');
-    if (titulosSecoes.length > 0) {
-        titulosSecoes[0].textContent = traducoes.sobre;
-        if (titulosSecoes.length > 1) titulosSecoes[1].textContent = traducoes.experiencias;
-        if (titulosSecoes.length > 2) titulosSecoes[2].textContent = traducoes.portfolio;
-        if (titulosSecoes.length > 3) titulosSecoes[3].textContent = traducoes.servicos;
-        if (titulosSecoes.length > 4) titulosSecoes[4].textContent = traducoes.contato;
-    }
-
-    // Descrições de seções
-    const sobreDesc = document.querySelector('#sobre .conteudo-section > p');
-    if (sobreDesc) {
-        sobreDesc.textContent = traducoes.sobre_descricao;
-    }
-
-    const expDesc = document.querySelector('#experiencias .conteudo-section > p');
-    if (expDesc) {
-        expDesc.textContent = traducoes.experiencias_descricao;
-    }
-
-    const portfolioDesc = document.querySelector('#portfolio .conteudo-section > p');
-    if (portfolioDesc) {
-        portfolioDesc.textContent = traducoes.portfolio_descricao;
-    }
-
-    const servicosDesc = document.querySelector('#servicos .conteudo-section > p');
-    if (servicosDesc) {
-        servicosDesc.textContent = traducoes.servicos_descricao;
-    }
-
-    const contatoDesc = document.querySelector('#contato .conteudo-section > p');
-    if (contatoDesc) {
-        contatoDesc.textContent = traducoes.contato_descricao;
-    }
-
-    // Botões com data-i18n-botao - CORREÇÃO: Adicionando suporte para diferentes formatos de tradução
-    document.querySelectorAll('[data-i18n-botao]').forEach(botao => {
-        const chave = botao.getAttribute('data-i18n-botao');
-        const chaveBotao = chave.split('.').pop();
-
-        // Verificar se a chave existe na estrutura de traducoes.botoes
-        if (traducoes.botoes && traducoes.botoes[chaveBotao]) {
-            // Verificar se o valor é um objeto (formato usado em outros idiomas)
-            if (typeof traducoes.botoes[chaveBotao] === 'object' && traducoes.botoes[chaveBotao] !== null) {
-                // Se for objeto, usar a propriedade "traducao"
-                if (traducoes.botoes[chaveBotao].traducao) {
-                    botao.innerHTML = traducoes.botoes[chaveBotao].traducao;
-                    console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao].traducao} (formato objeto)`);
-                }
-            } else {
-                // Se for string direta (formato usado em português)
-                botao.innerHTML = traducoes.botoes[chaveBotao];
-                console.log(`Botão ${chave} traduzido para: ${traducoes.botoes[chaveBotao]} (formato string)`);
-            }
-        } else {
-            console.warn(`Tradução não encontrada para o botão: ${chave}`);
-        }
-    });
-
-    // Elementos com atributo data-i18n
-    document.querySelectorAll('[data-i18n]').forEach(elemento => {
-        const chave = elemento.getAttribute('data-i18n');
-
-        // Navegar pela estrutura de chaves usando o caminho da chave
-        const caminhoChaves = chave.split('.');
-        let valor = traducoes;
-
-        // Percorrer caminho de chaves para encontrar o valor final
-        for (const key of caminhoChaves) {
-            if (valor && valor[key] !== undefined) {
-                valor = valor[key];
-            } else {
-                console.warn(`Chave de tradução não encontrada: ${chave}`);
-                valor = null;
-                break;
-            }
-        }
-
-        // Se encontrou um valor e é uma string, aplicar tradução
-        if (valor !== null && typeof valor === 'string') {
-            elemento.textContent = valor;
-        }
-        // Se for um objeto com propriedade "titulo" (para cards de serviços)
-        else if (valor !== null && typeof valor === 'object' && valor.titulo) {
-            elemento.textContent = valor.titulo;
-        }
-    });
-
-    // Formulário de contato
-    document.querySelectorAll('[data-i18n^="formulario."]').forEach(elemento => {
-        const chave = elemento.getAttribute('data-i18n');
-        const partes = chave.split('.');
-        if (partes.length >= 2) {
-            const campoFormulario = partes[1];
-            if (traducoes.formulario && traducoes.formulario[campoFormulario]) {
-                elemento.textContent = traducoes.formulario[campoFormulario];
-            }
-        }
-    });
-
-    // Traduzir opções do select
-    document.querySelectorAll('option[data-i18n^="formulario."]').forEach(opcao => {
-        const chave = opcao.getAttribute('data-i18n');
-        const partes = chave.split('.');
-        if (partes.length >= 2) {
-            const campoFormulario = partes[1];
-            if (traducoes.formulario && traducoes.formulario[campoFormulario]) {
-                opcao.textContent = traducoes.formulario[campoFormulario];
-            }
-        }
-    });
-
-    // Cards de serviços
-    document.querySelectorAll('[data-i18n^="servicos_cards."]').forEach(elemento => {
-        const chave = elemento.getAttribute('data-i18n');
-        const partes = chave.split('.');
-        if (partes.length >= 3) {
-            const cardServico = partes[1];
-            const propriedade = partes[2];
-            if (traducoes.servicos_cards &&
-                traducoes.servicos_cards[cardServico] &&
-                traducoes.servicos_cards[cardServico][propriedade]) {
-                elemento.textContent = traducoes.servicos_cards[cardServico][propriedade];
-            }
-        }
-    });
-
-    // Carregar projetos do idioma selecionado
-    if (traducoes.projetos) {
-        // Converter estrutura de projetos para o formato esperado
-        const projetosConvertidos = [];
-
-        Object.keys(traducoes.projetos).forEach(id => {
-            const proj = traducoes.projetos[id];
-
-            // Mapeamento correto das imagens baseado no ID do projeto
-            let imagemPath;
-            if (id.includes('vendas')) {
-                imagemPath = 'img/vendas.jpg';
-            } else if (id.includes('previsao_casas') || id.includes('casas')) {
-                imagemPath = 'img/preços-casas.jpg';
-            } else if (id.includes('rh')) {
-                imagemPath = 'img/rh.jpg';
-            } else {
-                // Imagem padrão caso não encontre correspondência
-                imagemPath = `img/${id}.jpg`;
-            }
-
-            projetosConvertidos.push({
-                id: id,
-                titulo: proj.titulo,
-                imagem: imagemPath,
-                alt: proj.alt,
-                link: `https://github.com/mateus-mg/${id}`,
-                descricao: proj.descricao,
-                tecnologias: proj.tecnologias
-            });
-        });
-
-        // Atualizar os projetos para o idioma atual
-        window.projetosPortfolio[idioma] = projetosConvertidos;
-
-        console.log(`${projetosConvertidos.length} projetos carregados para o idioma ${idioma}`);
-
-        // Renderizar projetos com o novo idioma
-        if (window.renderizarPortfolio) {
-            console.log("Renderizando portfólio após tradução");
-            window.renderizarPortfolio('avançar', 'navegacao');
-        } else {
-            console.warn("Função renderizarPortfolio não encontrada, reinicializando portfólio");
-            inicializarPortfolio();
-        }
-    } else {
-        console.warn("Nenhum projeto encontrado para o idioma:", idioma);
-    }
-
-    // Marcar o botão do idioma atual como ativo
-    document.querySelectorAll('.seletor-idioma').forEach(botao => {
-        const botaoIdioma = botao.getAttribute('data-idioma');
-        if (botaoIdioma === idioma) {
-            botao.classList.add('ativo');
-            console.log(`Botão de idioma ${idioma} marcado como ativo`);
-        } else {
-            botao.classList.remove('ativo');
-        }
-    });
-
-    console.log("Tradução concluída para:", idioma);
-}
-
-// Função para configurar o formulário de contato e feedback
-function configurarFormularioContato() {
-    console.log("Configurando formulário de contato");
-
-    if (!domCache.form) {
-        console.error("Formulário de contato não encontrado");
-        return;
-    }
-
-    // Inicializar gerenciador de feedback (singleton)
-    const feedbackManager = gerenciarFeedbackPopup();
-
-    // Atualizar o assunto do email com base na seleção do dropdown
-    const assuntoDropdown = document.getElementById('assunto');
-    if (assuntoDropdown) {
-        assuntoDropdown.addEventListener('change', function () {
-            const assuntoSelecionado = this.value;
-            const subjectField = document.querySelector('input[name="_subject"]');
-            if (subjectField && assuntoSelecionado) {
-                subjectField.value = `${assuntoSelecionado}`;
-                console.log("Assunto atualizado para:", subjectField.value);
-            }
-        });
-    }
-
-    // Função unificada para lidar com fallbacks
-    const aplicarFallbackMensagem = function (tipo, nome, assunto = "") {
-        let mensagem, titulo;
-
-        if (tipo === 'enviando') {
-            mensagem = `"${nome}", Estamos enviando sua mensagem...`;
-            titulo = "Enviando Mensagem...";
-        } else {
-            mensagem = `<strong>Olá ${nome || 'usuário'}!</strong><br>
-                        Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
-                        Agradecemos seu contato e entraremos em contato o mais breve possível.`;
-            titulo = "Mensagem Enviada!";
-        }
-
-        feedbackManager.mostrar(mensagem, titulo);
-        return mensagem;
-    };
-
-    // Implementação para método tradicional POST
-    domCache.form.addEventListener('submit', async function (evento) {
-        // Garantir que o assunto esteja atualizado no momento do envio
-        const assuntoSelecionado = document.getElementById('assunto').value;
-        const subjectField = domCache.form.querySelector('input[name="_subject"]');
-        if (subjectField && assuntoSelecionado) {
-            subjectField.value = `${assuntoSelecionado}`;
-        }
-
-        // Armazenar dados em localStorage para personalização da mensagem
-        const nome = document.getElementById('nome').value;
-        localStorage.setItem('ultimo_contato_nome', nome);
-        localStorage.setItem('ultimo_assunto', assuntoSelecionado);
-
-        try {
-            // Obter mensagem traduzida para "enviando"
-            const mensagemEnviando = await feedbackManager.mensagemEnviando(nome);
-            // Obter título traduzido para "enviando"
-            const tituloEnviando = await feedbackManager.obterTituloTraduzido('enviando');
-
-            // Mostrar feedback "Enviando..." com título traduzido
-            feedbackManager.mostrar(mensagemEnviando, tituloEnviando);
-
-            // Permitir que o formulário continue o envio após um breve atraso
-            evento.preventDefault();
-            setTimeout(() => {
-                console.log("Enviando formulário pelo método POST tradicional");
-                domCache.form.submit();
-            }, 3000);
-        } catch (error) {
-            console.error("Erro ao mostrar mensagem de envio:", error);
-            // Fallback comum se a tradução falhar
-            evento.preventDefault();
-            aplicarFallbackMensagem('enviando', nome);
-            setTimeout(() => domCache.form.submit(), 3000);
-        }
-    });
-
-    // Verificar URL para parâmetros de sucesso (quando retorna do FormSubmit)
-    if (window.location.search.includes('enviado=sucesso')) {
-        const nome = localStorage.getItem('ultimo_contato_nome');
-        const assunto = localStorage.getItem('ultimo_assunto');
-
-        // Função assíncrona auto-executável para lidar com as promises
-        (async function () {
-            try {
-                // Obter mensagem traduzida para "sucesso"
-                const mensagemSucesso = await feedbackManager.mensagemEnvio(nome, assunto);
-                // Obter título traduzido para "sucesso"
-                const tituloSucesso = await feedbackManager.obterTituloTraduzido('titulo');
-
-                // Mostrar feedback de mensagem enviada com sucesso com título traduzido
-                feedbackManager.mostrar(mensagemSucesso, tituloSucesso);
-            } catch (error) {
-                console.error("Erro ao mostrar mensagem de sucesso:", error);
-                // Usando a função unificada de fallback
-                aplicarFallbackMensagem('sucesso', nome, assunto);
-            }
-        })();
-    }
-}
-
-// Função centralizada para tratamento de eventos de teclado
-function configurarEventosTeclado() {
-    console.log("Configurando tratamento centralizado de teclas");
-
-    // Único listener para todos os eventos de teclado
-    document.addEventListener('keydown', (e) => {
-        // Tratamento da tecla ESC
-        if (e.key === 'Escape') {
-            // Fechar sidebar
-            if (domCache.sidebar && domCache.sidebar.classList.contains('open')) {
-                handlers.toggleSidebar();
-            }
-
-            // Fechar menu de idiomas
-            if (domCache.menuIdiomas) {
-                domCache.menuIdiomas.classList.remove('ativo');
-            }
-
-            // Fechar outros elementos que respondam a ESC (caso sejam adicionados no futuro)
-        }
-
-        // Controle de carrosséis com setas (movido para cá)
-        const focusIsInIdiomasCarousel = document.activeElement.closest('.idiomas-carrossel');
-        const focusIsInSkillsCarousel = document.activeElement.closest('.skills-carrossel');
-
-        // Carrossel de idiomas - setas
-        if (focusIsInIdiomasCarousel) {
-            const idiomasCarrossel = window.carrosseis?.idiomas;
-            if (idiomasCarrossel) {
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    idiomasCarrossel.mostrar(idiomasCarrossel.getAtual() - 1);
-                } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    idiomasCarrossel.mostrar(idiomasCarrossel.getAtual() + 1);
-                }
-            }
-        }
-        // Carrossel de skills - setas
-        else if (focusIsInSkillsCarousel) {
-            const skillsCarrossel = window.carrosseis?.skills;
-            if (skillsCarrossel) {
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    skillsCarrossel.mostrar(skillsCarrossel.getAtual() - 1);
-                } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    skillsCarrossel.mostrar(skillsCarrossel.getAtual() + 1);
-                }
-            }
-        }
-    });
-
-    console.log("Tratamento centralizado de teclas configurado");
-}
-
-// Função centralizada para gerenciar o popup de feedback
-function gerenciarFeedbackPopup() {
-    // Singleton - cria o popup apenas uma vez
-    let feedbackPopup = document.getElementById('feedback-popup');
-
-    // Criar elemento se não existir
-    if (!feedbackPopup) {
-        console.log("Criando popup de feedback");
-        feedbackPopup = document.createElement('div');
-        feedbackPopup.id = 'feedback-popup';
-        feedbackPopup.className = 'feedback-popup';
-        feedbackPopup.innerHTML = `
-            <div class="feedback-content">
-                <div class="feedback-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3 class="feedback-titulo" data-i18n="formulario.feedback.titulo">Mensagem Enviada!</h3>
-                <p class="feedback-mensagem" data-i18n="formulario.feedback.mensagem">Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.</p>
-                <button class="botao feedback-fechar" data-i18n="formulario.feedback.fechar">Fechar</button>
-            </div>
-        `;
-        document.body.appendChild(feedbackPopup);
-
-        // Configurar botão de fechar (apenas uma vez)
-        const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
-        if (fecharBtn) {
-            fecharBtn.addEventListener('click', () => {
-                esconderPopup();
-            });
-        }
-    }
-
-    // Métodos para manipular o popup
-    function mostrarPopup(mensagem, titulo) {
-        // Atualizar conteúdo se necessário
-        if (mensagem) {
-            const mensagemEl = feedbackPopup.querySelector('.feedback-mensagem');
-            if (mensagemEl) mensagemEl.innerHTML = mensagem;
-        }
-
-        if (titulo) {
-            const tituloEl = feedbackPopup.querySelector('.feedback-titulo');
-            if (tituloEl) tituloEl.textContent = titulo;
-        }
-
-        // Traduzir os elementos estáticos do popup que não são dinâmicos
-        traduzirElementosPopup();
-
-        // Mostrar popup com animação
-        feedbackPopup.style.display = 'flex';
-        feedbackPopup.offsetHeight; // Forçar reflow
-        setTimeout(() => {
-            feedbackPopup.classList.add('ativo');
-        }, 10);
-    }
-
-    function esconderPopup() {
-        feedbackPopup.classList.remove('ativo');
-        setTimeout(() => {
-            feedbackPopup.style.display = 'none';
-
-            // Remover o parâmetro "enviado=sucesso" da URL
-            if (window.location.search.includes('enviado=sucesso')) {
-                // Usar History API para mudar a URL sem recarregar a página
-                const urlSemParametro = window.location.pathname + window.location.hash;
-                history.replaceState(null, '', urlSemParametro);
-                console.log("Parâmetro 'enviado=sucesso' removido da URL");
-            }
-        }, 300);
-    }
-
-    // Função auxiliar para traduzir os elementos estáticos do popup
-    function traduzirElementosPopup() {
-        // Obter o idioma atual
-        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
-
-        // Verificar se temos a tradução em cache no localStorage
-        const cacheKey = `feedback_popup_${idiomaAtual}`;
-        const cachedTranslation = localStorage.getItem(cacheKey);
-
-        if (cachedTranslation) {
-            // Usar tradução em cache para resposta imediata
-            const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
-            if (fecharBtn) {
-                fecharBtn.textContent = cachedTranslation;
-            }
-
-            console.log(`Usando tradução em cache para o botão fechar (${idiomaAtual})`);
-            return;
-        }
-
-        // Buscar as traduções para o botão de fechar
-        fetch(`i18n/${idiomaAtual}.json`)
-            .then(response => response.json())
-            .then(traducoes => {
-                const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
-                if (fecharBtn && traducoes.formulario?.feedback?.fechar) {
-                    fecharBtn.textContent = traducoes.formulario.feedback.fechar;
-
-                    // Armazenar em cache para uso futuro
-                    localStorage.setItem(cacheKey, traducoes.formulario.feedback.fechar);
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao traduzir elementos do popup: ${error}`);
-            });
-    }
-
-    function atualizarMensagemEnvio(nome, assunto) {
-        // Obter o idioma atual
-        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
-
-        if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
-        if (!assunto) assunto = localStorage.getItem('ultimo_assunto') || '';
-
-        // Buscar as traduções para a mensagem de sucesso
-        return fetch(`i18n/${idiomaAtual}.json`)
-            .then(response => response.json())
-            .then(traducoes => {
-                if (assunto && assunto.trim() !== '' && traducoes.formulario?.feedback?.sucesso) {
-                    // Substituir placeholders na mensagem de sucesso
-                    return traducoes.formulario.feedback.sucesso
-                        .replace(/{{nome}}/g, nome)
-                        .replace(/{{assunto}}/g, assunto);
-                } else if (traducoes.formulario?.feedback?.sucesso_sem_assunto) {
-                    // Usar mensagem sem assunto
-                    return traducoes.formulario.feedback.sucesso_sem_assunto
-                        .replace(/{{nome}}/g, nome);
-                } else {
-                    // Fallback para mensagem padrão em português
-                    return `
-                        <strong>Olá ${nome}!</strong><br>
-                        Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
-                        Agradecemos seu contato e entraremos em contato o mais breve possível.
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao buscar traduções: ${error}`);
-                // Fallback para mensagem padrão em português
-                return `
-                    <strong>Olá ${nome}!</strong><br>
-                    Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
-                    Agradecemos seu contato e entraremos em contato o mais breve possível.
-                `;
-            });
-    }
-
-    function atualizarMensagemEnviando(nome) {
-        // Obter o idioma atual
-        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
-
-        if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
-
-        // Buscar as traduções para a mensagem de enviando
-        return fetch(`i18n/${idiomaAtual}.json`)
-            .then(response => response.json())
-            .then(traducoes => {
-                if (traducoes.formulario?.feedback?.enviando) {
-                    // Substituir placeholders na mensagem de enviando
-                    return traducoes.formulario.feedback.enviando
-                        .replace(/{{nome}}/g, nome);
-                } else {
-                    // Fallback para mensagem padrão em português
-                    return `"${nome}", Estamos enviando sua mensagem...`;
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao buscar traduções: ${error}`);
-                // Fallback para mensagem padrão em português
-                return `"${nome}", Estamos enviando sua mensagem...`;
-            });
-    }
-
-    // Função para obter o título traduzido
-    function obterTituloTraduzido(tipo = 'titulo') {
-        // Obter o idioma atual
-        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
-
-        // Buscar as traduções para o título
-        return fetch(`i18n/${idiomaAtual}.json`)
-            .then(response => response.json())
-            .then(traducoes => {
-                const chave = tipo === 'enviando' ? 'enviando_titulo' : 'titulo';
-
-                if (traducoes.formulario?.feedback?.[chave]) {
-                    return traducoes.formulario.feedback[chave];
-                } else {
-                    // Fallback para título padrão em português
-                    return tipo === 'enviando' ? 'Enviando Mensagem...' : 'Mensagem Enviada!';
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao buscar traduções para título: ${error}`);
-                // Fallback para título padrão em português
-                return tipo === 'enviando' ? 'Enviando Mensagem...' : 'Mensagem Enviada!';
-            });
-    }
-
-    // Expor interface pública com métodos assíncronos para suportar traduções
-    return {
-        elemento: feedbackPopup,
-        mostrar: mostrarPopup,
-        esconder: esconderPopup,
-        mensagemEnvio: atualizarMensagemEnvio,
-        mensagemEnviando: atualizarMensagemEnviando,
-        obterTituloTraduzido: obterTituloTraduzido
-    };
-}
+// Remover as funções que foram transferidas para o i18n.js
+// Não precisamos mais da função aplicarTraducoes e limparCacheAntigo
+// pois agora essa lógica está no arquivo i18n.js

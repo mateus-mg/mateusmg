@@ -641,9 +641,14 @@ function inicializarPortfolio() {
                                 <div class="portfolio-tags">
                                     ${tagsHTML}
                                 </div>
-                                <a href="${projeto.link}" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
-                                    <i class="fas fa-external-link-alt"></i> Ver Projeto
-                                </a>
+                                <div class="portfolio-buttons">
+                                    <a href="${projeto.link}" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
+                                        <i class="fas fa-external-link-alt"></i> Ver GitHub
+                                    </a>
+                                    <a href="projeto.html?id=${projeto.id}" class="portfolio-btn relatorio-btn">
+                                        <i class="fas fa-file-alt"></i> Relatório
+                                    </a>
+                                </div>
                             </div>
                         `;
 

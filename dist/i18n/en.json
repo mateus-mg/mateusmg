@@ -24,6 +24,10 @@
     "servicos_descricao": "I offer complete data analysis solutions for your business:",
     "contato_descricao": "Talk to me! It will be an honor to help you.",
     "botoes": {
+        "sobreMim": {
+            "original": "SOBRE MIM <span class=\"seta\">▼</span>",
+            "traducao": "ABOUT ME <span class=\"seta\">▼</span>"
+        },
         "faleComigo": {
             "original": "Fale Comigo",
             "traducao": "Contact Me"
@@ -128,6 +132,8 @@
         "analise_vendas": {
             "titulo": "Sales Analysis with Power BI",
             "descricao": "Interactive dashboard for sales analysis using Power BI. Includes segmentation by period, products and regions, with visual insights for decision making.",
+            "descricao_longa": "This project was developed to provide a comprehensive view of a retail company's sales performance, using Power BI as the main tool. Through the integration of multiple data sources, it was possible to create a complete analytical environment to support decision making.",
+            "relatorio": "<h3>Project Objective</h3><p>Create an interactive dashboard that would allow the management team to analyze sales trends, identify high-performing products and areas with growth potential.</p><h3>Methodology</h3><ul><li>Extraction of data from multiple sources (SQL Server, Excel and APIs)</li><li>Cleaning and transformation using Power Query</li><li>Dimensional modeling in star schema format</li><li>Creation of DAX measures for important KPIs</li><li>Design of interactive visualizations</li></ul><h3>Results</h3><p>The dashboard provided insights that led to a 15% increase in sales through the identification of opportunities in specific regions and optimization of the product mix. Data-driven decision making resulted in reduced inventory and increased profit margin.</p>",
             "alt": "Sales dashboard created in Power BI showing charts of revenue, products and regions",
             "tecnologias": [
                 "Power BI",
@@ -138,6 +144,8 @@
         "previsao_casas": {
             "titulo": "House Price Prediction (Python)",
             "descricao": "Machine learning model to predict house prices with Python. Uses regression, exploratory analysis and cross-validation.",
+            "descricao_longa": "This data science project applies advanced machine learning techniques to predict residential real estate prices. Using the famous Boston Housing dataset and other real estate data sources, I developed a predictive model capable of estimating prices based on various property characteristics.",
+            "relatorio": "<h3>Project Objective</h3><p>Develop a predictive model capable of accurately estimating the value of residential properties, helping investors and buyers in decision making.</p><h3>Methodology</h3><ul><li>Detailed exploratory analysis to understand the factors that influence prices</li><li>Treatment of missing data and outliers</li><li>Feature engineering to create more predictive variables</li><li>Testing multiple algorithms: Linear Regression, Random Forest, Gradient Boosting</li><li>Hyperparameter optimization via GridSearch</li><li>Cross-validation to ensure model robustness</li></ul><h3>Results</h3><p>The final model (Gradient Boosting) achieved an R² of 0.91 and an RMSE of only 4.3% of the average property value. Feature importance analysis revealed that location, size, and age are the most determinant factors for price.</p>",
             "alt": "Scatter plot of house prices predicted by machine learning model",
             "tecnologias": [
                 "Python",
@@ -148,6 +156,8 @@
         "dashboard_rh": {
             "titulo": "HR Dashboard",
             "descricao": "Visualization of HR indicators in a dynamic dashboard. Allows analysis of turnover, absenteeism and employee satisfaction.",
+            "descricao_longa": "This dashboard was developed for the Human Resources department of a large company, aiming to provide a complete view of the main people management indicators. The project integrates data from different internal systems to create a single point of access to relevant information.",
+            "relatorio": "<h3>Project Objective</h3><p>Create an interactive tool that would allow the HR department to track key people management metrics, identify trends, and make data-driven decisions.</p><h3>Methodology</h3><ul><li>Requirements gathering with the Human Resources team</li><li>Identification and access to necessary data sources (payroll system, climate surveys, time records)</li><li>Creation of integrated data model</li><li>Development of specific HR KPIs</li><li>Implementation of interactive visualizations and filters</li></ul><h3>Results</h3><p>The dashboard enabled a 25% reduction in turnover rate after identifying critical satisfaction factors by department. The tool also allowed for more efficient monitoring of absenteeism, resulting in an estimated annual savings of R$ 120 thousand with the implementation of specific policies.</p>",
             "alt": "HR dashboard with turnover, absenteeism and employee satisfaction indicators",
             "tecnologias": [
                 "Power BI",
@@ -156,33 +166,39 @@
             ]
         },
         "dashboard_rh2": {
-            "titulo": "HR Dashboard",
-            "descricao": "Visualization of HR indicators in a dynamic dashboard. Allows analysis of turnover, absenteeism and employee satisfaction.",
-            "alt": "HR dashboard with turnover, absenteeism and employee satisfaction indicators",
+            "titulo": "HR Dashboard - Version 2",
+            "descricao": "Advanced version of the HR dashboard with additional indicators and predictive analysis of employee turnover.",
+            "descricao_longa": "This enhanced version of the HR dashboard incorporates predictive analysis techniques to identify turnover risk factors and elements that contribute to employee satisfaction. The project uses Python integrated with Power BI to implement machine learning models.",
+            "relatorio": "<h3>Project Objective</h3><p>Expand the capabilities of the original HR dashboard with advanced and predictive analytics capabilities, allowing not only to monitor indicators but also to predict trends and simulate scenarios.</p><h3>Methodology</h3><ul><li>Integration of Python with Power BI for advanced analytical capabilities</li><li>Implementation of predictive model to identify turnover risk</li><li>Development of sentiment analysis for comments in climate surveys</li><li>Creation of simulators for salary increase scenarios and cost impact</li><li>Implementation of automatic alerts for deviations in key indicators</li></ul><h3>Results</h3><p>The predictive turnover system demonstrated 78% accuracy in identifying employees at high risk of departure in the next 3 months. Preventive actions implemented based on these analyses resulted in an estimated savings of R$ 350 thousand in recruitment and training costs in the first year.</p>",
+            "alt": "Advanced HR dashboard with turnover prediction indicators",
             "tecnologias": [
                 "Power BI",
                 "Excel",
-                "HR"
+                "HR Analytics"
             ]
         },
         "previsao_casas2": {
-            "titulo": "House Price Prediction (Python)",
-            "descricao": "Machine learning model to predict house prices with Python. Uses regression, exploratory analysis and cross-validation.",
-            "alt": "Scatter plot of house prices predicted by machine learning model",
+            "titulo": "Commercial Real Estate Price Prediction",
+            "descricao": "Extension of the machine learning model for the commercial real estate market, with specific factors for location and zoning.",
+            "descricao_longa": "This project extends predictive analysis to the commercial property segment, incorporating specific variables such as zoning, occupancy rate of the region, business profile of the surroundings, and appreciation potential based on urban infrastructure projects.",
+            "relatorio": "<h3>Project Objective</h3><p>Develop a machine learning model specialized in predicting commercial property values, considering the particularities of this segment of the real estate market.</p><h3>Methodology</h3><ul><li>Collection and integration of data from multiple sources, including transaction records, zoning data, and geospatial information</li><li>Implementation of spatial analysis techniques to assess the impact of location</li><li>Development of specific features for commercial properties (pedestrian flow, proximity to shopping centers)</li><li>Use of neural networks with TensorFlow for advanced modeling</li><li>Implementation of geospatial visualizations for results analysis</li></ul><h3>Results</h3><p>The model achieved an R² of 0.89 for commercial value prediction, with an absolute mean percentage error (MAPE) of 6.2%. The system correctly identified areas with appreciation potential based on new urban infrastructure projects.</p>",
+            "alt": "Scatter plot of commercial real estate prices predicted by machine learning model",
             "tecnologias": [
                 "Python",
-                "Pandas",
-                "Scikit-learn"
+                "TensorFlow",
+                "Spatial Analysis"
             ]
         },
         "dashboard_rh3": {
-            "titulo": "HR Dashboard",
-            "descricao": "Visualization of HR indicators in a dynamic dashboard. Allows analysis of turnover, absenteeism and employee satisfaction.",
-            "alt": "HR dashboard with turnover, absenteeism and employee satisfaction indicators",
+            "titulo": "Employee Engagement Analysis",
+            "descricao": "Specific dashboard for engagement survey analysis, with metrics for satisfaction, productivity, and retention.",
+            "descricao_longa": "This project focused specifically on the analysis of employee engagement and satisfaction, integrating data from organizational climate surveys, performance evaluations, and productivity indicators to identify correlations and critical success factors.",
+            "relatorio": "<h3>Project Objective</h3><p>Create an analytical solution to deeply understand the factors that affect employee engagement and their impact on business results.</p><h3>Methodology</h3><ul><li>Structuring climate surveys with validated psychometric methodologies</li><li>Implementation of advanced statistical techniques using R integrated with Power BI</li><li>Development of composite indices for engagement and satisfaction</li><li>Correlation analysis between engagement and performance indicators</li><li>Implementation of interactive visualizations by department, seniority, and demographic profile</li></ul><h3>Results</h3><p>The analyses revealed a strong correlation (r=0.72) between the engagement index and team productivity. Initiatives implemented based on the insights obtained resulted in an 18% improvement in the engagement index in 6 months, with a direct impact of 8% on overall productivity.</p>",
+            "alt": "Employee engagement dashboard with satisfaction and productivity indicators",
             "tecnologias": [
                 "Power BI",
-                "Excel",
-                "HR"
+                "R",
+                "Psychometrics"
             ]
         }
     },

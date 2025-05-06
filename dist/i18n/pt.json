@@ -108,6 +108,8 @@
         "analise_vendas": {
             "titulo": "Análise de Vendas com Power BI",
             "descricao": "Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.",
+            "descricao_longa": "Este projeto foi desenvolvido para fornecer uma visão abrangente do desempenho de vendas de uma empresa varejista, utilizando o Power BI como ferramenta principal. Através da integração de múltiplas fontes de dados, foi possível criar um ambiente analítico completo para suporte à tomada de decisão.",
+            "relatorio": "<h3>Objetivo do Projeto</h3><p>Criar um dashboard interativo que permitisse à equipe de gestão analisar tendências de vendas, identificar produtos de alto desempenho e áreas com potencial de crescimento.</p><h3>Metodologia</h3><ul><li>Extração de dados de múltiplas fontes (SQL Server, Excel e APIs)</li><li>Limpeza e transformação utilizando Power Query</li><li>Modelagem dimensional no formato estrela</li><li>Criação de medidas DAX para KPIs importantes</li><li>Design de visualizações interativas</li></ul><h3>Resultados</h3><p>O dashboard proporcionou insights que levaram a um aumento de 15% nas vendas através da identificação de oportunidades em regiões específicas e otimização do mix de produtos. A tomada de decisão baseada em dados resultou em redução de estoque e aumento da margem de lucro.</p>",
             "alt": "Dashboard de vendas criado no Power BI mostrando gráficos de faturamento, produtos e regiões",
             "tecnologias": [
                 "Power BI",
@@ -118,6 +120,8 @@
         "previsao_casas": {
             "titulo": "Previsão de Preços de Casas (Python)",
             "descricao": "Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.",
+            "descricao_longa": "Este projeto de ciência de dados aplica técnicas avançadas de machine learning para prever os preços de imóveis residenciais. Utilizando o famoso dataset de Boston Housing e outras fontes de dados imobiliários, desenvolvi um modelo preditivo capaz de estimar preços com base em diversas características dos imóveis.",
+            "relatorio": "<h3>Objetivo do Projeto</h3><p>Desenvolver um modelo preditivo capaz de estimar o valor de imóveis residenciais com precisão, auxiliando investidores e compradores na tomada de decisão.</p><h3>Metodologia</h3><ul><li>Análise exploratória detalhada para compreender os fatores que influenciam os preços</li><li>Tratamento de dados faltantes e outliers</li><li>Engenharia de features para criar variáveis mais preditivas</li><li>Teste de múltiplos algoritmos: Regressão Linear, Random Forest, Gradient Boosting</li><li>Otimização de hiperparâmetros via GridSearch</li><li>Validação cruzada para garantir a robustez do modelo</li></ul><h3>Resultados</h3><p>O modelo final (Gradient Boosting) alcançou um R² de 0.91 e um RMSE de apenas 4.3% do valor médio dos imóveis. A análise de importância de features revelou que localização, tamanho e idade são os fatores mais determinantes para o preço.</p>",
             "alt": "Gráfico de dispersão de preços de casas previsto por modelo de machine learning",
             "tecnologias": [
                 "Python",
@@ -128,6 +132,8 @@
         "dashboard_rh": {
             "titulo": "Dashboard de RH",
             "descricao": "Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.",
+            "descricao_longa": "Este dashboard foi desenvolvido para o departamento de Recursos Humanos de uma grande empresa, visando proporcionar uma visão completa dos principais indicadores de gestão de pessoas. O projeto integra dados de diferentes sistemas internos para criar um único ponto de acesso às informações relevantes.",
+            "relatorio": "<h3>Objetivo do Projeto</h3><p>Criar uma ferramenta interativa que permitisse ao departamento de RH acompanhar métricas-chave de gestão de pessoas, identificar tendências e tomar decisões baseadas em dados.</p><h3>Metodologia</h3><ul><li>Levantamento de requisitos junto à equipe de Recursos Humanos</li><li>Identificação e acesso às fontes de dados necessárias (sistema de folha, pesquisas de clima, registros de ponto)</li><li>Criação de modelo de dados integrado</li><li>Desenvolvimento de KPIs específicos para RH</li><li>Implementação de visualizações e filtros interativos</li></ul><h3>Resultados</h3><p>O dashboard possibilitou a redução de 25% na taxa de turnover após identificação de fatores críticos de satisfação por departamento. A ferramenta também permitiu um monitoramento mais eficiente do absenteísmo, resultando em economia estimada de R$ 120 mil anuais com a implementação de políticas específicas.</p>",
             "alt": "Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores",
             "tecnologias": [
                 "Power BI",
@@ -138,6 +144,8 @@
         "dashboard_rh2": {
             "titulo": "Dashboard de RH - Versão 2",
             "descricao": "Versão avançada do dashboard de RH com indicadores adicionais e análise preditiva de rotatividade de funcionários.",
+            "descricao_longa": "Esta versão aprimorada do dashboard de RH incorpora técnicas de análise preditiva para identificar fatores de risco de turnover e elementos que contribuem para a satisfação dos colaboradores. O projeto utiliza Python integrado ao Power BI para implementar modelos de machine learning.",
+            "relatorio": "<h3>Objetivo do Projeto</h3><p>Expandir as capacidades do dashboard original de RH com recursos de análise avançada e preditiva, permitindo não apenas monitorar indicadores, mas também prever tendências e simular cenários.</p><h3>Metodologia</h3><ul><li>Integração do Python com Power BI para capacidades analíticas avançadas</li><li>Implementação de modelo preditivo para identificar risco de turnover</li><li>Desenvolvimento de análise de sentimentos para comentários em pesquisas de clima</li><li>Criação de simuladores para cenários de aumento salarial e impacto em custos</li><li>Implementação de alertas automáticos para desvios em indicadores-chave</li></ul><h3>Resultados</h3><p>O sistema preditivo de turnover demonstrou 78% de precisão na identificação de colaboradores com alto risco de saída nos próximos 3 meses. As ações preventivas implementadas com base nestas análises resultaram em economia estimada de R$ 350 mil em custos de recrutamento e treinamento no primeiro ano.</p>",
             "alt": "Dashboard avançado de RH com indicadores de previsão de rotatividade",
             "tecnologias": [
                 "Power BI",
@@ -148,6 +156,8 @@
         "previsao_casas2": {
             "titulo": "Previsão de Preços de Imóveis Comerciais",
             "descricao": "Extensão do modelo de machine learning para o mercado imobiliário comercial, com fatores específicos de localização e zoneamento.",
+            "descricao_longa": "Este projeto amplia a análise preditiva para o segmento de imóveis comerciais, incorporando variáveis específicas como zoneamento, taxa de ocupação da região, perfil de negócios do entorno e potencial de valorização baseado em projetos de infraestrutura urbana.",
+            "relatorio": "<h3>Objetivo do Projeto</h3><p>Desenvolver um modelo de machine learning especializado em prever valores de imóveis comerciais, considerando as particularidades deste segmento do mercado imobiliário.</p><h3>Metodologia</h3><ul><li>Coleta e integração de dados de múltiplas fontes, incluindo registros de transações, dados de zoneamento e informações geoespaciais</li><li>Implementação de técnicas de análise espacial para avaliar impacto da localização</li><li>Desenvolvimento de features específicas para imóveis comerciais (fluxo de pedestres, proximidade a centros comerciais)</li><li>Utilização de redes neurais com TensorFlow para modelagem avançada</li><li>Implementação de visualizações geoespaciais para análise de resultados</li></ul><h3>Resultados</h3><p>O modelo alcançou um R² de 0.89 para previsão de valores comerciais, com erro médio percentual absoluto (MAPE) de 6.2%. O sistema identificou corretamente áreas com potencial de valorização baseado em novos projetos de infraestrutura urbana.</p>",
             "alt": "Gráfico de dispersão de preços de imóveis comerciais previsto por modelo de machine learning",
             "tecnologias": [
                 "Python",
@@ -158,6 +168,8 @@
         "dashboard_rh3": {
             "titulo": "Análise de Engajamento de Funcionários",
             "descricao": "Dashboard específico para análise de pesquisas de engajamento, com métricas de satisfação, produtividade e retenção.",
+            "descricao_longa": "Este projeto focou especificamente na análise de engajamento e satisfação dos colaboradores, integrando dados de pesquisas de clima organizacional, avaliações de desempenho e indicadores de produtividade para identificar correlações e fatores críticos de sucesso.",
+            "relatorio": "<h3>Objetivo do Projeto</h3><p>Criar uma solução analítica para compreender em profundidade os fatores que afetam o engajamento dos colaboradores e seu impacto nos resultados do negócio.</p><h3>Metodologia</h3><ul><li>Estruturação de pesquisas de clima com metodologias psicométricas validadas</li><li>Implementação de técnicas estatísticas avançadas usando R integrado ao Power BI</li><li>Desenvolvimento de índices compostos de engajamento e satisfação</li><li>Análise de correlação entre engajamento e indicadores de desempenho</li><li>Implementação de visualizações interativas por departamento, senioridade e perfil demográfico</li></ul><h3>Resultados</h3><p>As análises revelaram forte correlação (r=0.72) entre o índice de engajamento e a produtividade das equipes. Iniciativas implementadas com base nos insights obtidos resultaram em melhoria de 18% no índice de engajamento em 6 meses, com impacto direto de 8% na produtividade global.</p>",
             "alt": "Dashboard de engajamento de funcionários com indicadores de satisfação e produtividade",
             "tecnologias": [
                 "Power BI",

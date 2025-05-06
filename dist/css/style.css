@@ -1,5 +1,6 @@
 /* Nova paleta de cores: Ciano e Grafite */
 :root {
+    /* Cores principais */
     --cor-primaria: #0F2027;
     /* Grafite */
     --cor-secundaria: #203A43;
@@ -12,6 +13,49 @@
     /* Preto suave */
     --cor-texto-claro: #F2F2F2;
     /* Neve acinzentada */
+
+    /* Sombreamentos padronizados */
+    --sombra-leve: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --sombra-media: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --sombra-forte: 0 8px 24px rgba(0, 0, 0, 0.18);
+
+    /* Tamanhos de fonte padronizados */
+    --font-xs: 0.8rem;
+    --font-sm: 0.9rem;
+    --font-base: 1rem;
+    --font-md: 1.1rem;
+    --font-lg: 1.25rem;
+    --font-xl: 1.5rem;
+    --font-2xl: 1.8rem;
+    --font-3xl: 2.2rem;
+    --font-4xl: 2.5rem;
+
+    /* Espaçamentos padronizados */
+    --espaco-xs: 5px;
+    --espaco-sm: 10px;
+    --espaco-md: 15px;
+    --espaco-lg: 20px;
+    --espaco-xl: 30px;
+    --espaco-2xl: 40px;
+
+    /* Arredondamentos padronizados */
+    --borda-sm: 5px;
+    --borda-md: 8px;
+    --borda-lg: 10px;
+    --borda-xl: 15px;
+    --borda-circular: 50%;
+
+    /* Transições padronizadas */
+    --transicao-rapida: 0.2s ease;
+    --transicao-media: 0.3s ease;
+    --transicao-lenta: 0.5s ease;
+    --transicao-suave: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+
+    /* Larguras máximas de contêineres */
+    --largura-conteiner-sm: 600px;
+    --largura-conteiner-md: 800px;
+    --largura-conteiner-lg: 1000px;
+    --largura-conteiner-xl: 1200px;
 }
 
 /* Animações para seções - melhoradas para usar transform */
@@ -122,17 +166,17 @@ select:focus {
 
 .sidebar-toggle {
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top: var(--espaco-lg);
+    left: var(--espaco-lg);
     z-index: 1100;
     background: var(--cor-destaque);
     color: var(--cor-texto-claro);
     border: none;
-    padding: 10px 15px;
+    padding: var(--espaco-sm) var(--espaco-md);
     cursor: pointer;
-    border-radius: 5px;
-    font-size: 1.2em;
-    transition: color 0.3s, background 0.3s;
+    border-radius: var(--borda-sm);
+    font-size: var(--font-lg);
+    transition: color var(--transicao-media), background var(--transicao-media);
 }
 
 #toggle-button {
@@ -262,14 +306,15 @@ header>* {
 }
 
 header h1 {
-    font-size: 2.5em;
+    font-size: var(--font-4xl);
     color: var(--cor-texto-claro);
+    margin-bottom: var(--espaco-sm);
 }
 
 header p {
-    font-size: 1.2em;
+    font-size: var(--font-lg);
     color: var(--cor-texto-claro);
-    margin-bottom: 10px;
+    margin-bottom: var(--espaco-sm);
 }
 
 .header-icons {
@@ -293,6 +338,55 @@ header p {
     transform: scale(1.12);
 }
 
+/* Estilos para os ícones do banner no footer do header */
+.header-icons-bottom {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    /* Aumentei o espaçamento entre os ícones */
+    z-index: 5;
+}
+
+.header-icons-bottom .icon-link {
+    color: var(--cor-texto-claro);
+    font-size: 2.2em;
+    /* Aumentei o tamanho da fonte dos ícones */
+    transition: color 0.25s, transform 0.25s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    /* Removi width, height, border-radius, background-color e backdrop-filter */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Mantive uma sombra mais leve */
+}
+
+.header-icons-bottom .icon-link:hover {
+    color: var(--cor-destaque);
+    transform: translateY(-5px) scale(1.15);
+    /* Mantive o efeito hover com escala um pouco maior */
+    /* Removi background-color */
+}
+
+/* Responsividade para os ícones do banner em dispositivos móveis */
+@media (max-width: 768px) {
+    .header-icons-bottom {
+        bottom: 20px;
+        gap: 22px;
+        /* Ajustei o espaçamento para mobile */
+    }
+
+    .header-icons-bottom .icon-link {
+        font-size: 1.8em;
+        /* Ajustei o tamanho para mobile, mas ainda maior que o anterior */
+        /* Removi width e height */
+    }
+}
+
 section {
     padding: 60px 20px;
     background-color: var(--cor-fundo-claro);
@@ -314,12 +408,25 @@ section {
     color: var(--cor-primaria);
     text-transform: uppercase;
     font-weight: bold;
-    font-size: 1.4em;
-    margin-bottom: 20px;
+    font-size: var(--font-xl);
+    margin-bottom: var(--espaco-lg);
+    position: relative;
+    padding-bottom: var(--espaco-sm);
+}
+
+.titulo-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--cor-destaque);
+    border-radius: 1.5px;
 }
 
 .conteudo-section {
-    font-size: 1.05em;
+    font-size: var(--font-base);
     line-height: 1.8;
     color: var(--cor-secundaria);
 }
@@ -331,20 +438,24 @@ section {
     background: var(--cor-destaque);
     color: var(--cor-texto-claro);
     border: none;
+    border-radius: var(--borda-sm);
     text-decoration: none;
-    transition: background 0.3s, transform 0.15s, box-shadow 0.15s;
+    font-size: var(--font-md);
+    font-weight: 600;
+    transition: background var(--transicao-media), transform var(--transicao-rapida), box-shadow var(--transicao-rapida);
+    box-shadow: var(--sombra-leve);
 }
 
 .botao:hover {
     background: var(--cor-secundaria);
     color: var(--cor-texto-claro);
     transform: scale(1.07);
-    box-shadow: 0 4px 16px rgba(44, 166, 164, 0.15);
+    box-shadow: var(--sombra-media);
 }
 
 .botao:focus {
-    outline: 2px solid var(--cor-secundaria);
-    outline-offset: 2px;
+    outline: 2px solid var(--cor-destaque);
+    outline-offset: 3px;
 }
 
 footer {
@@ -520,10 +631,10 @@ footer a {
 /* Otimização da transição dos cards de portfólio */
 .portfolio-card {
     background-color: var(--cor-secundaria);
-    border-radius: 10px;
+    border-radius: var(--borda-lg);
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+    box-shadow: var(--sombra-media);
+    transition: transform var(--transicao-media), box-shadow var(--transicao-media);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -537,7 +648,7 @@ footer a {
 
 .portfolio-card:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    box-shadow: var(--sombra-forte);
     z-index: 2;
 }
 
@@ -552,6 +663,53 @@ footer a {
     will-change: transform;
 }
 
+.portfolio-title {
+    color: var(--cor-texto-claro);
+    font-size: var(--font-lg);
+    margin-top: var(--espaco-sm);
+    margin-bottom: var(--espaco-md);
+    text-align: center;
+    width: 100%;
+}
+
+.portfolio-desc {
+    color: var(--cor-texto-claro);
+    font-size: var(--font-sm);
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: var(--espaco-md);
+    text-align: left;
+}
+
+.portfolio-tag {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: var(--font-xs);
+    font-weight: 500;
+}
+
+.portfolio-btn {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    padding: var(--espaco-sm) var(--espaco-lg);
+    border-radius: var(--borda-sm);
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--font-sm);
+    transition: all var(--transicao-media);
+    margin-top: auto;
+    display: inline-block;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 3;
+}
+
+/* Fixando o conteúdo para evitar o borrão no texto */
 .portfolio-title,
 .portfolio-desc,
 .portfolio-tags {
@@ -754,7 +912,6 @@ picture source {
     pointer-events: none;
 }
 
-/* Adicionar classe específica para transições de navegação entre páginas */
 .portfolio-transitioning-avançar {
     transform: translateX(-5%);
 }
@@ -819,8 +976,12 @@ picture source {
 
 .portfolio-nav-btn:hover:not(:disabled) {
     background-color: var(--cor-primaria);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    transform: scale(1.05) translateZ(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.portfolio-nav-btn.anterior:hover:not(:disabled) {
+    transform: scale(1.05) translateZ(10px);
 }
 
 .portfolio-nav-btn:disabled {
@@ -838,39 +999,12 @@ picture source {
     transition: transform 0.3s ease;
 }
 
-.portfolio-nav-btn.anterior:hover i {
+.portfolio-nav-btn.anterior:hover:not(:disabled) i {
     transform: translateX(-4px);
 }
 
-.portfolio-nav-btn.proximo:hover i {
+.portfolio-nav-btn.proximo:hover:not(:disabled) i {
     transform: translateX(4px);
-}
-
-/* Estilos para os ícones do banner no header */
-.header-icons-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 38px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 38px;
-    z-index: 4;
-}
-
-.header-icons-bottom .icon-link {
-    color: var(--cor-texto-claro);
-    font-size: 2.1em;
-    transition: color 0.25s, transform 0.25s;
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.header-icons-bottom .icon-link:hover {
-    color: var(--cor-destaque);
-    transform: scale(1.15);
 }
 
 .portfolio-indicadores {
@@ -946,11 +1080,11 @@ picture source {
 /* Melhoria nas transições do card de serviço */
 .servico-card {
     background-color: var(--cor-texto-claro);
-    border-radius: 12px;
-    padding: 25px 15px;
+    border-radius: var(--borda-lg);
+    padding: var(--espaco-lg) var(--espaco-md);
     text-align: left;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--sombra-leve);
+    transition: transform var(--transicao-media), box-shadow var(--transicao-media);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -965,31 +1099,37 @@ picture source {
 
 .servico-card:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--sombra-forte);
     z-index: 2;
 }
 
-/* Fixando o conteúdo para evitar o borrão no texto */
-.servico-titulo,
-.servico-descricao {
-    /* Mantém o texto nítido durante animações do card */
-    transform: translateZ(0);
-    backface-visibility: hidden;
+.servico-titulo {
+    font-size: var(--font-lg);
+    color: var(--cor-primaria);
+    margin-bottom: var(--espaco-sm);
+    text-align: center;
+    font-weight: 600;
 }
 
-/* Melhorias no ícone de serviço para usar transform */
+.servico-descricao {
+    font-size: var(--font-base);
+    color: var(--cor-secundaria);
+    text-align: center;
+    line-height: 1.6;
+}
+
 .servico-icone {
     width: 65px;
     height: 65px;
     background-color: var(--cor-destaque);
-    border-radius: 50%;
+    border-radius: var(--borda-circular);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: var(--espaco-md);
     color: var(--cor-texto-claro);
-    font-size: 1.8rem;
-    transition: transform 0.3s, background-color 0.3s;
+    font-size: var(--font-2xl);
+    transition: transform var(--transicao-media), background-color var(--transicao-media);
     will-change: transform, background-color;
 }
 
@@ -1183,8 +1323,8 @@ picture source {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2px;
-    height: 15px;
+    width: 45px;
+    height: 45px;
     background-color: var(--cor-destaque);
     color: var(--cor-texto-claro);
     border-radius: 5px;
@@ -1203,10 +1343,17 @@ picture source {
 
 #btn-topo:hover {
     background-color: var(--cor-secundaria);
+    transform: scale(1.05);
 }
 
-.seta-topo {
+#btn-topo i {
     font-size: 1.2em;
+}
+
+/* Classe adicional para compatibilidade */
+.btn-topo {
+    width: 45px !important;
+    height: 45px !important;
 }
 
 /* Estilos para o menu de idiomas baseados no menu lateral */
@@ -1363,26 +1510,21 @@ picture source {
     border: none;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: var(--borda-circular);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1em;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all var(--transicao-media);
+    font-size: var(--font-md);
+    box-shadow: var(--sombra-leve);
     position: relative;
-    /* Para garantir posicionamento correto */
 }
 
 .carrossel-btn:hover:not(:disabled) {
     background-color: var(--cor-secundaria);
     transform: scale(1.1);
-}
-
-.carrossel-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    box-shadow: var(--sombra-media);
 }
 
 /* Estilos específicos para idiomas */
@@ -1841,4 +1983,477 @@ header.imagem-carregada::after {
     -webkit-backface-visibility: hidden;
     transform: translateZ(0);
     transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* Estilos para subseções da área de experiências */
+.experiencias-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.experiencia-categoria {
+    flex: 1;
+    min-width: 300px;
+    margin-bottom: 20px;
+}
+
+.experiencia-subtitulo {
+    font-size: 1.3em;
+    color: var(--cor-destaque);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--cor-destaque);
+    position: relative;
+}
+
+.experiencia-item {
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: var(--cor-texto-claro);
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.experiencia-item:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+}
+
+.experiencia-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.experiencia-titulo {
+    font-size: 1.2em;
+    color: var(--cor-primaria);
+    margin: 0;
+    font-weight: 600;
+    flex: 1;
+}
+
+.experiencia-periodo {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto-claro);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.experiencia-descricao {
+    color: var(--cor-secundaria);
+    line-height: 1.6;
+    margin: 0;
+    text-align: justify;
+}
+
+/* Responsividade para experiências em dispositivos móveis */
+@media (max-width: 768px) {
+    .experiencia-cabecalho {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .experiencia-periodo {
+        margin-top: 5px;
+    }
+
+    .experiencia-item {
+        padding: 15px;
+    }
+}
+
+/* Fixando o conteúdo para evitar o borrão no texto dos cards de experiência */
+.experiencia-titulo,
+.experiencia-descricao {
+    /* Mantém o texto nítido durante animações do card */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Solução específica para evitar borrão de texto durante animações em webkit para os cards de experiência */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .experiencia-item {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transform: translateZ(0) scale(1.0, 1.0);
+        transform: translateZ(0) scale(1.0, 1.0);
+    }
+}
+
+/* Estilos para o sistema de navegação das subseções de experiências */
+.experiencia-cards-container {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    min-height: 300px;
+}
+
+.experiencia-pagina {
+    display: none;
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.experiencia-pagina.ativo {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.experiencia-navegacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
+.experiencia-nav-btn {
+    background-color: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    border: none;
+    border-radius: var(--borda-sm);
+    padding: var(--espaco-sm) var(--espaco-md);
+    font-size: var(--font-sm);
+    cursor: pointer;
+    transition: transform var(--transicao-suave),
+        background-color var(--transicao-suave),
+        box-shadow var(--transicao-suave);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--sombra-leve);
+    will-change: transform, background-color, box-shadow;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.experiencia-nav-btn:hover:not(:disabled) {
+    background-color: var(--cor-primaria);
+    transform: scale(1.05) translateZ(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.experiencia-nav-btn.anterior:hover:not(:disabled) {
+    transform: scale(1.05) translateZ(10px);
+}
+
+.experiencia-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.experiencia-nav-btn.anterior i {
+    margin-right: 3px;
+    transition: transform 0.3s ease;
+}
+
+.experiencia-nav-btn.proximo i {
+    margin-left: 3px;
+    transition: transform 0.3s ease;
+}
+
+.experiencia-nav-btn.anterior:hover:not(:disabled) i {
+    transform: translateX(-4px);
+}
+
+.experiencia-nav-btn.proximo:hover:not(:disabled) i {
+    transform: translateX(4px);
+}
+
+.experiencia-paginacao {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-texto-claro);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* Responsividade para navegação em dispositivos móveis */
+@media (max-width: 768px) {
+    .experiencia-navegacao {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .experiencia-nav-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Estilos para páginas de detalhe de projeto */
+.projeto-detalhes {
+    padding-top: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+}
+
+.projeto-header {
+    height: 180px;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('../img/header-bg.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.projeto-header h1 {
+    color: var(--cor-texto-claro);
+    font-size: 2.2rem;
+    text-align: center;
+    padding: 0 20px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Novo estilo para o título simplificado sem banner */
+.projeto-titulo-simples {
+    color: var(--cor-primaria);
+    font-size: 2.5rem;
+    text-align: center;
+    padding: 30px 20px 20px;
+    margin: 0 auto 40px;
+    border-bottom: 3px solid var(--cor-destaque);
+    position: relative;
+    display: inline-block;
+    width: auto;
+}
+
+.projeto-titulo-simples::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--cor-destaque);
+    border-radius: 1.5px;
+}
+
+.projeto-conteudo {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0 20px;
+}
+
+.projeto-imagem {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+}
+
+.projeto-img-full {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.projeto-info {
+    flex: 1;
+}
+
+/* Estilo específico para quando não usar imagem lateral */
+.projeto-info-full {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.projeto-info h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.projeto-descricao,
+.projeto-tecnologias,
+.projeto-relatorio {
+    margin-bottom: 30px;
+}
+
+.projeto-descricao p {
+    line-height: 1.6;
+    color: var(--cor-texto-escuro);
+    margin-bottom: 15px;
+}
+
+.projeto-descricao-longa {
+    margin-top: 20px;
+}
+
+.projeto-relatorio .relatorio-conteudo {
+    line-height: 1.6;
+}
+
+.projeto-relatorio ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.projeto-relatorio li {
+    margin-bottom: 8px;
+}
+
+.botoes-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.botoes-container .botao {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.voltar-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.voltar-btn:hover {
+    background-color: #5a6268;
+}
+
+.github-btn {
+    background-color: #24292e;
+    color: white;
+}
+
+.github-btn:hover {
+    background-color: #0366d6;
+}
+
+.relatorio-btn {
+    background-color: var(--cor-destaque);
+    color: white;
+}
+
+.relatorio-btn:hover {
+    background-color: var(--cor-primaria);
+}
+
+.erro-container {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+    .projeto-conteudo {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .projeto-imagem {
+        width: 45%;
+        max-height: 350px;
+    }
+
+    .projeto-info {
+        width: 55%;
+        padding-left: 30px;
+    }
+
+    .projeto-titulo-simples {
+        font-size: 2.5rem;
+        padding: 40px 20px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .projeto-titulo-simples {
+        font-size: 2rem;
+        padding: 25px 15px 15px;
+    }
+}
+
+/* Estilo para o botão de retorno na página de projeto */
+.return-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    background: var(--cor-destaque);
+    color: var(--cor-texto-claro);
+    border: none;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    text-decoration: none;
+    /* Garantir que não tenha sublinhado */
+    overflow: hidden;
+    /* Ocultar qualquer conteúdo que ultrapasse os limites */
+}
+
+/* Estilização específica para o ícone dentro do botão de retorno */
+.return-button i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 0;
+    /* Remover o espaçamento de linha que causa a linha indesejada */
+}
+
+.return-button:hover {
+    background: var(--cor-secundaria);
+    transform: scale(1.05);
+}
+
+.return-button:focus {
+    outline: 3px solid var(--cor-destaque);
+    outline-offset: 3px;
 }

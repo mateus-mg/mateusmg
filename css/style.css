@@ -927,8 +927,12 @@ picture source {
 
 .portfolio-nav-btn:hover:not(:disabled) {
     background-color: var(--cor-primaria);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    transform: scale(1.05) translateZ(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.portfolio-nav-btn.anterior:hover:not(:disabled) {
+    transform: scale(1.05) translateZ(10px);
 }
 
 .portfolio-nav-btn:disabled {
@@ -946,39 +950,12 @@ picture source {
     transition: transform 0.3s ease;
 }
 
-.portfolio-nav-btn.anterior:hover i {
+.portfolio-nav-btn.anterior:hover:not(:disabled) i {
     transform: translateX(-4px);
 }
 
-.portfolio-nav-btn.proximo:hover i {
+.portfolio-nav-btn.proximo:hover:not(:disabled) i {
     transform: translateX(4px);
-}
-
-/* Estilos para os ícones do banner no header */
-.header-icons-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 38px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 38px;
-    z-index: 4;
-}
-
-.header-icons-bottom .icon-link {
-    color: var(--cor-texto-claro);
-    font-size: 2.1em;
-    transition: color 0.25s, transform 0.25s;
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-}
-
-.header-icons-bottom .icon-link:hover {
-    color: var(--cor-destaque);
-    transform: scale(1.15);
 }
 
 .portfolio-indicadores {
@@ -2127,8 +2104,12 @@ header.imagem-carregada::after {
 
 .experiencia-nav-btn:hover:not(:disabled) {
     background-color: var(--cor-primaria);
-    transform: translateY(-3px);
-    box-shadow: var(--sombra-media);
+    transform: scale(1.05) translateZ(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.experiencia-nav-btn.anterior:hover:not(:disabled) {
+    transform: scale(1.05) translateZ(10px);
 }
 
 .experiencia-nav-btn:disabled {

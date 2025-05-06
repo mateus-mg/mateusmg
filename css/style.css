@@ -1184,8 +1184,8 @@ picture source {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2px;
-    height: 15px;
+    width: 45px;
+    height: 45px;
     background-color: var(--cor-destaque);
     color: var(--cor-texto-claro);
     border-radius: 5px;
@@ -1204,6 +1204,17 @@ picture source {
 
 #btn-topo:hover {
     background-color: var(--cor-secundaria);
+    transform: scale(1.05);
+}
+
+#btn-topo i {
+    font-size: 1.2em;
+}
+
+/* Classe adicional para compatibilidade */
+.btn-topo {
+    width: 45px !important;
+    height: 45px !important;
 }
 
 /* Estilos para o menu de idiomas baseados no menu lateral */

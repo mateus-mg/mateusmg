@@ -475,6 +475,16 @@ function inicializarPortfolio() {
         return;
     }
 
+    // Verificar se estamos na página de detalhes ou na página principal
+    const isProjetoPage = window.location.pathname.includes('projeto.html') ||
+        window.location.pathname.endsWith('/projeto');
+
+    // Se estivermos na página de detalhes de projeto, não renderizar o portfolio
+    if (isProjetoPage) {
+        console.log("Estamos na página de projeto, não inicializando portfólio");
+        return;
+    }
+
     // Definição dos projetos (se ainda não estiver definido)
     if (typeof projetosPortfolio === 'undefined') {
         console.log("Definindo array de projetos do portfólio");

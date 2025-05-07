@@ -260,6 +260,44 @@ function mostrarErro(mensagem) {
 function carregarDetalhes(projetoId, idioma) {
     console.log(`Carregando detalhes do projeto ${projetoId} no idioma ${idioma}`);
 
+    // Verificar se estamos na página correta antes de continuar
+    const elementosNecessarios = [
+        { id: 'projeto-titulo', tipo: 'ID' },
+        { selector: '.projeto-conteudo', tipo: 'Class' },
+        { id: 'projeto-descricao-curta', tipo: 'ID' },
+        { id: 'projeto-descricao-longa', tipo: 'ID' }
+    ];
+
+    // Contabilizar quantos elementos críticos estão faltando
+    const elementosFaltantes = elementosNecessarios.filter(el => {
+        if (el.tipo === 'ID') {
+            return !document.getElementById(el.id);
+        } else {
+            return !document.querySelector(el.selector);
+        }
+    });
+
+    if (elementosFaltantes.length > 0) {
+        console.warn(`Elementos críticos não encontrados (${elementosFaltantes.length}): `,
+            elementosFaltantes.map(el => el.tipo === 'ID' ? el.id : el.selector).join(', '));
+
+        // Se estamos na página errada ou elementos críticos estão faltando, verificar se estamos na página correta
+        const isProjetoPage = window.location.pathname.includes('projeto.html') ||
+            window.location.pathname.endsWith('/projeto');
+
+        // Se não estamos na página correta, redirecionar
+        if (!isProjetoPage) {
+            console.log("Tentativa de carregar projeto na página errada. Redirecionando para página de projeto...");
+            window.location.href = `projeto.html?id=${projetoId}`;
+            return;
+        }
+
+        // Se estamos na página correta mas elementos estão faltando, 
+        // pode ser que a página ainda não foi completamente carregada
+        console.log("Na página correta, mas elementos críticos estão faltando. Criando estrutura básica...");
+        criarEstruturaBasica(projetoId);
+    }
+
     // Adicionar cache busting para resolver problemas de cache
     const timestamp = new Date().getTime();
 
@@ -363,6 +401,53 @@ function carregarDetalhes(projetoId, idioma) {
                 });
             }
         });
+}
+
+/**
+ * Cria uma estrutura básica para a página de projeto caso os elementos não sejam encontrados
+ * @param {string} projetoId - ID do projeto para carregar
+ */
+function criarEstruturaBasica(projetoId) {
+    // Verificar se temos um elemento main-content
+    const mainContent = document.querySelector('.main-content');
+
+    if (!mainContent) {
+        console.error("Elemento main-content não encontrado. Impossível criar estrutura básica.");
+        return;
+    }
+
+    // Limpar conteúdo atual
+    mainContent.innerHTML = `
+        <div class="projeto-container">
+            <h1 id="projeto-titulo">Carregando projeto...</h1>
+            <p id="projeto-descricao-curta">Aguarde enquanto carregamos os detalhes do projeto.</p>
+            
+            <div class="projeto-conteudo">
+                <div id="projeto-descricao-longa"></div>
+                
+                <div class="projeto-meta">
+                    <h3>Tecnologias</h3>
+                    <div class="tags-container">
+                        <span class="portfolio-tag">Carregando...</span>
+                    </div>
+                </div>
+                
+                <div id="projeto-relatorio">
+                    <h2>Relatório do Projeto</h2>
+                    <div class="relatorio-conteudo"></div>
+                </div>
+                
+                <div class="projeto-links">
+                    <a href="#" class="botao github-btn" target="_blank">
+                        <i class="fab fa-github"></i> Ver no GitHub
+                    </a>
+                    <a href="index.html#portfolio" class="botao">Voltar ao Portfólio</a>
+                </div>
+            </div>
+        </div>
+    `;
+
+    console.log("Estrutura básica criada para o projeto:", projetoId);
 }
 
 /**

@@ -81,6 +81,12 @@
         "intermediario": "Intermedio",
         "basico": "Básico"
     },
+    "formacoes": {
+        "titulo": "Formación Académica"
+    },
+    "cursos": {
+        "titulo": "Cursos y Certificaciones"
+    },
     "servicos_cards": {
         "analise_descritiva": {
             "titulo": "Análisis Descriptivo",

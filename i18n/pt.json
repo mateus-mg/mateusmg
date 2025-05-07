@@ -104,6 +104,12 @@
             "fechar": "Fechar"
         }
     },
+    "formacoes": {
+        "titulo": "Formações Acadêmicas"
+    },
+    "cursos": {
+        "titulo": "Cursos e Certificações"
+    },
     "projetos": {
         "analise_vendas": {
             "titulo": "Análise de Vendas com Power BI",

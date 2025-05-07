@@ -81,6 +81,12 @@
         "intermediario": "Intermediate",
         "basico": "Basic"
     },
+    "formacoes": {
+        "titulo": "Academic Background"
+    },
+    "cursos": {
+        "titulo": "Courses and Certifications"
+    },
     "servicos_cards": {
         "analise_descritiva": {
             "titulo": "Descriptive Analysis",

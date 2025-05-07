@@ -2,58 +2,69 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log("Inicializando página de detalhes do projeto");
 
-    // Obter o ID do projeto da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const projetoId = urlParams.get('id');
+    try {
+        // Obter o ID do projeto da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const projetoId = urlParams.get('id');
 
-    if (!projetoId) {
-        // Se não houver ID, mostrar erro e link para voltar
-        console.error("ID do projeto não encontrado na URL");
-        mostrarErro('Nenhum projeto especificado');
-        return;
-    }
-
-    console.log(`Carregando detalhes do projeto: ${projetoId}`);
-
-    // Usar o idioma atual do estado ou fallback para localStorage/sessionStorage
-    // para compatibilidade com instâncias onde o AppState ainda não foi inicializado
-    let idiomaAtual;
-
-    if (typeof AppState !== 'undefined') {
-        idiomaAtual = AppState.idiomaAtual;
-        console.log("Utilizando idioma do AppState:", idiomaAtual);
-    } else {
-        // Tentar obter de localStorage (onde é salvo na página principal)
-        idiomaAtual = localStorage.getItem('idioma');
-
-        // Se não encontrar em localStorage, tentar sessão
-        if (!idiomaAtual) {
-            idiomaAtual = sessionStorage.getItem('idioma');
+        if (!projetoId) {
+            // Se não houver ID, mostrar erro e link para voltar
+            console.error("ID do projeto não encontrado na URL");
+            mostrarErro('Nenhum projeto especificado');
+            return;
         }
 
-        // Fallback para português se não encontrar em nenhum lugar
-        if (!idiomaAtual) {
+        console.log(`Carregando detalhes do projeto: ${projetoId}`);
+
+        // Usar o idioma atual do estado ou fallback para localStorage/sessionStorage
+        // para compatibilidade com instâncias onde o AppState ainda não foi inicializado
+        let idiomaAtual;
+
+        try {
+            if (typeof AppState !== 'undefined' && AppState !== null) {
+                idiomaAtual = AppState.idiomaAtual;
+                console.log("Utilizando idioma do AppState:", idiomaAtual);
+            } else {
+                // Tentar obter de localStorage (onde é salvo na página principal)
+                idiomaAtual = localStorage.getItem('idioma');
+
+                // Se não encontrar em localStorage, tentar sessão
+                if (!idiomaAtual) {
+                    idiomaAtual = sessionStorage.getItem('idioma');
+                }
+
+                // Fallback para português se não encontrar em nenhum lugar
+                if (!idiomaAtual) {
+                    idiomaAtual = 'pt';
+                }
+
+                console.log("AppState não disponível, usando idioma de armazenamento local:", idiomaAtual);
+            }
+        } catch (err) {
+            console.error("Erro ao obter o idioma:", err);
+            // Fallback para português em caso de erro
             idiomaAtual = 'pt';
         }
 
-        console.log("AppState não disponível, usando idioma de armazenamento local:", idiomaAtual);
-    }
-
-    // Atualizar a indicação visual do idioma atual
-    const idiomaAtualElement = document.querySelector('.idioma-atual');
-    if (idiomaAtualElement) {
-        idiomaAtualElement.textContent = idiomaAtual.toUpperCase();
-    }
-
-    document.querySelectorAll('.seletor-idioma').forEach(btn => {
-        btn.classList.remove('ativo');
-        if (btn.getAttribute('data-idioma') === idiomaAtual) {
-            btn.classList.add('ativo');
+        // Atualizar a indicação visual do idioma atual
+        const idiomaAtualElement = document.querySelector('.idioma-atual');
+        if (idiomaAtualElement) {
+            idiomaAtualElement.textContent = idiomaAtual.toUpperCase();
         }
-    });
 
-    // Carregar detalhes do projeto
-    carregarDetalhes(projetoId, idiomaAtual);
+        document.querySelectorAll('.seletor-idioma').forEach(btn => {
+            btn.classList.remove('ativo');
+            if (btn.getAttribute('data-idioma') === idiomaAtual) {
+                btn.classList.add('ativo');
+            }
+        });
+
+        // Carregar detalhes do projeto
+        carregarDetalhes(projetoId, idiomaAtual);
+    } catch (error) {
+        console.error("Erro na inicialização da página de detalhes:", error);
+        mostrarErro('Ocorreu um erro ao carregar a página de detalhes');
+    }
 
     // Configurar menu de idiomas
     const menuIdiomasToggle = document.querySelector('.menu-idiomas-toggle');
@@ -88,19 +99,31 @@ document.addEventListener('DOMContentLoaded', function () {
         botao.addEventListener('click', function () {
             const novoIdioma = this.getAttribute('data-idioma');
 
+            // Tentar obter o projeto ID novamente (em caso de manipulação da URL)
+            const urlParams = new URLSearchParams(window.location.search);
+            const projetoId = urlParams.get('id');
+
             // Atualizar o estado central se disponível
-            if (typeof AppState !== 'undefined') {
-                AppState.setIdiomaAtual(novoIdioma);
-                console.log("Idioma atualizado via AppState:", novoIdioma);
-            } else {
-                // Fallback para localStorage e sessionStorage
-                localStorage.setItem('idioma', novoIdioma);
-                sessionStorage.setItem('idioma', novoIdioma);
-                console.log("Idioma salvo em localStorage/sessionStorage:", novoIdioma);
+            try {
+                if (typeof AppState !== 'undefined' && AppState !== null) {
+                    AppState.setIdiomaAtual(novoIdioma);
+                    console.log("Idioma atualizado via AppState:", novoIdioma);
+                } else {
+                    // Fallback para localStorage e sessionStorage
+                    localStorage.setItem('idioma', novoIdioma);
+                    sessionStorage.setItem('idioma', novoIdioma);
+                    console.log("Idioma salvo em localStorage/sessionStorage:", novoIdioma);
+                }
+            } catch (error) {
+                console.error("Erro ao atualizar idioma:", error);
             }
 
-            // Recarregar detalhes no novo idioma
-            carregarDetalhes(projetoId, novoIdioma);
+            // Recarregar detalhes no novo idioma apenas se tivermos um ID de projeto
+            if (projetoId) {
+                carregarDetalhes(projetoId, novoIdioma);
+            } else {
+                console.warn("Não foi possível recarregar detalhes: ID de projeto não encontrado");
+            }
 
             // Atualizar indicação visual de idioma ativo
             document.querySelectorAll('.seletor-idioma').forEach(btn => {
@@ -124,30 +147,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Inscrever-se para eventos de alteração de idioma
-    if (typeof PubSub !== 'undefined') {
-        PubSub.subscribe('idioma:alterado', function (dados) {
-            console.log(`Página de detalhes recebeu notificação de alteração de idioma: ${dados.antigo} -> ${dados.novo}`);
+    try {
+        if (typeof PubSub !== 'undefined' && PubSub !== null) {
+            PubSub.subscribe('idioma:alterado', function (dados) {
+                console.log(`Página de detalhes recebeu notificação de alteração de idioma: ${dados.antigo} -> ${dados.novo}`);
 
-            // Verificar se é necessário recarregar detalhes (idioma diferente do atual)
-            const idiomaAtualUI = document.querySelector('.seletor-idioma.ativo')?.getAttribute('data-idioma');
-            if (dados.novo !== idiomaAtualUI) {
-                // Atualizar UI para refletir a mudança de idioma
-                const idiomaAtualElement = document.querySelector('.idioma-atual');
-                if (idiomaAtualElement) {
-                    idiomaAtualElement.textContent = dados.novo.toUpperCase();
-                }
+                // Tentar obter o projeto ID novamente (em caso de manipulação da URL)
+                const urlParams = new URLSearchParams(window.location.search);
+                const projetoId = urlParams.get('id');
 
-                document.querySelectorAll('.seletor-idioma').forEach(btn => {
-                    btn.classList.remove('ativo');
-                    if (btn.getAttribute('data-idioma') === dados.novo) {
-                        btn.classList.add('ativo');
+                // Verificar se é necessário recarregar detalhes (idioma diferente do atual)
+                const idiomaAtualUI = document.querySelector('.seletor-idioma.ativo')?.getAttribute('data-idioma');
+                if (dados.novo !== idiomaAtualUI) {
+                    // Atualizar UI para refletir a mudança de idioma
+                    const idiomaAtualElement = document.querySelector('.idioma-atual');
+                    if (idiomaAtualElement) {
+                        idiomaAtualElement.textContent = dados.novo.toUpperCase();
                     }
-                });
 
-                // Recarregar detalhes no novo idioma
-                carregarDetalhes(projetoId, dados.novo);
-            }
-        });
+                    document.querySelectorAll('.seletor-idioma').forEach(btn => {
+                        btn.classList.remove('ativo');
+                        if (btn.getAttribute('data-idioma') === dados.novo) {
+                            btn.classList.add('ativo');
+                        }
+                    });
+
+                    // Recarregar detalhes no novo idioma apenas se tivermos um ID de projeto
+                    if (projetoId) {
+                        carregarDetalhes(projetoId, dados.novo);
+                    } else {
+                        console.warn("Não foi possível recarregar detalhes: ID de projeto não encontrado");
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Erro ao configurar inscrição PubSub:", error);
     }
 
     // Configurar botão voltar ao topo

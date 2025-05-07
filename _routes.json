@@ -30,7 +30,15 @@
             "status": 301
         },
         {
-            "src": "^/(.*).html$",
+            "src": "^/projeto\\.html$",
+            "dest": "/projeto.html"
+        },
+        {
+            "src": "^/projeto\\.html\\?id=([a-zA-Z0-9_-]+)$",
+            "dest": "/projeto.html?id=$1"
+        },
+        {
+            "src": "^/(.*)\\.html$",
             "dest": "/$1.html"
         },
         {

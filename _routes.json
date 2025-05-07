@@ -31,10 +31,20 @@
         },
         {
             "src": "^/projeto\\.html$",
-            "dest": "/projeto.html"
+            "dest": "/index.html#portfolio",
+            "status": 302
+        },
+        {
+            "src": "^/projeto$",
+            "dest": "/index.html#portfolio",
+            "status": 302
         },
         {
             "src": "^/projeto\\.html\\?id=([a-zA-Z0-9_-]+)$",
+            "dest": "/projeto.html?id=$1"
+        },
+        {
+            "src": "^/projeto\\?id=([a-zA-Z0-9_-]+)$",
             "dest": "/projeto.html?id=$1"
         },
         {

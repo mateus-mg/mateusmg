@@ -10,8 +10,22 @@ document.addEventListener('DOMContentLoaded', function () {
         // Verificação explícita para garantir que o ID existe e não é nulo
         if (!projetoId) {
             console.error("ID do projeto não encontrado na URL");
-            mostrarErro('Nenhum projeto especificado');
-            return;
+
+            // Verificar se estamos na página de projeto ou na página principal
+            const isProjetoPage = window.location.pathname.includes('projeto.html') ||
+                window.location.pathname.endsWith('/projeto');
+
+            if (isProjetoPage) {
+                // Estamos na página de projeto mas sem ID - redirecionar para o portfólio
+                console.log("Redirecionando para a seção de portfólio");
+                window.location.href = 'index.html#portfolio';
+                return;
+            } else {
+                // Não estamos na página de projeto, provavelmente estamos na página principal
+                // Não é necessário mostrar erro, deixar a página carregar normalmente
+                console.log("Sem ID de projeto na URL, mas não estamos na página de projeto");
+                return;
+            }
         }
 
         console.log(`Carregando detalhes do projeto: ${projetoId}`);

@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     try {
         // Obter o ID do projeto da URL
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(window.location.search || "");
         const projetoId = urlParams.get('id');
 
+        // Verificação explícita para garantir que o ID existe e não é nulo
         if (!projetoId) {
-            // Se não houver ID, mostrar erro e link para voltar
             console.error("ID do projeto não encontrado na URL");
             mostrarErro('Nenhum projeto especificado');
             return;
@@ -18,32 +18,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Usar o idioma atual do estado ou fallback para localStorage/sessionStorage
         // para compatibilidade com instâncias onde o AppState ainda não foi inicializado
-        let idiomaAtual;
+        let idiomaAtual = 'pt'; // Valor padrão
 
         try {
-            if (typeof AppState !== 'undefined' && AppState !== null) {
-                idiomaAtual = AppState.idiomaAtual;
+            if (typeof window.AppState !== 'undefined' && window.AppState !== null) {
+                idiomaAtual = window.AppState.idiomaAtual || 'pt';
                 console.log("Utilizando idioma do AppState:", idiomaAtual);
             } else {
                 // Tentar obter de localStorage (onde é salvo na página principal)
-                idiomaAtual = localStorage.getItem('idioma');
+                const idiomaLocalStorage = localStorage.getItem('idioma');
 
                 // Se não encontrar em localStorage, tentar sessão
-                if (!idiomaAtual) {
-                    idiomaAtual = sessionStorage.getItem('idioma');
-                }
+                const idiomaSessionStorage = sessionStorage.getItem('idioma');
 
-                // Fallback para português se não encontrar em nenhum lugar
-                if (!idiomaAtual) {
-                    idiomaAtual = 'pt';
-                }
+                // Usar o primeiro valor não-nulo que encontrarmos
+                idiomaAtual = idiomaLocalStorage || idiomaSessionStorage || 'pt';
 
                 console.log("AppState não disponível, usando idioma de armazenamento local:", idiomaAtual);
             }
         } catch (err) {
             console.error("Erro ao obter o idioma:", err);
             // Fallback para português em caso de erro
-            idiomaAtual = 'pt';
         }
 
         // Atualizar a indicação visual do idioma atual

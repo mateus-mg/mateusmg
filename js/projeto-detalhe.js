@@ -15,12 +15,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log(`Carregando detalhes do projeto: ${projetoId}`);
 
-    // Usar sessionStorage para consistência com o resto da aplicação
-    const idiomaPadrao = 'pt';
-    const idiomaAtual = sessionStorage.getItem('idioma') || idiomaPadrao;
+    // Usar o idioma atual do estado ou fallback para localStorage/sessionStorage
+    // para compatibilidade com instâncias onde o AppState ainda não foi inicializado
+    let idiomaAtual;
+
+    if (typeof AppState !== 'undefined') {
+        idiomaAtual = AppState.idiomaAtual;
+        console.log("Utilizando idioma do AppState:", idiomaAtual);
+    } else {
+        // Tentar obter de localStorage (onde é salvo na página principal)
+        idiomaAtual = localStorage.getItem('idioma');
+
+        // Se não encontrar em localStorage, tentar sessão
+        if (!idiomaAtual) {
+            idiomaAtual = sessionStorage.getItem('idioma');
+        }
+
+        // Fallback para português se não encontrar em nenhum lugar
+        if (!idiomaAtual) {
+            idiomaAtual = 'pt';
+        }
+
+        console.log("AppState não disponível, usando idioma de armazenamento local:", idiomaAtual);
+    }
 
     // Atualizar a indicação visual do idioma atual
-    document.querySelector('.idioma-atual').textContent = idiomaAtual.toUpperCase();
+    const idiomaAtualElement = document.querySelector('.idioma-atual');
+    if (idiomaAtualElement) {
+        idiomaAtualElement.textContent = idiomaAtual.toUpperCase();
+    }
+
     document.querySelectorAll('.seletor-idioma').forEach(btn => {
         btn.classList.remove('ativo');
         if (btn.getAttribute('data-idioma') === idiomaAtual) {
@@ -49,14 +73,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 menuIdiomasToggle.setAttribute('aria-expanded', 'false');
             }
         });
+
+        // Fechar menu ao pressionar ESC
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && menuIdiomas.classList.contains('ativo')) {
+                menuIdiomas.classList.remove('ativo');
+                menuIdiomasToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
     }
 
     // Configurar seleção de idioma
     document.querySelectorAll('.seletor-idioma').forEach(botao => {
         botao.addEventListener('click', function () {
             const novoIdioma = this.getAttribute('data-idioma');
-            // Usar sessionStorage de forma consistente
-            sessionStorage.setItem('idioma', novoIdioma);
+
+            // Atualizar o estado central se disponível
+            if (typeof AppState !== 'undefined') {
+                AppState.setIdiomaAtual(novoIdioma);
+                console.log("Idioma atualizado via AppState:", novoIdioma);
+            } else {
+                // Fallback para localStorage e sessionStorage
+                localStorage.setItem('idioma', novoIdioma);
+                sessionStorage.setItem('idioma', novoIdioma);
+                console.log("Idioma salvo em localStorage/sessionStorage:", novoIdioma);
+            }
+
             // Recarregar detalhes no novo idioma
             carregarDetalhes(projetoId, novoIdioma);
 
@@ -65,13 +107,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 btn.classList.remove('ativo');
             });
             this.classList.add('ativo');
-            document.querySelector('.idioma-atual').textContent = novoIdioma.toUpperCase();
+
+            const idiomaAtualElement = document.querySelector('.idioma-atual');
+            if (idiomaAtualElement) {
+                idiomaAtualElement.textContent = novoIdioma.toUpperCase();
+            }
 
             // Fechar menu de idiomas
-            menuIdiomas.classList.remove('ativo');
-            menuIdiomasToggle.setAttribute('aria-expanded', 'false');
+            if (menuIdiomas) {
+                menuIdiomas.classList.remove('ativo');
+            }
+            if (menuIdiomasToggle) {
+                menuIdiomasToggle.setAttribute('aria-expanded', 'false');
+            }
         });
     });
+
+    // Inscrever-se para eventos de alteração de idioma
+    if (typeof PubSub !== 'undefined') {
+        PubSub.subscribe('idioma:alterado', function (dados) {
+            console.log(`Página de detalhes recebeu notificação de alteração de idioma: ${dados.antigo} -> ${dados.novo}`);
+
+            // Verificar se é necessário recarregar detalhes (idioma diferente do atual)
+            const idiomaAtualUI = document.querySelector('.seletor-idioma.ativo')?.getAttribute('data-idioma');
+            if (dados.novo !== idiomaAtualUI) {
+                // Atualizar UI para refletir a mudança de idioma
+                const idiomaAtualElement = document.querySelector('.idioma-atual');
+                if (idiomaAtualElement) {
+                    idiomaAtualElement.textContent = dados.novo.toUpperCase();
+                }
+
+                document.querySelectorAll('.seletor-idioma').forEach(btn => {
+                    btn.classList.remove('ativo');
+                    if (btn.getAttribute('data-idioma') === dados.novo) {
+                        btn.classList.add('ativo');
+                    }
+                });
+
+                // Recarregar detalhes no novo idioma
+                carregarDetalhes(projetoId, dados.novo);
+            }
+        });
+    }
 
     // Configurar botão voltar ao topo
     const btnTopo = document.getElementById('btn-topo');
@@ -90,6 +167,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+/**
+ * Exibe uma mensagem de erro na página
+ * @param {string} mensagem - A mensagem de erro a ser exibida
+ */
+function mostrarErro(mensagem) {
+    console.log("Mostrando mensagem de erro:", mensagem);
+
+    const conteudoProjeto = document.querySelector('.projeto-conteudo');
+    const titulo = document.getElementById('projeto-titulo');
+
+    if (titulo) {
+        titulo.textContent = 'Erro';
+    }
+
+    if (conteudoProjeto) {
+        conteudoProjeto.innerHTML = `
+            <div class="projeto-erro">
+                <h2>Ocorreu um erro</h2>
+                <p>${mensagem}</p>
+                <a href="index.html#portfolio" class="botao">Voltar ao Portfólio</a>
+            </div>
+        `;
+    } else {
+        // Fallback caso não encontre o container principal
+        const main = document.querySelector('.main-content');
+        if (main) {
+            main.innerHTML = `
+                <h1 class="projeto-titulo-simples">Erro</h1>
+                <div class="projeto-conteudo">
+                    <div class="projeto-erro">
+                        <h2>Ocorreu um erro</h2>
+                        <p>${mensagem}</p>
+                        <a href="index.html#portfolio" class="botao">Voltar ao Portfólio</a>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
 
 /**
  * Carrega os detalhes do projeto com base no ID e idioma selecionado
@@ -120,79 +237,112 @@ function carregarDetalhes(projetoId, idioma) {
 
             // Preencher os detalhes na página
             document.title = `${projeto.titulo} - Mateus Galvão`;
-            document.getElementById('projeto-titulo').textContent = projeto.titulo;
+
+            const tituloElement = document.getElementById('projeto-titulo');
+            if (tituloElement) {
+                tituloElement.textContent = projeto.titulo;
+            }
 
             // Inserir descrição curta
-            document.getElementById('projeto-descricao-curta').textContent = projeto.descricao;
+            const descCurtaElement = document.getElementById('projeto-descricao-curta');
+            if (descCurtaElement) {
+                descCurtaElement.textContent = projeto.descricao;
+            }
 
             // Inserir descrição longa (se existir)
             const descricaoLonga = document.getElementById('projeto-descricao-longa');
-            if (projeto.descricao_longa) {
-                descricaoLonga.innerHTML = projeto.descricao_longa;
-                descricaoLonga.style.display = 'block';
-            } else {
-                descricaoLonga.style.display = 'none';
+            if (descricaoLonga) {
+                if (projeto.descricao_longa) {
+                    descricaoLonga.innerHTML = projeto.descricao_longa;
+                    descricaoLonga.style.display = 'block';
+                } else {
+                    descricaoLonga.style.display = 'none';
+                }
             }
 
             // Inserir tecnologias
             const tagsContainer = document.querySelector('.tags-container');
-            tagsContainer.innerHTML = projeto.tecnologias.map(tech =>
-                `<span class="portfolio-tag">${tech}</span>`
-            ).join('');
+            if (tagsContainer && projeto.tecnologias && Array.isArray(projeto.tecnologias)) {
+                tagsContainer.innerHTML = projeto.tecnologias.map(tech =>
+                    `<span class="portfolio-tag">${tech}</span>`
+                ).join('');
+            }
 
             // Inserir relatório (se existir)
             const relatorioContainer = document.getElementById('projeto-relatorio');
-            const relatorioConteudo = relatorioContainer.querySelector('.relatorio-conteudo');
-
-            if (projeto.relatorio) {
-                relatorioConteudo.innerHTML = projeto.relatorio;
-                relatorioContainer.style.display = 'block';
-            } else {
-                relatorioConteudo.innerHTML = `
-                    <p>Relatório detalhado em desenvolvimento.</p>
-                    <p>Este projeto está sendo documentado e em breve teremos informações mais detalhadas sobre seu desenvolvimento, desafios enfrentados e soluções implementadas.</p>
-                `;
-                relatorioContainer.style.display = 'block';
+            if (relatorioContainer) {
+                const relatorioConteudo = relatorioContainer.querySelector('.relatorio-conteudo');
+                if (relatorioConteudo) {
+                    if (projeto.relatorio) {
+                        relatorioConteudo.innerHTML = projeto.relatorio;
+                        relatorioContainer.style.display = 'block';
+                    } else {
+                        relatorioConteudo.innerHTML = `
+                            <p>Relatório detalhado em desenvolvimento.</p>
+                            <p>Este projeto está sendo documentado e em breve teremos informações mais detalhadas sobre seu desenvolvimento, desafios enfrentados e soluções implementadas.</p>
+                        `;
+                        relatorioContainer.style.display = 'block';
+                    }
+                }
             }
 
             // Atualizar link para GitHub
-            document.querySelector('.github-btn').href = `https://github.com/mateus-mg/${projetoId}`;
+            const githubBtn = document.querySelector('.github-btn');
+            if (githubBtn) {
+                githubBtn.href = `https://github.com/mateus-mg/${projetoId}`;
+            }
 
             // Configurar meta tags para SEO dinâmico
             atualizarMetaTags(projeto.titulo, projeto.descricao);
+
+            // Notificar via pub/sub que os detalhes foram carregados (se disponível)
+            if (typeof PubSub !== 'undefined') {
+                PubSub.publish('projeto:detalhesCarregados', {
+                    projetoId,
+                    idioma,
+                    titulo: projeto.titulo
+                });
+            }
 
             console.log("Detalhes do projeto carregados com sucesso");
         })
         .catch(error => {
             console.error('Erro ao carregar detalhes do projeto:', error);
             mostrarErro(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
+
+            // Notificar erro via pub/sub (se disponível)
+            if (typeof PubSub !== 'undefined') {
+                PubSub.publish('projeto:erroCarregamento', {
+                    projetoId,
+                    idioma,
+                    erro: error.message
+                });
+            }
         });
 }
 
 /**
- * Exibe uma mensagem de erro na página
- * @param {string} mensagem - A mensagem de erro a ser exibida
- */
-function mostrarErro(mensagem) {
-    const container = document.querySelector('.projeto-detalhes');
-    container.innerHTML = `
-        <div class="erro-container">
-            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 1rem;"></i>
-            <h2>Oops! Algo deu errado</h2>
-            <p>${mensagem}</p>
-            <a href="index.html#portfolio" class="botao voltar-btn">Voltar ao Portfólio</a>
-        </div>
-    `;
-}
-
-/**
- * Atualiza as meta tags da página para melhorar o SEO
+ * Atualiza as meta tags para melhor SEO
  * @param {string} titulo - O título do projeto
  * @param {string} descricao - A descrição do projeto
  */
 function atualizarMetaTags(titulo, descricao) {
-    // Atualizar meta tags para SEO
-    document.querySelector('meta[name="description"]').setAttribute('content', descricao);
-    document.querySelector('meta[property="og:title"]').setAttribute('content', `${titulo} - Mateus Galvão`);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', descricao);
+    // Meta description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+        metaDesc.setAttribute('content', descricao);
+    }
+
+    // Open Graph tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+        ogTitle.setAttribute('content', `${titulo} - Mateus Galvão`);
+    }
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) {
+        ogDesc.setAttribute('content', descricao);
+    }
+
+    console.log("Meta tags atualizadas para SEO");
 }

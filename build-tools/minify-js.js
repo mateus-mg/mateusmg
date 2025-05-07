@@ -99,20 +99,58 @@ async function minifyAllJS() {
 
         // Ordem de importância para combinar os scripts
         const orderedFiles = [
-            'init.js',
-            'optimizer.js',
-            'scripts.js',
-            'seo-loader.js'
-        ].filter(file => jsFiles.includes(file));
+            'core/pubsub.js',  // Carregado primeiro: sistema de pub/sub
+            'core/state.js',   // Carregado segundo: gerenciador de estado (depende do pub/sub)
+            'init.js',         // Inicialização
+            'optimizer.js',    // Otimizador
+            'i18n.js',         // Internacionalização
+            'scripts.js',      // Scripts principais 
+            'projeto-detalhe.js', // Scripts da página de detalhes
+            'seo-loader.js'    // Carregador de SEO
+        ].filter(file => {
+            // Verificar se o arquivo existe antes de incluir
+            const fullPath = path.join(JS_DIR, file);
+            const exists = fs.existsSync(fullPath);
+            if (!exists) {
+                console.log(`⚠️ Arquivo ordenado não encontrado: ${file}, será ignorado`);
+            }
+            return exists;
+        });
 
         // Adicionar arquivos restantes que não estão na ordem definida
-        jsFiles
-            .filter(file => !orderedFiles.includes(file))
-            .forEach(file => orderedFiles.push(file));
+        const allFiles = [];
+        function collectFilesRecursively(dir, baseDir = '') {
+            const files = fs.readdirSync(dir);
+            files.forEach(file => {
+                const filePath = path.join(dir, file);
+                const relativePath = path.join(baseDir, file);
+
+                if (fs.statSync(filePath).isDirectory()) {
+                    // Se for um diretório, processe recursivamente
+                    collectFilesRecursively(filePath, path.join(baseDir, file));
+                } else if (file.endsWith('.js')) {
+                    // Se for um arquivo .js, adicione à lista
+                    allFiles.push(relativePath);
+                }
+            });
+        }
+
+        collectFilesRecursively(JS_DIR);
+
+        const remainingFiles = allFiles.filter(file =>
+            !orderedFiles.includes(file)
+        );
+
+        const finalOrderedFiles = [...orderedFiles, ...remainingFiles];
+        console.log(`📄 Ordem de arquivos para minificação: ${finalOrderedFiles.join(', ')}`);
 
         const allJsContent = {};
-        orderedFiles.forEach(file => {
-            allJsContent[file] = fs.readFileSync(path.join(JS_DIR, file), 'utf8');
+        finalOrderedFiles.forEach(file => {
+            const filePath = path.join(JS_DIR, file);
+            if (fs.existsSync(filePath)) {
+                allJsContent[file] = fs.readFileSync(filePath, 'utf8');
+                console.log(`✅ Adicionado ao pacote combinado: ${file}`);
+            }
         });
 
         const combinedMinified = await minify(allJsContent, {
@@ -141,86 +179,93 @@ async function minifyAllJS() {
  * Atualiza o HTML para usar versões minificadas na produção
  */
 function updateHTML() {
-    const distHtmlPath = path.join(DIST_DIR, 'index.html');
-    
-    if (!fs.existsSync(distHtmlPath)) {
-        console.error('❌ Arquivo HTML não encontrado em dist/');
-        return;
-    }
-    
-    try {
-        let html = fs.readFileSync(distHtmlPath, 'utf8');
-        let htmlOriginal = html; // Para comparar mudanças no final
-        
-        // Substituir referências aos arquivos CSS
-        // 1. Remover a tag fonts.css completamente
-        html = html.replace(
-            /<link href="css\/fonts\.css" rel="stylesheet".*?>/g,
-            ''
-        );
-        
-        // 2. Substituir style.css pelo arquivo combinado - atualiza a tag já existente
-        html = html.replace(
-            /<link href="css\/style\.css" rel="stylesheet".*?>/g,
-            '<link href="css/styles.combined.min.css" rel="stylesheet">'
-        );
-        
-        // 3. Garantir que não haja referências duplicadas ao arquivo combinado
-        if (!html.includes('<link href="css/styles.combined.min.css" rel="stylesheet">')) {
-            // Se ainda não tem a referência ao CSS combinado, adicionar após a tag head
-            html = html.replace(
-                /<head>/,
-                '<head>\n    <link href="css/styles.combined.min.css" rel="stylesheet">'
-            );
+    // Lista de arquivos HTML a serem processados
+    const htmlFiles = [
+        path.join(DIST_DIR, 'index.html'),
+        path.join(DIST_DIR, 'projeto.html')
+    ];
+
+    htmlFiles.forEach(htmlPath => {
+        if (!fs.existsSync(htmlPath)) {
+            console.log(`⚠️ Arquivo HTML não encontrado: ${path.basename(htmlPath)}`);
+            return;
         }
-        
-        // Lidar com todos os scripts: reunir todas as ocorrências primeiro
-        const scriptTags = [];
-        let match;
-        const scriptRegex = /<script.*?src="js\/(.*?)\.js".*?><\/script>/g;
-        
-        // Encontrar todas as tags de script
-        while ((match = scriptRegex.exec(html)) !== null) {
-            scriptTags.push({
-                fullMatch: match[0],
-                filename: match[1],
-                position: match.index
-            });
-        }
-        
-        console.log(`   - Encontradas ${scriptTags.length} tags de script`);
-        
-        if (scriptTags.length > 0) {
-            // Ordenar por posição no documento para substituir na ordem correta
-            scriptTags.sort((a, b) => a.position - b.position);
-            
-            // Adicionar o script combinado no lugar do primeiro script
+
+        try {
+            console.log(`🔄 Processando ${path.basename(htmlPath)}...`);
+            let html = fs.readFileSync(htmlPath, 'utf8');
+            let htmlOriginal = html; // Para comparar mudanças no final
+
+            // Substituir referências aos arquivos CSS
+            // 1. Remover a tag fonts.css completamente
             html = html.replace(
-                scriptTags[0].fullMatch,
-                '<script src="js/scripts.combined.min.js"></script>'
+                /<link href="css\/fonts\.css" rel="stylesheet".*?>/g,
+                ''
             );
-            
-            // Remover todas as demais tags de script JS
-            for (let i = 1; i < scriptTags.length; i++) {
-                html = html.replace(scriptTags[i].fullMatch, '');
+
+            // 2. Substituir style.css pelo arquivo combinado - atualiza a tag já existente
+            html = html.replace(
+                /<link href="css\/style\.css" rel="stylesheet".*?>/g,
+                '<link href="css/styles.combined.min.css" rel="stylesheet">'
+            );
+
+            // 3. Garantir que não haja referências duplicadas ao arquivo combinado
+            if (!html.includes('<link href="css/styles.combined.min.css" rel="stylesheet">')) {
+                // Se ainda não tem a referência ao CSS combinado, adicionar após a tag head
+                html = html.replace(
+                    /<head>/,
+                    '<head>\n    <link href="css/styles.combined.min.css" rel="stylesheet">'
+                );
             }
+
+            // Lidar com todos os scripts: reunir todas as ocorrências primeiro
+            const scriptTags = [];
+            let match;
+            const scriptRegex = /<script.*?src="js\/(.*?)\.js".*?><\/script>/g;
+
+            // Encontrar todas as tags de script
+            while ((match = scriptRegex.exec(html)) !== null) {
+                scriptTags.push({
+                    fullMatch: match[0],
+                    filename: match[1],
+                    position: match.index
+                });
+            }
+
+            console.log(`   - Encontradas ${scriptTags.length} tags de script em ${path.basename(htmlPath)}`);
+
+            if (scriptTags.length > 0) {
+                // Ordenar por posição no documento para substituir na ordem correta
+                scriptTags.sort((a, b) => a.position - b.position);
+
+                // Adicionar o script combinado no lugar do primeiro script
+                html = html.replace(
+                    scriptTags[0].fullMatch,
+                    '<script src="js/scripts.combined.min.js"></script>'
+                );
+
+                // Remover todas as demais tags de script JS
+                for (let i = 1; i < scriptTags.length; i++) {
+                    html = html.replace(scriptTags[i].fullMatch, '');
+                }
+            }
+
+            // Verificar se foram feitas alterações
+            const tagsAlteradas = htmlOriginal !== html;
+
+            // Salvar o HTML atualizado
+            fs.writeFileSync(htmlPath, html);
+            console.log(`✅ ${path.basename(htmlPath)} atualizado para usar arquivos minificados e combinados (${tagsAlteradas ? 'alterações aplicadas' : 'sem alterações'})`);
+
+            // Informações detalhadas sobre as alterações
+            console.log(`   - ${scriptTags.length} tags de script manipuladas`);
+            console.log(`   - Arquivo CSS combinado: ${html.includes('styles.combined.min.css') ? 'Aplicado' : 'Não aplicado'}`);
+            console.log(`   - Arquivo JS combinado: ${html.includes('scripts.combined.min.js') ? 'Aplicado' : 'Não aplicado'}`);
+
+        } catch (error) {
+            console.error(`❌ Erro ao atualizar ${path.basename(htmlPath)}:`, error.message);
         }
-        
-        // Verificar se foram feitas alterações
-        const tagsAlteradas = htmlOriginal !== html;
-        
-        // Salvar o HTML atualizado
-        fs.writeFileSync(distHtmlPath, html);
-        console.log(`✅ HTML atualizado para usar arquivos minificados e combinados (${tagsAlteradas ? 'alterações aplicadas' : 'sem alterações'})`);
-        
-        // Informações detalhadas sobre as alterações
-        console.log(`   - ${scriptTags.length} tags de script manipuladas`);
-        console.log(`   - Arquivo CSS combinado: ${html.includes('styles.combined.min.css') ? 'Aplicado' : 'Não aplicado'}`);
-        console.log(`   - Arquivo JS combinado: ${html.includes('scripts.combined.min.js') ? 'Aplicado' : 'Não aplicado'}`);
-        
-    } catch (error) {
-        console.error('❌ Erro ao atualizar HTML:', error.message);
-    }
+    });
 }
 
 // Executar minificação

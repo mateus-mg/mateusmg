@@ -7,12 +7,10 @@ const domCache = {
     form: null
 };
 
-// Variáveis globais importantes
-let idiomaAtualProjetos = 'pt';
-
-// Configuração de cache com versionamento
+// Configuração de cache com versionamento - Mantida para compatibilidade temporária
+// Será eventualmente migrada totalmente para AppState
 const CONFIG_CACHE = {
-    versao: '1.0.1', // Incrementar esta versão quando atualizar traduções
+    versao: '1.0.1',
     tempoExpiracaoCache: 7 * 24 * 60 * 60 * 1000, // 7 dias em milissegundos
     prefixoChave: 'portfolio_'
 };
@@ -516,8 +514,9 @@ function inicializarPortfolio() {
     }
 
     // Verificar se temos projetos para exibir
-    if (!window.projetosPortfolio || !window.projetosPortfolio[idiomaAtualProjetos] || window.projetosPortfolio[idiomaAtualProjetos].length === 0) {
-        console.warn("Nenhum projeto encontrado para o idioma atual:", idiomaAtualProjetos);
+    const idiomaAtual = AppState.idiomaProjetoAtual;
+    if (!window.projetosPortfolio || !window.projetosPortfolio[idiomaAtual] || window.projetosPortfolio[idiomaAtual].length === 0) {
+        console.warn("Nenhum projeto encontrado para o idioma atual:", idiomaAtual);
         domCache.portfolioContainer.innerHTML = '<p class="portfolio-sem-projetos">Nenhum projeto disponível no momento.</p>';
         return;
     }
@@ -535,8 +534,10 @@ function inicializarPortfolio() {
     };
 
     let projetosPorPagina = getProjetosPorPagina();
-    let paginaAtual = 0;
-    let emTransicao = false; // Flag para controlar se há uma transição em andamento
+    let paginaAtual = AppState.paginaAtualPortfolio || 0;
+
+    // Armazenar o estado de transição no AppState em vez de variável local
+    let emTransicao = AppState.emTransicaoPortfolio;
 
     // Atualizar o número de projetos por página quando a janela for redimensionada
     window.addEventListener('resize', () => {
@@ -544,24 +545,39 @@ function inicializarPortfolio() {
         if (novoProjetosPorPagina !== projetosPorPagina) {
             projetosPorPagina = novoProjetosPorPagina;
             // Recalcular a página atual para manter a posição proporcional
-            const projetos = window.projetosPortfolio[idiomaAtualProjetos];
+            const projetos = window.projetosPortfolio[idiomaAtual];
             const totalPaginas = Math.ceil(projetos.length / projetosPorPagina);
             if (paginaAtual >= totalPaginas) {
                 paginaAtual = Math.max(0, totalPaginas - 1);
+                AppState.setPaginaPortfolio(paginaAtual);
             }
             // Re-renderizar com a nova configuração
             renderizarCards('avançar', 'redimensionamento');
         }
     });
 
+    // Inscrever-se para receber atualizações quando o idioma for alterado
+    PubSub.subscribe('idioma:alterado', (dados) => {
+        console.log(`Portfolio recebeu notificação de alteração de idioma: ${dados.antigo} -> ${dados.novo}`);
+        // Se não temos projetos para este idioma ainda e ele não estiver carregado, reinicializamos o portfolio
+        if (!window.projetosPortfolio[dados.novo] || window.projetosPortfolio[dados.novo].length === 0) {
+            console.log(`Reinicializando portfolio para o idioma ${dados.novo}`);
+        } else {
+            console.log(`Renderizando portfolio existente para o idioma ${dados.novo}`);
+            // Já temos os projetos para este idioma, apenas renderizá-los
+            renderizarCards('avançar', 'idioma');
+        }
+    });
+
     // Função para renderizar os projetos
     function renderizarCards(direcao = 'avançar', tipoTransicao = 'navegacao') {
         // Se já estiver em transição, não fazer nada
-        if (emTransicao) {
+        if (AppState.emTransicaoPortfolio) {
             return;
         }
 
-        emTransicao = true;
+        // Atualizar estado de transição
+        AppState.setTransicaoPortfolio(true);
 
         try {
             // Adicionar classe para estado de transição de saída
@@ -586,7 +602,9 @@ function inicializarPortfolio() {
                     // Limpar conteúdo após fade out
                     domCache.portfolioContainer.innerHTML = '';
 
-                    const projetos = window.projetosPortfolio[idiomaAtualProjetos];
+                    // Usar o idioma atual do AppState
+                    const idiomaAtual = AppState.idiomaProjetoAtual;
+                    const projetos = window.projetosPortfolio[idiomaAtual];
                     const inicio = paginaAtual * projetosPorPagina;
                     const fim = Math.min(inicio + projetosPorPagina, projetos.length);
                     const projetosAtuais = projetos.slice(inicio, fim);
@@ -698,33 +716,35 @@ function inicializarPortfolio() {
                                     domCache.portfolioContainer.classList.remove(`portfolio-entering-${direcao}`);
                                     // Remover a classe de navegação ativa
                                     domCache.portfolioContainer.classList.remove('portfolio-navegacao-ativa');
-                                    emTransicao = false;
+                                    // Atualizar o estado de transição
+                                    AppState.setTransicaoPortfolio(false);
                                 } catch (err) {
                                     console.error("Erro ao finalizar transição:", err);
-                                    emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+                                    AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
                                 }
                             }, 400); // Duração da transição
                         } catch (err) {
                             console.error("Erro durante a transição de entrada:", err);
-                            emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+                            AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
                         }
                     }, 50);
                 } catch (err) {
                     console.error("Erro durante a renderização dos cards:", err);
                     domCache.portfolioContainer.style.opacity = '1'; // Garantir que o conteúdo fique visível
-                    emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+                    AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
                     renderizarBotoesNavegacao(); // Tentar renderizar os botões de navegação
                 }
             }, 400); // Duração da transição de saída
         } catch (err) {
             console.error("Erro inicial na transição:", err);
-            emTransicao = false; // Garantir que emTransicao seja resetado mesmo em caso de erro
+            AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
         }
     }
 
     // Função para renderizar botões de navegação
     function renderizarBotoesNavegacao() {
-        const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtualProjetos].length / projetosPorPagina);
+        const idiomaAtual = AppState.idiomaProjetoAtual;
+        const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtual].length / projetosPorPagina);
 
         // Remover navegação existente
         const navegacaoExistente = document.querySelector('.portfolio-navegacao');
@@ -746,8 +766,9 @@ function inicializarPortfolio() {
         btnAnterior.disabled = paginaAtual === 0;
         btnAnterior.addEventListener('click', () => {
             console.log("Botão anterior do portfólio clicado");
-            if (paginaAtual > 0 && !emTransicao) {
+            if (paginaAtual > 0 && !AppState.emTransicaoPortfolio) {
                 paginaAtual--;
+                AppState.setPaginaPortfolio(paginaAtual);
                 renderizarCards('voltar');
             }
         });
@@ -759,8 +780,9 @@ function inicializarPortfolio() {
         btnProximo.disabled = paginaAtual >= totalPaginas - 1;
         btnProximo.addEventListener('click', () => {
             console.log("Botão próximo do portfólio clicado");
-            if (paginaAtual < totalPaginas - 1 && !emTransicao) {
+            if (paginaAtual < totalPaginas - 1 && !AppState.emTransicaoPortfolio) {
                 paginaAtual++;
+                AppState.setPaginaPortfolio(paginaAtual);
                 renderizarCards('avançar');
             }
         });
@@ -795,15 +817,18 @@ function inicializarPortfolio() {
     // Adicionar swipe para navegação em dispositivos móveis
     adicionarSwipe(domCache.portfolioContainer,
         () => {
-            const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtualProjetos].length / projetosPorPagina);
-            if (paginaAtual < totalPaginas - 1 && !emTransicao) {
+            const idiomaAtual = AppState.idiomaProjetoAtual;
+            const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtual].length / projetosPorPagina);
+            if (paginaAtual < totalPaginas - 1 && !AppState.emTransicaoPortfolio) {
                 paginaAtual++;
+                AppState.setPaginaPortfolio(paginaAtual);
                 renderizarCards('avançar');
             }
         },
         () => {
-            if (paginaAtual > 0 && !emTransicao) {
+            if (paginaAtual > 0 && !AppState.emTransicaoPortfolio) {
                 paginaAtual--;
+                AppState.setPaginaPortfolio(paginaAtual);
                 renderizarCards('voltar');
             }
         }
@@ -916,15 +941,11 @@ document.addEventListener('DOMContentLoaded', function () {
 function traduzirPagina(idioma) {
     console.log("Traduzindo página para:", idioma);
 
-    // Salvar o idioma selecionado no localStorage com controle de versão
-    localStorage.setItem('idioma', idioma);
-    localStorage.setItem('idioma_versao', CONFIG_CACHE.versao);
-    localStorage.setItem('idioma_data', Date.now().toString());
+    // Atualizar o estado através do AppState em vez de usar variáveis globais
+    AppState.setIdiomaAtual(idioma);
 
-    // Atualizar o idioma atual dos projetos
-    idiomaAtualProjetos = idioma;
-
-    // Verificar cache da tradução
+    // Verificar cache da tradução - Usamos CONFIG_CACHE por compatibilidade,
+    // eventualmente migraremos tudo para AppState
     const cacheKey = `${CONFIG_CACHE.prefixoChave}traducao_${idioma}`;
     const cacheKeyVersao = `${CONFIG_CACHE.prefixoChave}traducao_versao_${idioma}`;
     const cacheKeyData = `${CONFIG_CACHE.prefixoChave}traducao_data_${idioma}`;
@@ -933,10 +954,12 @@ function traduzirPagina(idioma) {
     const cachedDate = localStorage.getItem(cacheKeyData);
     const cachedTranslation = localStorage.getItem(cacheKey);
 
+    const configCache = AppState.configCache;
+
     // Verificar se o cache está válido baseado na versão e na data
-    const isCacheValid = cachedVersion === CONFIG_CACHE.versao &&
+    const isCacheValid = cachedVersion === configCache.versao &&
         cachedDate &&
-        (Date.now() - parseInt(cachedDate)) < CONFIG_CACHE.tempoExpiracaoCache &&
+        (Date.now() - parseInt(cachedDate)) < configCache.tempoExpiracaoCache &&
         cachedTranslation;
 
     if (isCacheValid) {
@@ -966,9 +989,9 @@ function traduzirPagina(idioma) {
             // Salvar traduções no cache
             try {
                 localStorage.setItem(cacheKey, JSON.stringify(traducoes));
-                localStorage.setItem(cacheKeyVersao, CONFIG_CACHE.versao);
+                localStorage.setItem(cacheKeyVersao, configCache.versao);
                 localStorage.setItem(cacheKeyData, Date.now().toString());
-                console.log(`Traduções para ${idioma} armazenadas em cache (versão ${CONFIG_CACHE.versao})`);
+                console.log(`Traduções para ${idioma} armazenadas em cache (versão ${configCache.versao})`);
             } catch (error) {
                 console.error("Erro ao salvar traduções em cache:", error);
                 // Limpando itens que possam estar ocupando espaço
@@ -977,10 +1000,19 @@ function traduzirPagina(idioma) {
 
             // Aplicar traduções à página
             aplicarTraducoes(traducoes, idioma);
+
+            // Registrar idioma carregado no estado
+            AppState.adicionarIdiomaCarregado(idioma);
         })
         .catch(error => {
             console.error('Erro ao traduzir a página:', error);
             alert(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
+
+            // Publicar evento de erro de tradução para que outros componentes possam reagir
+            PubSub.publish('idioma:erro', {
+                idioma,
+                erro: error.message
+            });
         });
 }
 

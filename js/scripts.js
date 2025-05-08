@@ -15,6 +15,11 @@ const CONFIG_CACHE = {
     prefixoChave: AppState ? AppState.configCache.prefixoChave : 'portfolio_'
 };
 
+// Variáveis globais para o portfólio - adicionadas para corrigir problema de escopo
+let idiomaAtual = 'pt';
+let projetosPorPagina = 3;
+let paginaAtual = 0;
+
 // Garantir que window.carrosseis existe globalmente
 window.carrosseis = window.carrosseis || {};
 
@@ -131,15 +136,31 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarPortfolio();
     configurarFormularioContato();
     configurarOutrosEventos();
+    // Inicializar navegação das experiências
+    inicializarNavegacaoExperiencias();
 
     // Verificar idioma salvo
     const idiomaArmazenado = localStorage.getItem('idioma');
     if (idiomaArmazenado) {
-        traduzirPagina(idiomaArmazenado);
+        // Uso do novo sistema de i18n para traduzir a página
+        window.alterarIdioma(idiomaArmazenado);
     }
 
     console.log("Inicialização do site concluída");
 });
+
+/**
+ * Função de compatibilidade para projetos antigos que ainda usam traduzirPagina()
+ * Esta função agora atua como um wrapper para o novo sistema window.alterarIdioma()
+ */
+function traduzirPagina(idioma) {
+    console.log("Chamando função legada traduzirPagina(), redirecionando para window.alterarIdioma()");
+    if (window.alterarIdioma && typeof window.alterarIdioma === 'function') {
+        window.alterarIdioma(idioma);
+    } else {
+        console.error("Função window.alterarIdioma não disponível");
+    }
+}
 
 // Função para criar overlay do sidebar
 function criarOverlaySidebar() {
@@ -191,12 +212,14 @@ function configurarSeletorIdiomas() {
     menuIdiomasToggle.addEventListener('click', () => {
         console.log("Botão de idiomas clicado");
         menuIdiomas.classList.toggle('ativo');
+        menuIdiomasToggle.setAttribute('aria-expanded', menuIdiomas.classList.contains('ativo'));
     });
 
     // Fechar menu quando clicar fora dele
     document.addEventListener('click', (event) => {
         if (!menuIdiomasToggle.contains(event.target) && !menuIdiomas.contains(event.target)) {
             menuIdiomas.classList.remove('ativo');
+            menuIdiomasToggle.setAttribute('aria-expanded', 'false');
         }
     });
 
@@ -209,7 +232,20 @@ function configurarSeletorIdiomas() {
             // Usar o novo sistema i18n em vez da função traduzirPagina
             await window.alterarIdioma(idioma);
 
+            // Atualizar UI
+            document.querySelectorAll('.seletor-idioma').forEach(btn => {
+                btn.classList.remove('ativo');
+            });
+            this.classList.add('ativo');
+
+            // Atualizar o texto do botão de seleção
+            const idiomaAtualElement = document.querySelector('.idioma-atual');
+            if (idiomaAtualElement) {
+                idiomaAtualElement.textContent = idioma.toUpperCase();
+            }
+
             menuIdiomas.classList.remove('ativo');
+            menuIdiomasToggle.setAttribute('aria-expanded', 'false');
         });
     });
 
@@ -441,7 +477,7 @@ function iniciarAnimacaoSections() {
 
     try {
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     // Adicionando a classe 'visivel' para ativar a animação via CSS
                     entry.target.classList.add('visivel');
@@ -494,7 +530,7 @@ function inicializarPortfolio() {
                 {
                     id: "analise_vendas",
                     titulo: 'Análise de Vendas com Power BI',
-                    imagem: 'img/vendas.jpg',
+                    imagem: 'vendas.jpg',
                     alt: 'Dashboard de vendas criado no Power BI mostrando gráficos de faturamento, produtos e regiões',
                     link: 'https://github.com/mateus-mg/powerbi-vendas',
                     descricao: 'Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.',
@@ -503,7 +539,7 @@ function inicializarPortfolio() {
                 {
                     id: "previsao_casas",
                     titulo: 'Previsão de Preços de Casas (Python)',
-                    imagem: 'img/preços-casas.jpg',
+                    imagem: 'preços-casas.jpg',
                     alt: 'Gráfico de dispersão de preços de casas previsto por modelo de machine learning',
                     link: 'https://github.com/mateus-mg/house-prices-prediction',
                     descricao: 'Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.',
@@ -512,7 +548,34 @@ function inicializarPortfolio() {
                 {
                     id: "dashboard_rh",
                     titulo: 'Dashboard de RH',
-                    imagem: 'img/rh.jpg',
+                    imagem: 'rh.jpg',
+                    alt: 'Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores',
+                    link: 'https://github.com/mateus-mg/dashboard-rh',
+                    descricao: 'Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.',
+                    tecnologias: ['Power BI', 'Excel', 'RH']
+                },
+                {
+                    id: "analise_vendas",
+                    titulo: 'Análise de Vendas com Power BI',
+                    imagem: 'vendas.jpg',
+                    alt: 'Dashboard de vendas criado no Power BI mostrando gráficos de faturamento, produtos e regiões',
+                    link: 'https://github.com/mateus-mg/powerbi-vendas',
+                    descricao: 'Dashboard interativo para análise de vendas utilizando Power BI. Inclui segmentação por período, produtos e regiões, com insights visuais para tomada de decisão.',
+                    tecnologias: ['Power BI', 'DAX', 'Visualização']
+                },
+                {
+                    id: "previsao_casas",
+                    titulo: 'Previsão de Preços de Casas (Python)',
+                    imagem: 'preços-casas.jpg',
+                    alt: 'Gráfico de dispersão de preços de casas previsto por modelo de machine learning',
+                    link: 'https://github.com/mateus-mg/house-prices-prediction',
+                    descricao: 'Modelo de machine learning para prever preços de casas com Python. Utiliza regressão, análise exploratória e validação cruzada.',
+                    tecnologias: ['Python', 'Pandas', 'Scikit-learn']
+                },
+                {
+                    id: "dashboard_rh",
+                    titulo: 'Dashboard de RH',
+                    imagem: 'rh.jpg',
                     alt: 'Dashboard de RH com indicadores de turnover, absenteísmo e satisfação dos colaboradores',
                     link: 'https://github.com/mateus-mg/dashboard-rh',
                     descricao: 'Visualização de indicadores de RH em dashboard dinâmico. Permite análise de turnover, absenteísmo e satisfação dos colaboradores.',
@@ -524,16 +587,48 @@ function inicializarPortfolio() {
         };
     }
 
+    // CORREÇÃO: Adicionando projetos padrão para idiomas sem conteúdo
+    if (window.projetosPortfolio) {
+        // Se não temos projetos em inglês, copiar de português
+        if (!window.projetosPortfolio.en || window.projetosPortfolio.en.length === 0) {
+            console.log("Copiando projetos PT para EN como fallback");
+            window.projetosPortfolio.en = JSON.parse(JSON.stringify(window.projetosPortfolio.pt));
+        }
+
+        // Se não temos projetos em espanhol, copiar de português
+        if (!window.projetosPortfolio.es || window.projetosPortfolio.es.length === 0) {
+            console.log("Copiando projetos PT para ES como fallback");
+            window.projetosPortfolio.es = JSON.parse(JSON.stringify(window.projetosPortfolio.pt));
+        }
+    }
+
     // Verificar se temos projetos para exibir
-    const idiomaAtual = AppState.idiomaProjetoAtual;
-    if (!window.projetosPortfolio || !window.projetosPortfolio[idiomaAtual] || window.projetosPortfolio[idiomaAtual].length === 0) {
+    let idiomaAtual = 'pt'; // Default seguro
+
+    // Verificar se i18n está disponível
+    if (window.i18n && typeof window.i18n.getIdiomaAtual === 'function') {
+        idiomaAtual = window.i18n.getIdiomaAtual();
+    } else if (window.i18n && window.i18n.idiomaAtual) {
+        idiomaAtual = window.i18n.idiomaAtual;
+    } else {
+        idiomaAtual = localStorage.getItem('idioma') || 'pt';
+    }
+
+    // Garantir que estamos usando um idioma que tem projetos
+    if (!window.projetosPortfolio[idiomaAtual]) {
+        console.log(`Idioma ${idiomaAtual} não tem projetos definidos. Usando 'pt' como fallback.`);
+        idiomaAtual = 'pt'; // Fallback para pt
+    }
+
+    // Verificar se temos projetos para o idioma atual
+    if (!window.projetosPortfolio[idiomaAtual] || window.projetosPortfolio[idiomaAtual].length === 0) {
         console.warn("Nenhum projeto encontrado para o idioma atual:", idiomaAtual);
         domCache.portfolioContainer.innerHTML = '<p class="portfolio-sem-projetos">Nenhum projeto disponível no momento.</p>';
         return;
     }
 
     // Configuração de paginação
-    const getProjetosPorPagina = () => {
+    const getProjetosPorPagina = function () {
         // Adaptar o número de projetos por página com base no tamanho da tela
         if (window.innerWidth <= 768) {
             return 1; // Em dispositivos móveis, mostrar apenas 1 projeto por página
@@ -545,282 +640,174 @@ function inicializarPortfolio() {
     };
 
     let projetosPorPagina = getProjetosPorPagina();
-    let paginaAtual = AppState.paginaAtualPortfolio || 0;
+    let paginaAtual = 0; // Sempre começar da página 0 para evitar problemas
 
-    // Armazenar o estado de transição no AppState em vez de variável local
-    let emTransicao = AppState.emTransicaoPortfolio;
+    // Tentar usar o AppState se disponível
+    if (window.AppState && typeof AppState.paginaAtualPortfolio === 'number') {
+        paginaAtual = AppState.paginaAtualPortfolio;
+    }
 
-    // Atualizar o número de projetos por página quando a janela for redimensionada
-    window.addEventListener('resize', () => {
-        const novoProjetosPorPagina = getProjetosPorPagina();
-        if (novoProjetosPorPagina !== projetosPorPagina) {
-            projetosPorPagina = novoProjetosPorPagina;
-            // Recalcular a página atual para manter a posição proporcional
-            const projetos = window.projetosPortfolio[idiomaAtual];
-            const totalPaginas = Math.ceil(projetos.length / projetosPorPagina);
-            if (paginaAtual >= totalPaginas) {
-                paginaAtual = Math.max(0, totalPaginas - 1);
-                AppState.setPaginaPortfolio(paginaAtual);
-            }
-            // Re-renderizar com a nova configuração
-            renderizarCards('avançar', 'redimensionamento');
-        }
-    });
+    // Definir as variáveis globais para navegação do portfólio
+    window.idiomaAtual = idiomaAtual;
+    window.projetosPorPagina = projetosPorPagina;
+    window.paginaAtual = paginaAtual;
 
-    // Inscrever-se para receber atualizações quando o idioma for alterado
-    PubSub.subscribe('idioma:alterado', (dados) => {
-        console.log(`Portfolio recebeu notificação de alteração de idioma: ${dados.antigo} -> ${dados.novo}`);
-        // Se não temos projetos para este idioma ainda e ele não estiver carregado, reinicializamos o portfolio
-        if (!window.projetosPortfolio[dados.novo] || window.projetosPortfolio[dados.novo].length === 0) {
-            console.log(`Reinicializando portfolio para o idioma ${dados.novo}`);
+    // Renderizar os cards do portfólio
+    renderizarCards();
 
-            // Carregar projetos usando o sistema i18n
-            window.i18n.traduzir(`projetos`).then(projetosTraducao => {
-                if (projetosTraducao && typeof projetosTraducao === 'object') {
-                    const projetosConvertidos = [];
-
-                    Object.keys(projetosTraducao).forEach(id => {
-                        const proj = projetosTraducao[id];
-
-                        // Mapeamento correto das imagens baseado no ID do projeto
-                        let imagemPath;
-                        if (id.includes('vendas')) {
-                            imagemPath = 'img/vendas.jpg';
-                        } else if (id.includes('previsao_casas') || id.includes('casas')) {
-                            imagemPath = 'img/preços-casas.jpg';
-                        } else if (id.includes('rh')) {
-                            imagemPath = 'img/rh.jpg';
-                        } else {
-                            // Imagem padrão caso não encontre correspondência
-                            imagemPath = `img/${id}.jpg`;
-                        }
-
-                        projetosConvertidos.push({
-                            id: id,
-                            titulo: proj.titulo,
-                            imagem: imagemPath,
-                            alt: proj.alt,
-                            link: `https://github.com/mateus-mg/${id}`,
-                            descricao: proj.descricao,
-                            tecnologias: proj.tecnologias
-                        });
-                    });
-
-                    // Atualizar os projetos para o idioma atual
-                    window.projetosPortfolio[dados.novo] = projetosConvertidos;
-
-                    // Renderizar projetos com o novo idioma
-                    renderizarCards('avançar', 'idioma');
-                }
-            });
-        } else {
-            console.log(`Renderizando portfolio existente para o idioma ${dados.novo}`);
-            // Já temos os projetos para este idioma, apenas renderizá-los
-            renderizarCards('avançar', 'idioma');
-        }
-    });
-
-    // Função para renderizar os projetos
-    function renderizarCards(direcao = 'avançar', tipoTransicao = 'navegacao') {
-        // Se já estiver em transição, não fazer nada
-        if (AppState.emTransicaoPortfolio) {
-            return;
-        }
-
-        // Atualizar estado de transição
-        AppState.setTransicaoPortfolio(true);
-
+    // Função para renderizar os cards
+    function renderizarCards() {
         try {
-            // Adicionar classe para estado de transição de saída
-            domCache.portfolioContainer.classList.add('portfolio-transitioning');
-            domCache.portfolioContainer.classList.add(`portfolio-transitioning-${direcao}`);
+            // Limpar conteúdo anterior
+            domCache.portfolioContainer.innerHTML = '';
 
-            // Adicionar classe para indicar que é uma navegação ativa (não uma troca de idioma)
-            if (tipoTransicao === 'navegacao') {
-                domCache.portfolioContainer.classList.add('portfolio-navegacao-ativa');
-            }
+            // Usar o idioma atual
+            const projetos = window.projetosPortfolio[idiomaAtual];
+            const inicio = paginaAtual * projetosPorPagina;
+            const fim = Math.min(inicio + projetosPorPagina, projetos.length);
+            const projetosAtuais = projetos.slice(inicio, fim);
 
-            // Fade out dos cards atuais
-            domCache.portfolioContainer.style.opacity = '0';
+            console.log(`Renderizando ${projetosAtuais.length} projetos (página ${paginaAtual + 1} de ${Math.ceil(projetos.length / projetosPorPagina)})`);
 
-            // Só aplicar a transformação se for uma navegação entre páginas
-            if (tipoTransicao === 'navegacao') {
-                domCache.portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(-5%)' : 'translateX(5%)';
-            }
+            // Criar cards
+            projetosAtuais.forEach(projeto => {
+                const card = document.createElement('div');
+                card.className = 'portfolio-card';
+                card.setAttribute('data-id', projeto.id);
 
+                // Criar tags HTML para as tecnologias
+                const tagsHTML = projeto.tecnologias.map(tech =>
+                    `<span class="portfolio-tag">${tech}</span>`
+                ).join('');
+
+                // Template do card com picture para suporte a WebP com fallback para JPG
+                card.innerHTML = `
+                    <div class="portfolio-image-container">
+                        <picture>
+                            <source srcset="img/webp/${projeto.imagem.replace(/\.(jpg|jpeg|png)$/i, '.webp')}" type="image/webp">
+                            <img src="img/${projeto.imagem}" alt="${projeto.alt}" class="portfolio-img">
+                        </picture>
+                    </div>
+                    <div class="portfolio-card-content">
+                        <h3 class="portfolio-title">${projeto.titulo}</h3>
+                        <p class="portfolio-desc">${projeto.descricao}</p>
+                        <div class="portfolio-tags">
+                            ${tagsHTML}
+                        </div>
+                        <div class="portfolio-buttons">
+                            <a href="${projeto.link}" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
+                                <i class="fas fa-external-link-alt"></i> Ver GitHub
+                            </a>
+                            <a href="projeto.html?id=${projeto.id}" class="portfolio-btn relatorio-btn">
+                                <i class="fas fa-file-alt"></i> Relatório
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                // Adicionar o card ao container
+                domCache.portfolioContainer.appendChild(card);
+            });
+
+            // Renderizar os botões de navegação sempre após adicionar os cards
+            // Forçar um timeout para garantir que o DOM foi atualizado
             setTimeout(() => {
-                try {
-                    // Limpar conteúdo após fade out
-                    domCache.portfolioContainer.innerHTML = '';
+                renderizarBotoesNavegacao();
+            }, 50);
 
-                    // Usar o idioma atual do AppState
-                    const idiomaAtual = AppState.idiomaProjetoAtual;
-                    const projetos = window.projetosPortfolio[idiomaAtual];
-                    const inicio = paginaAtual * projetosPorPagina;
-                    const fim = Math.min(inicio + projetosPorPagina, projetos.length);
-                    const projetosAtuais = projetos.slice(inicio, fim);
-
-                    console.log(`Renderizando ${projetosAtuais.length} projetos (página ${paginaAtual + 1})`);
-
-                    // Criar cards
-                    projetosAtuais.forEach(projeto => {
-                        const card = document.createElement('div');
-                        card.className = 'portfolio-card';
-                        card.setAttribute('data-id', projeto.id);
-
-                        // Criar tags HTML para as tecnologias
-                        const tagsHTML = projeto.tecnologias.map(tech =>
-                            `<span class="portfolio-tag">${tech}</span>`
-                        ).join('');
-
-                        // WebP path com suporte para diferentes tamanhos
-                        const imagemBase = projeto.imagem.replace(/\.(jpg|jpeg|png|gif)$/, '');
-                        const webpBase = imagemBase.replace('img/', 'img/webp/') + '.webp';
-                        const originalBase = projeto.imagem;
-
-                        // Determinar fetchpriority com base na posição do card
-                        const fetchPriority = projetosAtuais.indexOf(projeto) === 0 ? 'high' : 'low';
-
-                        // Determinar loading com base na posição do card
-                        const loadingStrategy = projetosAtuais.indexOf(projeto) === 0 ? 'eager' : 'lazy';
-
-                        // Template do card com suporte a srcset para diferentes tamanhos
-                        card.innerHTML = `
-                            <div class="portfolio-image-container">
-                                <picture>
-                                    <source 
-                                        srcset="${webpBase}"
-                                        type="image/webp"
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        fetchpriority="${fetchPriority}">
-                                    <img 
-                                        src="${originalBase}" 
-                                        alt="${projeto.alt}" 
-                                        loading="${loadingStrategy}" 
-                                        fetchpriority="${fetchPriority}"
-                                        width="600"
-                                        height="400"
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        class="portfolio-img">
-                                </picture>
-                            </div>
-                            <div class="portfolio-card-content">
-                                <h3 class="portfolio-title">${projeto.titulo}</h3>
-                                <p class="portfolio-desc">${projeto.descricao}</p>
-                                <div class="portfolio-tags">
-                                    ${tagsHTML}
-                                </div>
-                                <div class="portfolio-buttons">
-                                    <a href="${projeto.link}" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
-                                        <i class="fas fa-external-link-alt"></i> Ver GitHub
-                                    </a>
-                                    <a href="projeto.html?id=${projeto.id}" class="portfolio-btn relatorio-btn">
-                                        <i class="fas fa-file-alt"></i> Relatório
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-
-                        // Garantir que o redimensionamento responsivo seja aplicado após o carregamento
-                        const imgElement = card.querySelector('img');
-                        if (imgElement && window.ImageManager && window.ImageManager.aplicarRedimensionamentoResponsivo) {
-                            // Verificar se a imagem já está carregada
-                            if (imgElement.complete) {
-                                // Dar tempo para o layout ser calculado
-                                setTimeout(() => window.ImageManager.aplicarRedimensionamentoResponsivo(imgElement), 100);
-                            } else {
-                                imgElement.onload = function () {
-                                    // Dar tempo para o layout ser calculado
-                                    setTimeout(() => window.ImageManager.aplicarRedimensionamentoResponsivo(this), 100);
-                                };
-                            }
-                        }
-
-                        // Adicionar o card ao container
-                        domCache.portfolioContainer.appendChild(card);
-                    });
-
-                    // Remover a classe de transição e configurar o estado de entrada
-                    domCache.portfolioContainer.classList.remove('portfolio-transitioning');
-                    domCache.portfolioContainer.classList.remove(`portfolio-transitioning-${direcao}`);
-                    domCache.portfolioContainer.classList.add(`portfolio-entering-${direcao}`);
-
-                    // Aplicar transformação inicial para entrada apenas se for navegação
-                    if (tipoTransicao === 'navegacao') {
-                        domCache.portfolioContainer.style.transform = direcao === 'avançar' ? 'translateX(5%)' : 'translateX(-5%)';
-                    } else {
-                        domCache.portfolioContainer.style.transform = 'translateX(0)';
-                    }
-
-                    // Fade in dos novos cards (com pequeno atraso para que a transformação seja aplicada)
-                    setTimeout(() => {
-                        try {
-                            domCache.portfolioContainer.style.opacity = '1';
-                            domCache.portfolioContainer.style.transform = 'translateX(0)';
-
-                            // Renderizar navegação
-                            renderizarBotoesNavegacao();
-
-                            // Remover a classe de entrada após a animação terminar
-                            setTimeout(() => {
-                                try {
-                                    domCache.portfolioContainer.classList.remove(`portfolio-entering-${direcao}`);
-                                    // Remover a classe de navegação ativa
-                                    domCache.portfolioContainer.classList.remove('portfolio-navegacao-ativa');
-                                    // Atualizar o estado de transição
-                                    AppState.setTransicaoPortfolio(false);
-                                } catch (err) {
-                                    console.error("Erro ao finalizar transição:", err);
-                                    AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
-                                }
-                            }, 400); // Duração da transição
-                        } catch (err) {
-                            console.error("Erro durante a transição de entrada:", err);
-                            AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
-                        }
-                    }, 50);
-                } catch (err) {
-                    console.error("Erro durante a renderização dos cards:", err);
-                    domCache.portfolioContainer.style.opacity = '1'; // Garantir que o conteúdo fique visível
-                    AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
-                    renderizarBotoesNavegacao(); // Tentar renderizar os botões de navegação
-                }
-            }, 400); // Duração da transição de saída
         } catch (err) {
-            console.error("Erro inicial na transição:", err);
-            AppState.setTransicaoPortfolio(false); // Garantir que o estado é resetado mesmo em caso de erro
+            console.error("Erro durante a renderização dos cards:", err);
         }
     }
 
+    // Exportar renderizarCards para o escopo global (correção do bug de navegação)
+    window.renderizarCards = renderizarCards;
+
     // Função para renderizar botões de navegação
     function renderizarBotoesNavegacao() {
-        const idiomaAtual = AppState.idiomaProjetoAtual;
-        const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtual].length / projetosPorPagina);
+        console.log("Renderizando botões de navegação do portfólio");
 
-        // Remover navegação existente
+        const projetos = window.projetosPortfolio[idiomaAtual];
+        const totalProjetos = projetos.length;
+        const totalPaginas = Math.ceil(totalProjetos / projetosPorPagina);
+
+        console.log(`Total de projetos: ${totalProjetos}, Projetos por página: ${projetosPorPagina}, Total de páginas: ${totalPaginas}`);
+
+        // Remover navegação existente para evitar duplicação
         const navegacaoExistente = document.querySelector('.portfolio-navegacao');
-        if (navegacaoExistente) {
+        const navegacaoContainerExistente = document.querySelector('.portfolio-navegacao-container');
+
+        if (navegacaoContainerExistente) {
+            console.log("Removendo container de navegação existente");
+            navegacaoContainerExistente.remove();
+        } else if (navegacaoExistente) {
+            console.log("Removendo navegação existente");
             navegacaoExistente.remove();
         }
 
-        // Só renderiza navegação se houver mais de uma página
-        if (totalPaginas <= 1) return;
+        // Se só temos uma página, não precisamos de botões de navegação
+        if (totalPaginas <= 1) {
+            console.log("Apenas uma página de projetos. Navegação não necessária.");
+            return;
+        }
 
-        // Criar container de navegação
+        console.log("Criando novos botões de navegação");
+
+        // Obter a seção do portfólio
+        const portfolioSection = document.getElementById('portfolio');
+        if (!portfolioSection) {
+            console.error("Seção de portfólio não encontrada");
+            return;
+        }
+
+        // Criar navegação
         const navegacao = document.createElement('div');
         navegacao.className = 'portfolio-navegacao';
+
+        // Adicionar estilos inline diretamente para garantir visibilidade
+        Object.assign(navegacao.style, {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '20px',
+            margin: '30px auto',
+            padding: '20px 0',
+            visibility: 'visible',
+            opacity: '1',
+            width: '100%',
+            maxWidth: '300px',
+            position: 'relative',
+            zIndex: '100'
+        });
 
         // Botão Anterior
         const btnAnterior = document.createElement('button');
         btnAnterior.className = 'portfolio-nav-btn anterior';
         btnAnterior.innerHTML = '<i class="fas fa-chevron-left"></i> Anterior';
-        btnAnterior.disabled = paginaAtual === 0;
+        btnAnterior.disabled = paginaAtual <= 0;
+
+        // Estilos inline para o botão anterior
+        Object.assign(btnAnterior.style, {
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px 20px',
+            backgroundColor: 'var(--cor-destaque)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: paginaAtual <= 0 ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            minWidth: '100px',
+            opacity: paginaAtual <= 0 ? '0.5' : '1'
+        });
+
         btnAnterior.addEventListener('click', () => {
-            console.log("Botão anterior do portfólio clicado");
-            if (paginaAtual > 0 && !AppState.emTransicaoPortfolio) {
+            console.log("Botão anterior clicado");
+            if (paginaAtual > 0) {
                 paginaAtual--;
-                AppState.setPaginaPortfolio(paginaAtual);
-                renderizarCards('voltar');
+                if (window.AppState) AppState.setPaginaPortfolio(paginaAtual);
+                renderizarCards();
             }
         });
 
@@ -829,354 +816,351 @@ function inicializarPortfolio() {
         btnProximo.className = 'portfolio-nav-btn proximo';
         btnProximo.innerHTML = 'Próximo <i class="fas fa-chevron-right"></i>';
         btnProximo.disabled = paginaAtual >= totalPaginas - 1;
+
+        // Estilos inline para o botão próximo
+        Object.assign(btnProximo.style, {
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px 20px',
+            backgroundColor: 'var(--cor-destaque)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: paginaAtual >= totalPaginas - 1 ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            minWidth: '100px',
+            opacity: paginaAtual >= totalPaginas - 1 ? '0.5' : '1'
+        });
+
         btnProximo.addEventListener('click', () => {
-            console.log("Botão próximo do portfólio clicado");
-            if (paginaAtual < totalPaginas - 1 && !AppState.emTransicaoPortfolio) {
+            console.log("Botão próximo clicado");
+            if (paginaAtual < totalPaginas - 1) {
                 paginaAtual++;
-                AppState.setPaginaPortfolio(paginaAtual);
-                renderizarCards('avançar');
+                if (window.AppState) AppState.setPaginaPortfolio(paginaAtual);
+                renderizarCards();
             }
         });
 
-        // Adicionar botões de navegação ao container
+        // Adicionar elementos ao container de navegação
         navegacao.appendChild(btnAnterior);
         navegacao.appendChild(btnProximo);
 
-        // Adicionar navegação após o container
-        domCache.portfolioContainer.parentNode.insertBefore(navegacao, domCache.portfolioContainer.nextSibling);
-    }
+        // Obter o conteúdo da seção portfolio
+        const conteudoSection = portfolioSection.querySelector('.conteudo-section');
 
-    // Função genérica para o swipe
-    function adicionarSwipe(container, onSwipeLeft, onSwipeRight) {
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        container.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        container.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX < touchStartX - 50) onSwipeLeft();
-            if (touchEndX > touchStartX + 50) onSwipeRight();
-        });
-    }
-
-    // Iniciar a renderização
-    renderizarCards();
-
-    // Adicionar swipe para navegação em dispositivos móveis
-    adicionarSwipe(domCache.portfolioContainer,
-        () => {
-            const idiomaAtual = AppState.idiomaProjetoAtual;
-            const totalPaginas = Math.ceil(window.projetosPortfolio[idiomaAtual].length / projetosPorPagina);
-            if (paginaAtual < totalPaginas - 1 && !AppState.emTransicaoPortfolio) {
-                paginaAtual++;
-                AppState.setPaginaPortfolio(paginaAtual);
-                renderizarCards('avançar');
-            }
-        },
-        () => {
-            if (paginaAtual > 0 && !AppState.emTransicaoPortfolio) {
-                paginaAtual--;
-                AppState.setPaginaPortfolio(paginaAtual);
-                renderizarCards('voltar');
-            }
+        // Inserir a navegação diretamente após o container de cards
+        if (conteudoSection && domCache.portfolioContainer) {
+            conteudoSection.appendChild(navegacao);
+            console.log("Botões de navegação inseridos diretamente após os cards");
+        } else {
+            console.error("Não foi possível encontrar o local adequado para inserir os botões");
+            // Fallback: adicionar ao final da seção portfolio
+            portfolioSection.appendChild(navegacao);
+            console.log("Botões inseridos no final da seção portfolio (fallback)");
         }
-    );
 
-    // Expor a função para uso em outras partes do código
-    window.renderizarPortfolio = renderizarCards;
-
-    console.log("Inicialização do portfólio concluída");
-}
-
-// Código para o sistema de navegação das subseções de experiências
-document.addEventListener('DOMContentLoaded', function () {
-    // Configuração do sistema de navegação para as experiências
-    const setupExperienciaNavegacao = (containerId) => {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-
-        const paginas = container.querySelectorAll('.experiencia-pagina');
-        const totalPaginas = paginas.length;
-        const btnAnterior = document.querySelector(`.experiencia-nav-btn.anterior[data-target="${containerId}"]`);
-        const btnProximo = document.querySelector(`.experiencia-nav-btn.proximo[data-target="${containerId}"]`);
-
-        let paginaAtual = 1;
-
-        // Inicializar páginas e garantir que apenas a primeira esteja visível
-        paginas.forEach((pagina, index) => {
-            if (index === 0) {
-                pagina.classList.add('ativo');
-                pagina.style.display = 'block';
-                pagina.style.opacity = '1';
-                pagina.style.transform = 'translateX(0)';
+        console.log("Verificação final da navegação:");
+        setTimeout(() => {
+            const navInserida = document.querySelector('.portfolio-navegacao');
+            if (navInserida) {
+                console.log("✅ Navegação inserida com sucesso!");
             } else {
-                pagina.classList.remove('ativo');
-                pagina.style.display = 'none';
-                pagina.style.opacity = '0';
+                console.error("❌ Falha ao inserir navegação");
+            }
+        }, 0);
+    }
+
+    // Ajustar ao redimensionar a janela
+    window.addEventListener('resize', () => {
+        const novoProjetosPorPagina = getProjetosPorPagina();
+        if (novoProjetosPorPagina !== projetosPorPagina) {
+            projetosPorPagina = novoProjetosPorPagina;
+            window.projetosPorPagina = projetosPorPagina;
+            renderizarCards();
+        }
+    });
+}
+
+// Exportar inicializarPortfolio para o escopo global para garantir que o fallback funcione
+window.inicializarPortfolio = inicializarPortfolio;
+
+// Função para inicializar a navegação das seções de experiência (cursos e formações)
+function inicializarNavegacaoExperiencias() {
+    console.log("Inicializando navegação das experiências (cursos e formações)");
+
+    // Selecionando todos os botões de navegação das experiências
+    const botoes = document.querySelectorAll('.experiencia-nav-btn');
+
+    botoes.forEach(botao => {
+        botao.addEventListener('click', () => {
+            // Obter o container alvo (formacoes-container ou cursos-container)
+            const targetContainerId = botao.getAttribute('data-target');
+            const container = document.getElementById(targetContainerId);
+
+            if (!container) {
+                console.error(`Container ${targetContainerId} não encontrado`);
+                return;
+            }
+
+            // Obter as páginas dentro do container
+            const paginas = container.querySelectorAll('.experiencia-pagina');
+            if (paginas.length <= 1) {
+                console.log("Apenas uma página disponível, navegação desnecessária");
+                return;
+            }
+
+            // Encontrar a página atual (com classe 'ativo')
+            let paginaAtualIndex = 0;
+            paginas.forEach((pagina, index) => {
+                if (pagina.classList.contains('ativo')) {
+                    paginaAtualIndex = index;
+                }
+            });
+
+            // Determinar a próxima página com base na direção (anterior ou próximo)
+            const isAnterior = botao.classList.contains('anterior');
+            let novaPaginaIndex = isAnterior ? paginaAtualIndex - 1 : paginaAtualIndex + 1;
+
+            // Garantir que o índice esteja dentro dos limites
+            if (novaPaginaIndex < 0) novaPaginaIndex = 0;
+            if (novaPaginaIndex >= paginas.length) novaPaginaIndex = paginas.length - 1;
+
+            // Se não houver mudança, não fazer nada
+            if (novaPaginaIndex === paginaAtualIndex) {
+                return;
+            }
+
+            // Remover classe 'ativo' de todas as páginas
+            paginas.forEach(pagina => pagina.classList.remove('ativo'));
+
+            // Adicionar classe 'ativo' à nova página
+            paginas[novaPaginaIndex].classList.add('ativo');
+
+            // Atualizar estado dos botões de navegação
+            const botoesContainer = botao.parentElement;
+            const botaoAnterior = botoesContainer.querySelector('.anterior');
+            const botaoProximo = botoesContainer.querySelector('.proximo');
+
+            // Desabilitar/habilitar botões conforme necessário
+            if (botaoAnterior) {
+                botaoAnterior.disabled = novaPaginaIndex === 0;
+            }
+
+            if (botaoProximo) {
+                botaoProximo.disabled = novaPaginaIndex === paginas.length - 1;
+            }
+
+            console.log(`Navegação em ${targetContainerId}: movido para página ${novaPaginaIndex + 1} de ${paginas.length}`);
+        });
+    });
+
+    console.log("Navegação das experiências inicializada");
+}
+
+// Configurar eventos de teclado
+function configurarEventosTeclado() {
+    console.log("Configurando eventos de teclado");
+
+    // Fechar sidebar com a tecla Esc
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (domCache.sidebar && domCache.sidebar.classList.contains('open')) {
+                handlers.toggleSidebar();
+            }
+            if (domCache.menuIdiomas) {
+                domCache.menuIdiomas.classList.remove('ativo');
+            }
+        }
+    });
+
+    // Navegação entre links do sidebar com teclas de seta
+    const sidebarLinks = domCache.sidebar ? domCache.sidebar.querySelectorAll('a') : [];
+    sidebarLinks.forEach((link, index) => {
+        link.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                // Calcular o próximo índice
+                let nextIndex = index + (event.key === 'ArrowDown' ? 1 : -1);
+                if (nextIndex < 0) nextIndex = sidebarLinks.length - 1;
+                if (nextIndex >= sidebarLinks.length) nextIndex = 0;
+
+                // Focar no próximo link
+                sidebarLinks[nextIndex].focus();
             }
         });
+    });
 
-        // Função para atualizar os botões
-        const atualizarBotoes = () => {
-            if (btnAnterior) btnAnterior.disabled = paginaAtual === 1;
-            if (btnProximo) btnProximo.disabled = paginaAtual === totalPaginas;
-        };
-
-        // Função para navegar para uma página específica
-        const navegarPara = (pagina) => {
-            if (pagina < 1 || pagina > totalPaginas || pagina === paginaAtual) return;
-
-            const direcao = pagina > paginaAtual ? 'proximo' : 'anterior';
-            const paginaAnteriorEl = container.querySelector(`.experiencia-pagina[data-pagina="${paginaAtual}"]`);
-            const proximaPaginaEl = container.querySelector(`.experiencia-pagina[data-pagina="${pagina}"]`);
-
-            if (!paginaAnteriorEl || !proximaPaginaEl) return;
-
-            // Esconder a página atual com fade-out
-            paginaAnteriorEl.style.opacity = '0';
-            paginaAnteriorEl.style.transform = direcao === 'proximo' ? 'translateX(-30px)' : 'translateX(30px)';
-
-            // Aguardar a animação de saída terminar
-            setTimeout(() => {
-                // Remover a página anterior da visualização
-                paginaAnteriorEl.classList.remove('ativo');
-                paginaAnteriorEl.style.display = 'none';
-
-                // Preparar a próxima página para entrada
-                proximaPaginaEl.style.display = 'block';
-                proximaPaginaEl.style.opacity = '0';
-                proximaPaginaEl.style.transform = direcao === 'proximo' ? 'translateX(30px)' : 'translateX(-30px)';
-
-                // Forçar reflow para garantir que a transição ocorra
-                void proximaPaginaEl.offsetWidth;
-
-                // Mostrar a nova página com fade-in
-                proximaPaginaEl.style.opacity = '1';
-                proximaPaginaEl.style.transform = 'translateX(0)';
-
-                // Atualizar a página atual e os botões
-                paginaAtual = pagina;
-                atualizarBotoes();
-
-                // Adicionar classe ativo após a animação
-                proximaPaginaEl.classList.add('ativo');
-            }, 300); // Tempo para completar a animação de saída
-        };
-
-        // Configura os event listeners para os botões
-        if (btnAnterior) {
-            btnAnterior.addEventListener('click', () => {
-                navegarPara(paginaAtual - 1);
-            });
-        }
-
-        if (btnProximo) {
-            btnProximo.addEventListener('click', () => {
-                navegarPara(paginaAtual + 1);
-            });
-        }
-
-        // Inicializa o estado dos botões
-        atualizarBotoes();
-    };
-
-    // Configura a navegação para cada container
-    setupExperienciaNavegacao('formacoes-container');
-    setupExperienciaNavegacao('cursos-container');
-});
-
-// Função centralizada para gerenciar o popup de feedback
-function gerenciarFeedbackPopup() {
-    // Singleton - cria o popup apenas uma vez
-    let feedbackPopup = document.getElementById('feedback-popup');
-
-    // Criar elemento se não existir
-    if (!feedbackPopup) {
-        console.log("Criando popup de feedback");
-        feedbackPopup = document.createElement('div');
-        feedbackPopup.id = 'feedback-popup';
-        feedbackPopup.className = 'feedback-popup';
-        feedbackPopup.innerHTML = `
-            <div class="feedback-content">
-                <div class="feedback-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3 class="feedback-titulo" data-i18n="formulario.feedback.titulo">Mensagem Enviada!</h3>
-                <p class="feedback-mensagem" data-i18n="formulario.feedback.mensagem">Sua mensagem foi recebida e será analisada com prioridade. Aguarde retorno em breve.</p>
-                <button class="botao feedback-fechar" data-i18n="formulario.feedback.fechar">Fechar</button>
-            </div>
-        `;
-        document.body.appendChild(feedbackPopup);
-
-        // Configurar botão de fechar (apenas uma vez)
-        const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
-        if (fecharBtn) {
-            fecharBtn.addEventListener('click', () => {
-                esconderPopup();
-            });
-        }
-    }
-
-    // Métodos para manipular o popup
-    function mostrarPopup(mensagem, titulo) {
-        // Atualizar conteúdo se necessário
-        if (mensagem) {
-            const mensagemEl = feedbackPopup.querySelector('.feedback-mensagem');
-            if (mensagemEl) mensagemEl.innerHTML = mensagem;
-        }
-
-        if (titulo) {
-            const tituloEl = feedbackPopup.querySelector('.feedback-titulo');
-            if (tituloEl) tituloEl.textContent = titulo;
-        }
-
-        // Traduzir os elementos estáticos do popup que não são dinâmicos
-        traduzirElementosPopup();
-
-        // Mostrar popup com animação
-        feedbackPopup.style.display = 'flex';
-        feedbackPopup.offsetHeight; // Forçar reflow
-        setTimeout(() => {
-            feedbackPopup.classList.add('ativo');
-        }, 10);
-    }
-
-    function esconderPopup() {
-        feedbackPopup.classList.remove('ativo');
-        setTimeout(() => {
-            feedbackPopup.style.display = 'none';
-
-            // Remover o parâmetro "enviado=sucesso" da URL
-            if (window.location.search.includes('enviado=sucesso')) {
-                // Usar History API para mudar a URL sem recarregar a página
-                const urlSemParametro = window.location.pathname + window.location.hash;
-                history.replaceState(null, '', urlSemParametro);
-                console.log("Parâmetro 'enviado=sucesso' removido da URL");
-            }
-        }, 300);
-    }
-
-    // Função auxiliar para traduzir os elementos estáticos do popup
-    function traduzirElementosPopup() {
-        // Obter o idioma atual
-        const idiomaAtual = localStorage.getItem('idioma') || 'pt';
-
-        // Verificar se temos a tradução em cache no localStorage
-        const cacheKey = `feedback_popup_${idiomaAtual}`;
-        const cachedTranslation = localStorage.getItem(cacheKey);
-
-        if (cachedTranslation) {
-            // Usar tradução em cache para resposta imediata
-            const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
-            if (fecharBtn) {
-                fecharBtn.textContent = cachedTranslation;
-            }
-
-            console.log(`Usando tradução em cache para o botão fechar (${idiomaAtual})`);
-            return;
-        }
-
-        // Buscar as traduções para o botão de fechar
-        fetch(`i18n/${idiomaAtual}.json`)
-            .then(response => response.json())
-            .then(traducoes => {
-                const fecharBtn = feedbackPopup.querySelector('.feedback-fechar');
-                if (fecharBtn && traducoes.formulario?.feedback?.fechar) {
-                    fecharBtn.textContent = traducoes.formulario.feedback.fechar;
-
-                    // Armazenar em cache para uso futuro
-                    localStorage.setItem(cacheKey, traducoes.formulario.feedback.fechar);
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao traduzir elementos do popup: ${error}`);
-            });
-    }
-
-    function atualizarMensagemEnvio(nome, assunto) {
-        if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
-        if (!assunto) assunto = localStorage.getItem('ultimo_assunto') || '';
-
-        // Usar o sistema i18n em vez de fetch direto
-        return window.i18n.traduzir('formulario.feedback.sucesso')
-            .then(traducao => {
-                if (traducao && typeof traducao === 'string') {
-                    // Substituir placeholders na mensagem de sucesso
-                    return traducao
-                        .replace(/{{nome}}/g, nome)
-                        .replace(/{{assunto}}/g, assunto);
-                } else {
-                    // Fallback para mensagem padrão
-                    return `
-                        <strong>Olá ${nome}!</strong><br>
-                        Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
-                        Agradecemos seu contato e entraremos em contato o mais breve possível.
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao buscar traduções: ${error}`);
-                // Fallback para mensagem padrão
-                return `
-                    <strong>Olá ${nome}!</strong><br>
-                    Sua mensagem ${assunto ? `sobre "<em>${assunto}</em>" ` : ''}foi enviada com sucesso!<br>
-                    Agradecemos seu contato e entraremos em contato o mais breve possível.
-                `;
-            });
-    }
-
-    function atualizarMensagemEnviando(nome) {
-        if (!nome) nome = localStorage.getItem('ultimo_contato_nome') || 'usuário';
-
-        // Usar o sistema i18n
-        return window.i18n.traduzir('formulario.feedback.enviando')
-            .then(traducao => {
-                if (traducao && typeof traducao === 'string') {
-                    // Substituir placeholders na mensagem de enviando
-                    return traducao.replace(/{{nome}}/g, nome);
-                } else {
-                    // Fallback para mensagem padrão
-                    return `"${nome}", Estamos enviando sua mensagem...`;
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao buscar traduções: ${error}`);
-                // Fallback para mensagem padrão
-                return `"${nome}", Estamos enviando sua mensagem...`;
-            });
-    }
-
-    // Função para obter o título traduzido
-    function obterTituloTraduzido(tipo = 'titulo') {
-        const chave = tipo === 'enviando' ? 'formulario.feedback.enviando_titulo' : 'formulario.feedback.titulo';
-
-        // Usar o sistema i18n
-        return window.i18n.traduzir(chave)
-            .then(traducao => {
-                if (traducao && typeof traducao === 'string') {
-                    return traducao;
-                } else {
-                    // Fallback para título padrão
-                    return tipo === 'enviando' ? 'Enviando Mensagem...' : 'Mensagem Enviada!';
-                }
-            })
-            .catch(error => {
-                console.error(`Erro ao buscar traduções para título: ${error}`);
-                // Fallback para título padrão
-                return tipo === 'enviando' ? 'Enviando Mensagem...' : 'Mensagem Enviada!';
-            });
-    }
-
-    // Expor interface pública com métodos assíncronos para suportar traduções
-    return {
-        elemento: feedbackPopup,
-        mostrar: mostrarPopup,
-        esconder: esconderPopup,
-        mensagemEnvio: atualizarMensagemEnvio,
-        mensagemEnviando: atualizarMensagemEnviando,
-        obterTituloTraduzido: obterTituloTraduzido
-    };
+    console.log("Eventos de teclado configurados");
 }
+
+// Função para copiar texto para a área de transferência
+function copiarTexto(texto) {
+    navigator.clipboard.writeText(texto).then(() => {
+        console.log('Texto copiado para a área de transferência:', texto);
+    }).catch(err => {
+        console.error('Erro ao copiar texto:', err);
+    });
+}
+
+// Exibir mensagem de sucesso ao copiar
+function exibirMensagemCopiar() {
+    const mensagem = document.createElement('div');
+    mensagem.className = 'mensagem-copiar';
+    mensagem.innerText = 'Texto copiado!';
+    document.body.appendChild(mensagem);
+
+    setTimeout(() => {
+        mensagem.classList.add('mostrar');
+    }, 10);
+
+    setTimeout(() => {
+        mensagem.classList.remove('mostrar');
+        setTimeout(() => {
+            document.body.removeChild(mensagem);
+        }, 300);
+    }, 2000);
+}
+
+// Configurar botão de copiar
+function configurarBotaoCopiar() {
+    const btnCopiar = document.getElementById('btn-copiar-email');
+    if (!btnCopiar) return;
+
+    btnCopiar.addEventListener('click', () => {
+        copiarTexto('mateus.mg@outlook.com');
+        exibirMensagemCopiar();
+    });
+}
+
+// Inicializar função de copiar
+configurarBotaoCopiar();
+
+// Função para configurar o formulário de contato
+function configurarFormularioContato() {
+    console.log("Configurando formulário de contato");
+
+    if (!domCache.form) {
+        console.warn("Formulário de contato não encontrado");
+        return;
+    }
+
+    domCache.form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        console.log("Formulário de contato enviado");
+
+        // Obter dados do formulário
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const assunto = document.getElementById('assunto').value;
+        const mensagem = document.getElementById('mensagem').value;
+
+        // Armazenar dados do último contato para feedback
+        localStorage.setItem('ultimo_contato_nome', nome);
+        localStorage.setItem('ultimo_contato_email', email);
+        localStorage.setItem('ultimo_assunto', assunto);
+
+        // Simulação de envio de formulário
+        const btnSubmit = document.querySelector('#formulario-contato button[type="submit"]');
+        const btnTextOriginal = btnSubmit.innerHTML;
+
+        try {
+            // Mudar texto do botão para indicar envio
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+            // Simular tempo de processamento no servidor
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Simulação de sucesso
+            console.log("Formulário enviado com sucesso");
+
+            // Limpar campos
+            domCache.form.reset();
+
+            // Redirecionar com parâmetro de sucesso - isto mostrará um popup via gerenciarFeedbackPopup
+            window.location.href = "?enviado=sucesso";
+
+        } catch (error) {
+            console.error("Erro ao enviar formulário:", error);
+            alert("Erro ao enviar formulário. Por favor, tente novamente.");
+
+            // Restaurar botão
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = btnTextOriginal;
+        }
+    });
+
+    console.log("Formulário de contato configurado");
+}
+
+// Função global para navegação do portfólio (chamada pelos botões HTML)
+window.navegarPortfolio = function (direcao) {
+    console.log(`Botão de navegação ${direcao} clicado`);
+
+    // Verificar que temos acesso aos projetos
+    if (!window.projetosPortfolio) {
+        console.error("Array de projetos não encontrado");
+        return;
+    }
+
+    // Usar variáveis do escopo window para garantir que estejam acessíveis
+    // após a minificação
+    const projetos = window.projetosPortfolio[window.idiomaAtual];
+
+    if (!projetos || projetos.length === 0) {
+        console.error("Nenhum projeto encontrado para o idioma atual:", window.idiomaAtual);
+        return;
+    }
+
+    const totalPaginas = Math.ceil(projetos.length / window.projetosPorPagina);
+
+    // Navegar para a página apropriada
+    if (direcao === 'anterior' && window.paginaAtual > 0) {
+        window.paginaAtual--;
+        if (window.AppState) window.AppState.setPaginaPortfolio(window.paginaAtual);
+    } else if (direcao === 'proximo' && window.paginaAtual < totalPaginas - 1) {
+        window.paginaAtual++;
+        if (window.AppState) window.AppState.setPaginaPortfolio(window.paginaAtual);
+    } else {
+        console.log(`Navegação ${direcao} não possível: página atual = ${window.paginaAtual}, total de páginas = ${totalPaginas}`);
+        return;
+    }
+
+    // Atualizar botões conforme necessidade
+    const btnAnterior = document.querySelector('.portfolio-navegacao .anterior');
+    const btnProximo = document.querySelector('.portfolio-navegacao .proximo');
+
+    if (btnAnterior) {
+        btnAnterior.disabled = window.paginaAtual <= 0;
+        btnAnterior.style.opacity = window.paginaAtual <= 0 ? '0.5' : '1';
+        btnAnterior.style.cursor = window.paginaAtual <= 0 ? 'not-allowed' : 'pointer';
+    }
+
+    if (btnProximo) {
+        btnProximo.disabled = window.paginaAtual >= totalPaginas - 1;
+        btnProximo.style.opacity = window.paginaAtual >= totalPaginas - 1 ? '0.5' : '1';
+        btnProximo.style.cursor = window.paginaAtual >= totalPaginas - 1 ? 'not-allowed' : 'pointer';
+    }
+
+    // Garantir que os botões são visíveis
+    const navegacao = document.querySelector('.portfolio-navegacao');
+    if (navegacao) {
+        navegacao.style.display = 'flex';
+        navegacao.style.visibility = 'visible';
+        navegacao.style.opacity = '1';
+    }
+
+    // Renderizar os novos cards
+    if (typeof window.renderizarCards === 'function') {
+        window.renderizarCards();
+    } else {
+        console.log("Função renderizarCards não está acessível, tentando inicializarPortfolio");
+        if (typeof window.inicializarPortfolio === 'function') {
+            window.inicializarPortfolio();
+        }
+    }
+};
+
+console.log("Script principal carregado com sucesso");

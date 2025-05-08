@@ -21,10 +21,15 @@ const AppState = {
             versao: '1.0.1',
             tempoExpiracaoCache: 7 * 24 * 60 * 60 * 1000, // 7 dias em milissegundos
             prefixoChave: 'portfolio_'
-        }
+        },
+        isInitialized: false
     },
 
     // Getters - Acessores para o estado
+    get isInitialized() {
+        return this._state.isInitialized;
+    },
+
     get idiomaAtual() {
         return this._state.idioma.atual;
     },
@@ -51,6 +56,8 @@ const AppState = {
 
     // Setters - Modificadores para o estado
     setIdiomaAtual(novoIdioma) {
+        if (!novoIdioma) return this._state.idioma.atual;
+
         const idiomaAntigo = this._state.idioma.atual;
         this._state.idioma.atual = novoIdioma;
 
@@ -59,11 +66,37 @@ const AppState = {
         localStorage.setItem('idioma_versao', this._state.cache.versao);
         localStorage.setItem('idioma_data', Date.now().toString());
 
-        // Disparar evento para notificar a alteração de idioma
-        PubSub.publish('idioma:alterado', {
-            novo: novoIdioma,
-            antigo: idiomaAntigo
-        });
+        // Verificar se devemos usar o sistema i18n.js para a mudança de idioma
+        if (window.i18n && typeof window.alterarIdioma === 'function') {
+            // Não publicamos evento aqui, o i18n já vai cuidar disso e chamar traduzirElementos
+            // Apenas atualizamos o estado interno
+        } else {
+            // Se o i18n não estiver disponível, disparar evento como fallback
+            if (window.PubSub) {
+                PubSub.publish('idioma:alterado', {
+                    novo: novoIdioma,
+                    antigo: idiomaAntigo
+                });
+            }
+        }
+
+        return novoIdioma;
+    },
+
+    // Método específico para atualizar o idioma do projeto (portfolio)
+    setIdiomaProjetoAtual(novoIdioma) {
+        if (!novoIdioma) return this._state.idioma.atual;
+
+        const idiomaAntigo = this._state.idioma.atual;
+        this._state.idioma.atual = novoIdioma;
+
+        // Disparar evento específico para o portfolio
+        if (window.PubSub) {
+            PubSub.publish('portfolio:idiomaAlterado', {
+                novo: novoIdioma,
+                antigo: idiomaAntigo
+            });
+        }
 
         return novoIdioma;
     },
@@ -73,10 +106,12 @@ const AppState = {
         this._state.portfolio.paginaAtual = novaPagina;
 
         // Disparar evento para notificar a alteração de página
-        PubSub.publish('portfolio:paginaAlterada', {
-            nova: novaPagina,
-            antiga: paginaAntiga
-        });
+        if (window.PubSub) {
+            PubSub.publish('portfolio:paginaAlterada', {
+                nova: novaPagina,
+                antiga: paginaAntiga
+            });
+        }
 
         return novaPagina;
     },
@@ -85,9 +120,11 @@ const AppState = {
         this._state.portfolio.emTransicao = emTransicao;
 
         // Disparar evento relacionado à transição
-        PubSub.publish('portfolio:transicao', {
-            emTransicao
-        });
+        if (window.PubSub) {
+            PubSub.publish('portfolio:transicao', {
+                emTransicao
+            });
+        }
 
         return emTransicao;
     },
@@ -97,11 +134,13 @@ const AppState = {
             this._state.idioma.projetosCarregados.push(idioma);
 
             // Disparar evento para notificar idioma carregado
-            PubSub.publish('portfolio:idiomaCarregado', { idioma });
+            if (window.PubSub) {
+                PubSub.publish('portfolio:idiomaCarregado', { idioma });
+            }
         }
     },
 
-    // Métodos para persistência de estado (opcional)
+    // Métodos para persistência de estado
     salvarEstado() {
         try {
             const estadoParaSalvar = {
@@ -138,12 +177,23 @@ const AppState = {
                 if (estado.portfolio) {
                     this._state.portfolio.paginaAtual = estado.portfolio.paginaAtual;
                 }
-
-                return true;
             }
-            return false;
+
+            // Registrar ouvinte para alterações de idioma via i18n
+            if (window.i18n) {
+                window.i18n.onIdiomaAlterado((idioma) => {
+                    // Quando i18n alterar o idioma, atualize nosso estado também
+                    // Isto não dispara evento, já que está apenas sincronizando com i18n
+                    this._state.idioma.atual = idioma;
+                });
+            }
+
+            // Marcar como inicializado
+            this._state.isInitialized = true;
+            return true;
         } catch (error) {
             console.error('Erro ao carregar estado da aplicação:', error);
+            this._state.isInitialized = true; // Marcar como inicializado mesmo em caso de erro
             return false;
         }
     },
@@ -155,14 +205,21 @@ const AppState = {
         localStorage.removeItem('app_state');
 
         // Disparar evento de reset
-        PubSub.publish('app:estadoResetado', {});
+        if (window.PubSub) {
+            PubSub.publish('app:estadoResetado', {});
+        }
     }
 };
 
-// Inicializar o estado ao carregar o módulo
-document.addEventListener('DOMContentLoaded', () => {
+// Inicializar o estado ao carregar o módulo - apenas se PubSub estiver disponível
+// Caso contrário, aguardamos até que init.js chame carregarEstado explicitamente
+if (window.PubSub && document.readyState !== 'loading') {
     AppState.carregarEstado();
-});
+} else if (window.PubSub) {
+    document.addEventListener('DOMContentLoaded', () => {
+        AppState.carregarEstado();
+    });
+}
 
 // Exportar para uso global
 window.AppState = AppState;

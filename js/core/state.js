@@ -83,6 +83,24 @@ const AppState = {
         return novoIdioma;
     },
 
+    // Método específico para atualizar o idioma do projeto (portfolio)
+    setIdiomaProjetoAtual(novoIdioma) {
+        if (!novoIdioma) return this._state.idioma.atual;
+
+        const idiomaAntigo = this._state.idioma.atual;
+        this._state.idioma.atual = novoIdioma;
+
+        // Disparar evento específico para o portfolio
+        if (window.PubSub) {
+            PubSub.publish('portfolio:idiomaAlterado', {
+                novo: novoIdioma,
+                antigo: idiomaAntigo
+            });
+        }
+
+        return novoIdioma;
+    },
+
     setPaginaPortfolio(novaPagina) {
         const paginaAntiga = this._state.portfolio.paginaAtual;
         this._state.portfolio.paginaAtual = novaPagina;

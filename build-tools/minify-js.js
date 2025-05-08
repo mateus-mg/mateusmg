@@ -21,7 +21,40 @@ const terserOptions = {
         drop_debugger: true,
         passes: 2
     },
-    mangle: true,
+    mangle: {
+        // Preservar nomes de variáveis e funções críticas
+        reserved: [
+            'idiomaAtual',
+            'projetosPorPagina',
+            'paginaAtual',
+            'navegarPortfolio',
+            'renderizarCards',
+            'inicializarPortfolio',
+            'window',
+            'projetosPortfolio',
+            'AppState',
+            // Funções de internacionalização
+            't',
+            'tSync',
+            'alterarIdioma',
+            // Sistema de publicação/assinatura
+            'PubSub',
+            // Métodos do PubSub que precisam ser preservados
+            'subscribe',
+            'publish',
+            'clearEvent',
+            'clearAllEvents',
+            'getEvents',
+            'getSubscribersCount',
+            // Funções de inicialização e utilitárias
+            'initDOMCache',
+            'atualizarIconeSidebar',
+            'traduzirPagina',
+            'inicializarFuncionalidadesBasicas'
+        ],
+        // Não minificar propriedades
+        properties: false
+    },
     format: {
         comments: false,
         ascii_only: true,
@@ -238,15 +271,29 @@ function updateHTML() {
                 // Ordenar por posição no documento para substituir na ordem correta
                 scriptTags.sort((a, b) => a.position - b.position);
 
-                // Adicionar o script combinado no lugar do primeiro script
-                html = html.replace(
-                    scriptTags[0].fullMatch,
-                    '<script src="js/scripts.combined.min.js"></script>'
-                );
+                // Encontrar onde inserir o script combinado (antes do fechamento de </body>)
+                if (html.includes('</body>')) {
+                    // Remover todas as tags de script JS existentes
+                    for (let i = 0; i < scriptTags.length; i++) {
+                        html = html.replace(scriptTags[i].fullMatch, '');
+                    }
 
-                // Remover todas as demais tags de script JS
-                for (let i = 1; i < scriptTags.length; i++) {
-                    html = html.replace(scriptTags[i].fullMatch, '');
+                    // Adicionar o script combinado antes do fechamento do body
+                    html = html.replace(
+                        '</body>',
+                        '    <script src="js/scripts.combined.min.js"></script>\n</body>'
+                    );
+                } else {
+                    // Fallback: Adicionar o script combinado no lugar do primeiro script
+                    html = html.replace(
+                        scriptTags[0].fullMatch,
+                        '<script src="js/scripts.combined.min.js"></script>'
+                    );
+
+                    // Remover todas as demais tags de script JS
+                    for (let i = 1; i < scriptTags.length; i++) {
+                        html = html.replace(scriptTags[i].fullMatch, '');
+                    }
                 }
             }
 

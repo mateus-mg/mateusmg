@@ -3,21 +3,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log("Inicializando página de detalhes do projeto");
 
     try {
+        // Verificar primeiro se estamos na página de detalhes do projeto
+        const isProjetoPage = window.location.pathname.includes('projeto.html') ||
+            window.location.pathname.endsWith('/projeto');
+
+        // Se não estamos na página de projeto, não executar o restante do código
+        if (!isProjetoPage) {
+            console.log("Não estamos na página de detalhes do projeto, pulando inicialização");
+            return;
+        }
+
         // Obter o ID do projeto da URL
         const urlParams = new URLSearchParams(window.location.search || "");
         const projetoId = urlParams.get('id');
 
         if (!projetoId) {
             console.error("ID do projeto não encontrado na URL");
-            const isProjetoPage = window.location.pathname.includes('projeto.html') ||
-                window.location.pathname.endsWith('/projeto');
-
-            if (isProjetoPage) {
-                window.location.href = 'index.html#portfolio';
-                return;
-            } else {
-                return;
-            }
+            window.location.href = 'index.html#portfolio';
+            return;
         }
 
         console.log(`Carregando detalhes do projeto: ${projetoId}`);
@@ -272,9 +275,11 @@ async function carregarDetalhes(projetoId, idioma) {
         if (descricaoLonga) {
             if (projeto.descricao_longa) {
                 descricaoLonga.innerHTML = projeto.descricao_longa;
-                descricaoLonga.style.display = 'block';
+                descricaoLonga.classList.add('visible');
+                descricaoLonga.classList.remove('hidden');
             } else {
-                descricaoLonga.style.display = 'none';
+                descricaoLonga.classList.add('hidden');
+                descricaoLonga.classList.remove('visible');
             }
         }
 
@@ -291,7 +296,8 @@ async function carregarDetalhes(projetoId, idioma) {
             if (relatorioConteudo) {
                 if (projeto.relatorio) {
                     relatorioConteudo.innerHTML = projeto.relatorio;
-                    relatorioContainer.style.display = 'block';
+                    relatorioContainer.classList.add('visible');
+                    relatorioContainer.classList.remove('hidden');
                 } else {
                     // Usar i18n para obter o texto padrão de relatório
                     const textoRelatorio = window.i18n ?
@@ -299,7 +305,8 @@ async function carregarDetalhes(projetoId, idioma) {
                         "Este projeto ainda não possui um relatório detalhado.";
 
                     relatorioConteudo.innerHTML = textoRelatorio;
-                    relatorioContainer.style.display = 'block';
+                    relatorioContainer.classList.add('visible');
+                    relatorioContainer.classList.remove('hidden');
                 }
             }
         }

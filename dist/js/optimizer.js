@@ -136,8 +136,8 @@
         precarregarImagensCriticas: function () {
             // Identificar imagens críticas (acima da dobra)
             const imagensCriticas = [
-                'img/webp/header-bg.webp',
-                'img/webp/favicon.webp'
+                'img/webp/header-bg.webp'
+                // Removido favicon.webp pois é pequeno e não precisa ser pré-carregado
             ];
 
             // Adicionar links de preload ao head

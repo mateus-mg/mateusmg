@@ -1,52 +1,57 @@
 // Script de inicialização rápida para garantir interatividade básica
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    console.log("Iniciando carregamento do site...");
+
     // Verificar se o ImageManager já está disponível
     if (window.ImageManager) {
         console.log("ImageManager já está disponível, iniciando precarregamento");
-        inicializarFuncionalidadesBasicas();
+        await inicializarFuncionalidadesBasicas();
     } else {
-        // Se o optimizer.js ainda não terminou de carregar (devido ao defer)
         console.log("Aguardando carregamento do optimizer.js");
-        // Criamos um intervalo para verificar quando o ImageManager estiver disponível
-        const checkInterval = setInterval(function () {
-            if (window.ImageManager) {
+        await new Promise((resolve) => {
+            const checkInterval = setInterval(function () {
+                if (window.ImageManager) {
+                    clearInterval(checkInterval);
+                    console.log("ImageManager detectado, iniciando funcionalidades");
+                    resolve();
+                }
+            }, 50);
+
+            // Failsafe: após 2 segundos, inicializar de qualquer forma
+            setTimeout(function () {
+                if (!window.ImageManager) {
+                    console.warn("ImageManager não detectado após timeout, criando fallback");
+                    window.ImageManager = {
+                        precarregarImagensCriticas: function () {
+                            console.log("Fallback: Precarregando imagens críticas");
+                        },
+                        aplicarRedimensionamentoResponsivo: function () {
+                            console.log("Fallback: Tentativa de redimensionamento");
+                        }
+                    };
+                }
                 clearInterval(checkInterval);
-                console.log("ImageManager detectado, iniciando funcionalidades");
-                inicializarFuncionalidadesBasicas();
-            }
-        }, 50);
-
-        // Failsafe: após 2 segundos, inicializar de qualquer forma
-        setTimeout(function () {
-            if (!window.ImageManager) {
-                console.warn("ImageManager não detectado após timeout, criando fallback");
-                // Criar um objeto ImageManager básico como fallback
-                window.ImageManager = {
-                    precarregarImagensCriticas: function () {
-                        console.log("Fallback: Precarregando imagens críticas");
-                    },
-                    aplicarRedimensionamentoResponsivo: function () {
-                        console.log("Fallback: Tentativa de redimensionamento");
-                    }
-                };
-            }
-            clearInterval(checkInterval);
-            inicializarFuncionalidadesBasicas();
-        }, 2000);
+                resolve();
+            }, 2000);
+        });
+        await inicializarFuncionalidadesBasicas();
     }
+});
 
-    function inicializarFuncionalidadesBasicas() {
-        // Iniciar precarregamento de imagens críticas imediatamente
+async function inicializarFuncionalidadesBasicas() {
+    try {
+        console.log("Iniciando funcionalidades básicas...");
+
+        // 1. Iniciar precarregamento de imagens críticas
         if (window.ImageManager.precarregarImagensCriticas) {
             console.log("Iniciando precarregamento de imagens críticas");
-            window.ImageManager.precarregarImagensCriticas();
+            await window.ImageManager.precarregarImagensCriticas();
         }
 
-        // Garantir que o redimensionamento de imagens seja aplicado
+        // 2. Aplicar redimensionamento responsivo às imagens
         if (window.ImageManager.aplicarRedimensionamentoResponsivo) {
             console.log("Aplicando redimensionamento responsivo a todas as imagens");
             document.querySelectorAll('img:not([src^="data:"])').forEach(img => {
-                // Quando a imagem for carregada, aplicar redimensionamento responsivo
                 if (img.complete) {
                     window.ImageManager.aplicarRedimensionamentoResponsivo(img);
                 } else {
@@ -56,5 +61,52 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+
+        // 3. Inicializar sistema de tradução
+        if (window.i18n) {
+            console.log("Inicializando sistema de tradução");
+
+            // Verificar idioma armazenado ou usar preferência do navegador
+            const idiomaArmazenado = localStorage.getItem('idioma');
+            if (idiomaArmazenado) {
+                await window.alterarIdioma(idiomaArmazenado);
+            } else {
+                // Usar idioma do navegador ou pt como fallback
+                const idiomaNavegador = navigator.language.split('-')[0];
+                const idiomasPossiveis = ['pt', 'en', 'es'];
+                const idiomaPadrao = idiomasPossiveis.includes(idiomaNavegador) ? idiomaNavegador : 'pt';
+                await window.alterarIdioma(idiomaPadrao);
+            }
+
+            // Traduzir elementos da página
+            await window.i18n.traduzirElementos();
+        } else {
+            console.error("Sistema de tradução não encontrado");
+        }
+
+        // 4. Inicializar AppState se necessário
+        if (window.AppState && !window.AppState.isInitialized) {
+            console.log("Inicializando AppState");
+            await window.AppState.carregarEstado();
+        }
+
+        // 5. Verificar parâmetros da URL para funcionalidades específicas
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('enviado') && urlParams.get('enviado') === 'sucesso') {
+            // Mostrar popup de sucesso no envio do formulário
+            console.log("Detectado parâmetro de sucesso no envio do formulário");
+            const popup = gerenciarFeedbackPopup();
+            const nome = localStorage.getItem('ultimo_contato_nome');
+            const assunto = localStorage.getItem('ultimo_assunto');
+
+            const mensagem = await popup.mensagemEnvio(nome, assunto);
+            const titulo = await popup.obterTituloTraduzido();
+            popup.mostrar(mensagem, titulo);
+        }
+
+        console.log("Inicialização de funcionalidades básicas concluída");
+    } catch (error) {
+        console.error("Erro durante a inicialização:", error);
+        // Implementar fallback ou notificação de erro se necessário
     }
-});
+}

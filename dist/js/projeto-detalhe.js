@@ -1,78 +1,98 @@
 // Código para gerenciar a exibição de detalhes do projeto
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     console.log("Inicializando página de detalhes do projeto");
 
     try {
+        // Verificar primeiro se estamos na página de detalhes do projeto
+        const isProjetoPage = window.location.pathname.includes('projeto.html') ||
+            window.location.pathname.endsWith('/projeto');
+
+        // Se não estamos na página de projeto, não executar o restante do código
+        if (!isProjetoPage) {
+            console.log("Não estamos na página de detalhes do projeto, pulando inicialização");
+            return;
+        }
+
         // Obter o ID do projeto da URL
         const urlParams = new URLSearchParams(window.location.search || "");
         const projetoId = urlParams.get('id');
 
-        // Verificação explícita para garantir que o ID existe e não é nulo
         if (!projetoId) {
             console.error("ID do projeto não encontrado na URL");
-            mostrarErro('Nenhum projeto especificado');
+            window.location.href = 'index.html#portfolio';
             return;
         }
 
         console.log(`Carregando detalhes do projeto: ${projetoId}`);
 
-        // Usar o idioma atual do estado ou fallback para localStorage/sessionStorage
-        // para compatibilidade com instâncias onde o AppState ainda não foi inicializado
-        let idiomaAtual = 'pt'; // Valor padrão
+        // Aguardar a inicialização do AppState
+        if (!window.AppState?.isInitialized) {
+            console.log("Aguardando inicialização do AppState...");
+            await new Promise(resolve => {
+                const checkInterval = setInterval(() => {
+                    if (window.AppState?.isInitialized) {
+                        clearInterval(checkInterval);
+                        resolve();
+                    }
+                }, 100);
 
-        try {
-            if (typeof window.AppState !== 'undefined' && window.AppState !== null) {
-                idiomaAtual = window.AppState.idiomaAtual || 'pt';
-                console.log("Utilizando idioma do AppState:", idiomaAtual);
-            } else {
-                // Tentar obter de localStorage (onde é salvo na página principal)
-                const idiomaLocalStorage = localStorage.getItem('idioma');
-
-                // Se não encontrar em localStorage, tentar sessão
-                const idiomaSessionStorage = sessionStorage.getItem('idioma');
-
-                // Usar o primeiro valor não-nulo que encontrarmos
-                idiomaAtual = idiomaLocalStorage || idiomaSessionStorage || 'pt';
-
-                console.log("AppState não disponível, usando idioma de armazenamento local:", idiomaAtual);
-            }
-        } catch (err) {
-            console.error("Erro ao obter o idioma:", err);
-            // Fallback para português em caso de erro
+                // Timeout após 3 segundos
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    resolve();
+                }, 3000);
+            });
         }
 
-        // Atualizar a indicação visual do idioma atual
-        const idiomaAtualElement = document.querySelector('.idioma-atual');
-        if (idiomaAtualElement) {
-            idiomaAtualElement.textContent = idiomaAtual.toUpperCase();
+        // Aguardar inicialização do i18n se estiver disponível
+        if (window.i18n && !window.i18n.initialized) {
+            console.log("Aguardando inicialização do sistema i18n...");
+            await new Promise(resolve => {
+                const checkInterval = setInterval(() => {
+                    // Verificar se foi inicializado checando se tem traduções carregadas
+                    if (window.i18n.getIdiomaAtual) {
+                        clearInterval(checkInterval);
+                        resolve();
+                    }
+                }, 100);
+
+                // Timeout após 3 segundos
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    resolve();
+                }, 3000);
+            });
         }
 
-        document.querySelectorAll('.seletor-idioma').forEach(btn => {
-            btn.classList.remove('ativo');
-            if (btn.getAttribute('data-idioma') === idiomaAtual) {
-                btn.classList.add('ativo');
-            }
-        });
+        // Usar o idioma do AppState ou fallback
+        const idiomaAtual = window.AppState?.idiomaAtual || window.i18n?.getIdiomaAtual() || localStorage.getItem('idioma') || 'pt';
+        console.log("Usando idioma:", idiomaAtual);
+
+        // Atualizar UI do idioma
+        atualizarUIIdioma(idiomaAtual);
 
         // Carregar detalhes do projeto
-        carregarDetalhes(projetoId, idiomaAtual);
+        await carregarDetalhes(projetoId, idiomaAtual);
     } catch (error) {
         console.error("Erro na inicialização da página de detalhes:", error);
         mostrarErro('Ocorreu um erro ao carregar a página de detalhes');
     }
 
-    // Configurar menu de idiomas
+    // Configurar menu de idiomas usando window.i18n
+    configMenuIdiomas();
+});
+
+// Configuração do menu de idiomas
+function configMenuIdiomas() {
     const menuIdiomasToggle = document.querySelector('.menu-idiomas-toggle');
     const menuIdiomas = document.querySelector('.menu-idiomas');
 
     if (menuIdiomasToggle && menuIdiomas) {
         menuIdiomasToggle.addEventListener('click', function () {
             menuIdiomas.classList.toggle('ativo');
-            const isOpen = menuIdiomas.classList.contains('ativo');
-            menuIdiomasToggle.setAttribute('aria-expanded', isOpen);
+            menuIdiomasToggle.setAttribute('aria-expanded', menuIdiomas.classList.contains('ativo'));
         });
 
-        // Fechar menu ao clicar fora
         document.addEventListener('click', function (event) {
             if (!menuIdiomasToggle.contains(event.target) && !menuIdiomas.contains(event.target)) {
                 menuIdiomas.classList.remove('ativo');
@@ -80,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Fechar menu ao pressionar ESC
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape' && menuIdiomas.classList.contains('ativo')) {
                 menuIdiomas.classList.remove('ativo');
@@ -89,121 +108,68 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Configurar seleção de idioma
+    // Configurar seleção de idioma usando window.i18n
     document.querySelectorAll('.seletor-idioma').forEach(botao => {
-        botao.addEventListener('click', function () {
+        botao.addEventListener('click', async function () {
             const novoIdioma = this.getAttribute('data-idioma');
-
-            // Tentar obter o projeto ID novamente (em caso de manipulação da URL)
             const urlParams = new URLSearchParams(window.location.search);
             const projetoId = urlParams.get('id');
 
-            // Atualizar o estado central se disponível
-            try {
-                if (typeof AppState !== 'undefined' && AppState !== null) {
-                    AppState.setIdiomaAtual(novoIdioma);
-                    console.log("Idioma atualizado via AppState:", novoIdioma);
-                } else {
-                    // Fallback para localStorage e sessionStorage
-                    localStorage.setItem('idioma', novoIdioma);
-                    sessionStorage.setItem('idioma', novoIdioma);
-                    console.log("Idioma salvo em localStorage/sessionStorage:", novoIdioma);
-                }
-            } catch (error) {
-                console.error("Erro ao atualizar idioma:", error);
-            }
-
-            // Recarregar detalhes no novo idioma apenas se tivermos um ID de projeto
-            if (projetoId) {
-                carregarDetalhes(projetoId, novoIdioma);
+            // Usar o sistema unificado de tradução
+            if (window.i18n) {
+                await window.alterarIdioma(novoIdioma);
             } else {
-                console.warn("Não foi possível recarregar detalhes: ID de projeto não encontrado");
+                // Fallback para sistema antigo
+                localStorage.setItem('idioma', novoIdioma);
             }
 
-            // Atualizar indicação visual de idioma ativo
-            document.querySelectorAll('.seletor-idioma').forEach(btn => {
-                btn.classList.remove('ativo');
-            });
-            this.classList.add('ativo');
+            // Atualizar UI
+            atualizarUIIdioma(novoIdioma);
 
-            const idiomaAtualElement = document.querySelector('.idioma-atual');
-            if (idiomaAtualElement) {
-                idiomaAtualElement.textContent = novoIdioma.toUpperCase();
+            // Recarregar detalhes no novo idioma
+            if (projetoId) {
+                await carregarDetalhes(projetoId, novoIdioma);
             }
 
-            // Fechar menu de idiomas
+            // Fechar menu
             if (menuIdiomas) {
                 menuIdiomas.classList.remove('ativo');
-            }
-            if (menuIdiomasToggle) {
-                menuIdiomasToggle.setAttribute('aria-expanded', 'false');
+                if (menuIdiomasToggle) {
+                    menuIdiomasToggle.setAttribute('aria-expanded', 'false');
+                }
             }
         });
     });
+}
 
-    // Inscrever-se para eventos de alteração de idioma
-    try {
-        if (typeof PubSub !== 'undefined' && PubSub !== null) {
-            PubSub.subscribe('idioma:alterado', function (dados) {
-                console.log(`Página de detalhes recebeu notificação de alteração de idioma: ${dados.antigo} -> ${dados.novo}`);
+// Atualizar UI do idioma
+function atualizarUIIdioma(idioma) {
+    const idiomaAtualElement = document.querySelector('.idioma-atual');
+    if (idiomaAtualElement) {
+        idiomaAtualElement.textContent = idioma.toUpperCase();
+    }
 
-                // Tentar obter o projeto ID novamente (em caso de manipulação da URL)
-                const urlParams = new URLSearchParams(window.location.search);
-                const projetoId = urlParams.get('id');
-
-                // Verificar se é necessário recarregar detalhes (idioma diferente do atual)
-                const idiomaAtualUI = document.querySelector('.seletor-idioma.ativo')?.getAttribute('data-idioma');
-                if (dados.novo !== idiomaAtualUI) {
-                    // Atualizar UI para refletir a mudança de idioma
-                    const idiomaAtualElement = document.querySelector('.idioma-atual');
-                    if (idiomaAtualElement) {
-                        idiomaAtualElement.textContent = dados.novo.toUpperCase();
-                    }
-
-                    document.querySelectorAll('.seletor-idioma').forEach(btn => {
-                        btn.classList.remove('ativo');
-                        if (btn.getAttribute('data-idioma') === dados.novo) {
-                            btn.classList.add('ativo');
-                        }
-                    });
-
-                    // Recarregar detalhes no novo idioma apenas se tivermos um ID de projeto
-                    if (projetoId) {
-                        carregarDetalhes(projetoId, dados.novo);
-                    } else {
-                        console.warn("Não foi possível recarregar detalhes: ID de projeto não encontrado");
-                    }
-                }
-            });
+    document.querySelectorAll('.seletor-idioma').forEach(btn => {
+        btn.classList.remove('ativo');
+        if (btn.getAttribute('data-idioma') === idioma) {
+            btn.classList.add('ativo');
         }
-    } catch (error) {
-        console.error("Erro ao configurar inscrição PubSub:", error);
-    }
+    });
+}
 
-    // Configurar botão voltar ao topo
-    const btnTopo = document.getElementById('btn-topo');
-    if (btnTopo) {
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 200) {
-                btnTopo.classList.add('mostrar');
-            } else {
-                btnTopo.classList.remove('mostrar');
-            }
-        });
-
-        btnTopo.addEventListener('click', function (e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-});
-
-/**
- * Exibe uma mensagem de erro na página
- * @param {string} mensagem - A mensagem de erro a ser exibida
- */
-function mostrarErro(mensagem) {
+// Exibir erro
+async function mostrarErro(mensagem) {
     console.log("Mostrando mensagem de erro:", mensagem);
+
+    // Tentar obter mensagem de erro traduzida usando i18n
+    if (window.i18n) {
+        try {
+            mensagem = await window.i18n.traduzir('erros.carregamento_projeto', {}, null, mensagem);
+        } catch (e) {
+            console.error("Erro ao traduzir mensagem de erro:", e);
+            // Manter mensagem original
+        }
+    }
 
     const conteudoProjeto = document.querySelector('.projeto-conteudo');
     const titulo = document.getElementById('projeto-titulo');
@@ -221,7 +187,6 @@ function mostrarErro(mensagem) {
             </div>
         `;
     } else {
-        // Fallback caso não encontre o container principal
         const main = document.querySelector('.main-content');
         if (main) {
             main.innerHTML = `
@@ -238,132 +203,204 @@ function mostrarErro(mensagem) {
     }
 }
 
-/**
- * Carrega os detalhes do projeto com base no ID e idioma selecionado
- * @param {string} projetoId - O identificador único do projeto
- * @param {string} idioma - O código do idioma atual (pt, en, es)
- */
-function carregarDetalhes(projetoId, idioma) {
+// Carregar detalhes do projeto
+async function carregarDetalhes(projetoId, idioma) {
     console.log(`Carregando detalhes do projeto ${projetoId} no idioma ${idioma}`);
 
-    // Adicionar cache busting para resolver problemas de cache
-    const timestamp = new Date().getTime();
+    // Verificar e criar estrutura básica se necessário
+    const elementosNecessarios = [
+        { id: 'projeto-titulo', tipo: 'ID' },
+        { selector: '.projeto-conteudo', tipo: 'Class' },
+        { id: 'projeto-descricao-curta', tipo: 'ID' },
+        { id: 'projeto-descricao-longa', tipo: 'ID' }
+    ];
 
-    // Buscar os dados completos do projeto
-    fetch(`i18n/${idioma}.json?v=${timestamp}`)
-        .then(response => {
+    const elementosFaltantes = elementosNecessarios.filter(el => {
+        return el.tipo === 'ID' ? !document.getElementById(el.id) : !document.querySelector(el.selector);
+    });
+
+    if (elementosFaltantes.length > 0) {
+        const isProjetoPage = window.location.pathname.includes('projeto.html') ||
+            window.location.pathname.endsWith('/projeto');
+
+        if (!isProjetoPage) {
+            window.location.href = `projeto.html?id=${projetoId}`;
+            return;
+        }
+
+        criarEstruturaBasica(projetoId);
+    }
+
+    try {
+        // Usar o sistema unificado de tradução para obter os dados do projeto
+        let projeto;
+
+        if (window.i18n) {
+            // Usar o sistema i18n.js
+            projeto = await window.i18n.traduzir(`projetos.${projetoId}`);
+
+            // Verificar se o resultado é válido
+            if (!projeto || typeof projeto === 'string') {
+                throw new Error(`Projeto não encontrado no idioma ${idioma}`);
+            }
+        } else {
+            // Fallback: tentar carregar diretamente do arquivo JSON
+            const response = await fetch(`i18n/${idioma}.json`);
             if (!response.ok) {
-                throw new Error(`Erro ao carregar arquivo de tradução: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(traducoes => {
-            if (!traducoes.projetos || !traducoes.projetos[projetoId]) {
-                mostrarErro(`Projeto não encontrado no idioma ${idioma}`);
-                return;
+                throw new Error(`Falha ao carregar arquivo de tradução para ${idioma}: ${response.status}`);
             }
 
-            const projeto = traducoes.projetos[projetoId];
+            const traducoes = await response.json();
+            projeto = traducoes.projetos?.[projetoId];
 
-            // Preencher os detalhes na página
-            document.title = `${projeto.titulo} - Mateus Galvão`;
-
-            const tituloElement = document.getElementById('projeto-titulo');
-            if (tituloElement) {
-                tituloElement.textContent = projeto.titulo;
+            if (!projeto) {
+                throw new Error(`Projeto não encontrado no idioma ${idioma}`);
             }
+        }
 
-            // Inserir descrição curta
-            const descCurtaElement = document.getElementById('projeto-descricao-curta');
-            if (descCurtaElement) {
-                descCurtaElement.textContent = projeto.descricao;
+        // Atualizar o conteúdo
+        document.title = `${projeto.titulo} - Mateus Galvão`;
+
+        const tituloElement = document.getElementById('projeto-titulo');
+        if (tituloElement) {
+            tituloElement.textContent = projeto.titulo;
+        }
+
+        const descCurtaElement = document.getElementById('projeto-descricao-curta');
+        if (descCurtaElement) {
+            descCurtaElement.textContent = projeto.descricao;
+        }
+
+        const descricaoLonga = document.getElementById('projeto-descricao-longa');
+        if (descricaoLonga) {
+            if (projeto.descricao_longa) {
+                descricaoLonga.innerHTML = projeto.descricao_longa;
+                descricaoLonga.classList.add('visible');
+                descricaoLonga.classList.remove('hidden');
+            } else {
+                descricaoLonga.classList.add('hidden');
+                descricaoLonga.classList.remove('visible');
             }
+        }
 
-            // Inserir descrição longa (se existir)
-            const descricaoLonga = document.getElementById('projeto-descricao-longa');
-            if (descricaoLonga) {
-                if (projeto.descricao_longa) {
-                    descricaoLonga.innerHTML = projeto.descricao_longa;
-                    descricaoLonga.style.display = 'block';
+        const tagsContainer = document.querySelector('.tags-container');
+        if (tagsContainer && projeto.tecnologias && Array.isArray(projeto.tecnologias)) {
+            tagsContainer.innerHTML = projeto.tecnologias.map(tech =>
+                `<span class="portfolio-tag">${tech}</span>`
+            ).join('');
+        }
+
+        const relatorioContainer = document.getElementById('projeto-relatorio');
+        if (relatorioContainer) {
+            const relatorioConteudo = relatorioContainer.querySelector('.relatorio-conteudo');
+            if (relatorioConteudo) {
+                if (projeto.relatorio) {
+                    relatorioConteudo.innerHTML = projeto.relatorio;
+                    relatorioContainer.classList.add('visible');
+                    relatorioContainer.classList.remove('hidden');
                 } else {
-                    descricaoLonga.style.display = 'none';
+                    // Usar i18n para obter o texto padrão de relatório
+                    const textoRelatorio = window.i18n ?
+                        await window.i18n.traduzir('projetos.relatorio_padrao') :
+                        "Este projeto ainda não possui um relatório detalhado.";
+
+                    relatorioConteudo.innerHTML = textoRelatorio;
+                    relatorioContainer.classList.add('visible');
+                    relatorioContainer.classList.remove('hidden');
                 }
             }
+        }
 
-            // Inserir tecnologias
-            const tagsContainer = document.querySelector('.tags-container');
-            if (tagsContainer && projeto.tecnologias && Array.isArray(projeto.tecnologias)) {
-                tagsContainer.innerHTML = projeto.tecnologias.map(tech =>
-                    `<span class="portfolio-tag">${tech}</span>`
-                ).join('');
+        const githubBtn = document.querySelector('.github-btn');
+        if (githubBtn) {
+            githubBtn.href = `https://github.com/mateus-mg/${projetoId}`;
+        }
+
+        atualizarMetaTags(projeto.titulo, projeto.descricao);
+
+        // Notificar via pub/sub
+        if (window.PubSub) {
+            PubSub.publish('projeto:detalhesCarregados', {
+                projetoId,
+                idioma,
+                titulo: projeto.titulo
+            });
+        }
+
+    } catch (error) {
+        console.error('Erro ao carregar detalhes do projeto:', error);
+
+        let mensagemErro = 'Erro ao carregar detalhes do projeto';
+
+        // Tentar obter mensagem traduzida
+        if (window.i18n) {
+            try {
+                mensagemErro = await window.i18n.traduzir('erros.carregamento_projeto');
+            } catch (e) {
+                console.error("Erro ao traduzir mensagem de erro:", e);
             }
+        }
 
-            // Inserir relatório (se existir)
-            const relatorioContainer = document.getElementById('projeto-relatorio');
-            if (relatorioContainer) {
-                const relatorioConteudo = relatorioContainer.querySelector('.relatorio-conteudo');
-                if (relatorioConteudo) {
-                    if (projeto.relatorio) {
-                        relatorioConteudo.innerHTML = projeto.relatorio;
-                        relatorioContainer.style.display = 'block';
-                    } else {
-                        relatorioConteudo.innerHTML = `
-                            <p>Relatório detalhado em desenvolvimento.</p>
-                            <p>Este projeto está sendo documentado e em breve teremos informações mais detalhadas sobre seu desenvolvimento, desafios enfrentados e soluções implementadas.</p>
-                        `;
-                        relatorioContainer.style.display = 'block';
-                    }
-                }
-            }
+        mostrarErro(mensagemErro);
 
-            // Atualizar link para GitHub
-            const githubBtn = document.querySelector('.github-btn');
-            if (githubBtn) {
-                githubBtn.href = `https://github.com/mateus-mg/${projetoId}`;
-            }
-
-            // Configurar meta tags para SEO dinâmico
-            atualizarMetaTags(projeto.titulo, projeto.descricao);
-
-            // Notificar via pub/sub que os detalhes foram carregados (se disponível)
-            if (typeof PubSub !== 'undefined') {
-                PubSub.publish('projeto:detalhesCarregados', {
-                    projetoId,
-                    idioma,
-                    titulo: projeto.titulo
-                });
-            }
-
-            console.log("Detalhes do projeto carregados com sucesso");
-        })
-        .catch(error => {
-            console.error('Erro ao carregar detalhes do projeto:', error);
-            mostrarErro(`Erro ao carregar as traduções para ${idioma}. Por favor, tente novamente.`);
-
-            // Notificar erro via pub/sub (se disponível)
-            if (typeof PubSub !== 'undefined') {
-                PubSub.publish('projeto:erroCarregamento', {
-                    projetoId,
-                    idioma,
-                    erro: error.message
-                });
-            }
-        });
+        if (window.PubSub) {
+            PubSub.publish('projeto:erroCarregamento', {
+                projetoId,
+                idioma,
+                erro: error.message
+            });
+        }
+    }
 }
 
-/**
- * Atualiza as meta tags para melhor SEO
- * @param {string} titulo - O título do projeto
- * @param {string} descricao - A descrição do projeto
- */
+// Criar estrutura básica
+function criarEstruturaBasica(projetoId) {
+    const mainContent = document.querySelector('.main-content');
+    if (!mainContent) {
+        console.error("Elemento main-content não encontrado");
+        return;
+    }
+
+    mainContent.innerHTML = `
+        <div class="projeto-container">
+            <h1 id="projeto-titulo">Carregando projeto...</h1>
+            <p id="projeto-descricao-curta">Aguarde enquanto carregamos os detalhes do projeto.</p>
+            
+            <div class="projeto-conteudo">
+                <div id="projeto-descricao-longa"></div>
+                
+                <div class="projeto-meta">
+                    <h3>Tecnologias</h3>
+                    <div class="tags-container">
+                        <span class="portfolio-tag">Carregando...</span>
+                    </div>
+                </div>
+                
+                <div id="projeto-relatorio">
+                    <h2>Relatório do Projeto</h2>
+                    <div class="relatorio-conteudo"></div>
+                </div>
+                
+                <div class="projeto-links">
+                    <a href="#" class="botao github-btn" target="_blank" rel="noopener">
+                        <i class="fab fa-github"></i> Ver no GitHub
+                    </a>
+                    <a href="index.html#portfolio" class="botao">Voltar ao Portfólio</a>
+                </div>
+            </div>
+        </div>
+    `;
+
+    console.log("Estrutura básica criada para o projeto:", projetoId);
+}
+
+// Atualizar meta tags
 function atualizarMetaTags(titulo, descricao) {
-    // Meta description
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
         metaDesc.setAttribute('content', descricao);
     }
 
-    // Open Graph tags
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
         ogTitle.setAttribute('content', `${titulo} - Mateus Galvão`);

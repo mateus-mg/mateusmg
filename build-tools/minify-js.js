@@ -97,13 +97,13 @@ async function minifyAllJS() {
         // Criar arquivo com todos os JS combinados (ideal para produção)
         console.log('🔄 Criando arquivo JavaScript combinado...');
 
-        // Ordem de importância para combinar os scripts
+        // Ordem de importância para combinar os scripts - ATUALIZADA para resolver dependências
         const orderedFiles = [
             'core/pubsub.js',  // Carregado primeiro: sistema de pub/sub
-            'core/state.js',   // Carregado segundo: gerenciador de estado (depende do pub/sub)
+            'i18n.js',         // Internacionalização (carregado antes do state.js devido à nova dependência)
+            'core/state.js',   // Gerenciador de estado (agora depende de i18n.js e pub/sub)
             'init.js',         // Inicialização
             'optimizer.js',    // Otimizador
-            'i18n.js',         // Internacionalização
             'scripts.js',      // Scripts principais 
             'projeto-detalhe.js', // Scripts da página de detalhes
             'seo-loader.js'    // Carregador de SEO

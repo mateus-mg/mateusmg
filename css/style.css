@@ -58,6 +58,11 @@
     --largura-conteiner-xl: 1200px;
 }
 
+/* Define background no html para evitar flash branco antes do fade */
+html {
+    background-color: var(--cor-fundo-claro);
+}
+
 /* Animações para seções - melhoradas para usar transform */
 @keyframes fadeInUp {
     from {
@@ -133,6 +138,18 @@ body {
     color: var(--cor-texto-escuro);
     display: flex;
     flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Estado de entrada */
+body.fade-in {
+    opacity: 1;
+}
+
+/* Estado de saída */
+body.fade-out {
+    opacity: 0;
 }
 
 /* Melhorias de acessibilidade para foco */
@@ -2485,6 +2502,10 @@ header.imagem-carregada::after {
     padding: 10px 0;
     visibility: visible !important;
     opacity: 1 !important;
+    position: relative;
+    z-index: 100 !important;
+    width: 100% !important;
+    max-width: 300px !important;
 }
 
 .portfolio-nav-btn {

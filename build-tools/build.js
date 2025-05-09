@@ -1,11 +1,12 @@
 /**
  * Script principal de build para o portfólio de Mateus Galvão
- * Minifica arquivos CSS e JavaScript para produção
+ * Executa extração de traduções e minificação de arquivos CSS e JavaScript para produção
  */
 
 const fs = require('fs-extra');
 const path = require('path');
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
+const { extractTranslations } = require('./extract-translations');
 
 // Caminhos importantes
 const ROOT_DIR = path.resolve(__dirname, '../');
@@ -64,23 +65,35 @@ filesToCopy.forEach(file => {
     }
 });
 
-// Executar scripts de minificação
-console.log('🔧 Minificando arquivos CSS...');
-exec('node build-tools/minify-css.js', (error, stdout, stderr) => {
-    if (error) {
-        console.error(`❌ Erro na minificação CSS: ${error.message}`);
-        return;
-    }
-    console.log(stdout);
+// Primeiro executar a extração de traduções, depois minificar
+console.log('🔍 Extraindo traduções...');
 
-    console.log('🔧 Minificando arquivos JavaScript...');
-    exec('node build-tools/minify-js.js', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`❌ Erro na minificação JavaScript: ${error.message}`);
-            return;
-        }
-        console.log(stdout);
+// Função para executar o processo de build com async/await
+async function executarBuild() {
+    try {
+        // Extrair traduções (primeiro passo)
+        await extractTranslations();
+
+        // Copiar os arquivos atualizados de tradução para o diretório dist
+        fs.copySync(path.join(ROOT_DIR, 'i18n'), path.join(DIST_DIR, 'i18n'));
+        console.log('✅ Arquivos de tradução atualizados copiados para dist/i18n');
+
+        // Executar a minificação CSS
+        console.log('🔧 Minificando arquivos CSS...');
+        const resultCSS = execSync('node build-tools/minify-css.js', { encoding: 'utf-8' });
+        console.log(resultCSS);
+
+        // Executar a minificação JavaScript
+        console.log('🔧 Minificando arquivos JavaScript...');
+        const resultJS = execSync('node build-tools/minify-js.js', { encoding: 'utf-8' });
+        console.log(resultJS);
 
         console.log('✅ Build concluído com sucesso! Os arquivos estão na pasta dist/');
-    });
-});
+    } catch (error) {
+        console.error(`❌ Erro no processo de build: ${error}`);
+        process.exit(1);
+    }
+}
+
+// Iniciar o processo de build
+executarBuild();

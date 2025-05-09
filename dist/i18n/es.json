@@ -138,6 +138,8 @@
         "analise_vendas": {
             "titulo": "Análisis de Ventas con Power BI",
             "descricao": "Dashboard interactivo para análisis de ventas utilizando Power BI. Incluye segmentación por período, productos y regiones, con insights visuales para toma de decisiones.",
+            "descricao_longa": "Este proyecto fue desarrollado para proporcionar una visión integral del desempeño de ventas de una empresa minorista, utilizando Power BI como herramienta principal. A través de la integración de múltiples fuentes de datos, fue posible crear un entorno analítico completo para apoyar la toma de decisiones.",
+            "relatorio": "<h3>Objetivo del Proyecto</h3><p>Crear un dashboard interactivo que permita al equipo de gestión analizar tendencias de ventas, identificar productos de alto rendimiento y áreas con potencial de crecimiento.</p><h3>Metodología</h3><ul><li>Extracción de datos de múltiples fuentes (SQL Server, Excel y APIs)</li><li>Limpieza y transformación utilizando Power Query</li><li>Modelado dimensional en formato estrella</li><li>Creación de medidas DAX para KPIs importantes</li><li>Diseño de visualizaciones interactivas</li></ul><h3>Resultados</h3><p>El dashboard proporcionó insights que llevaron a un aumento del 15% en las ventas a través de la identificación de oportunidades en regiones específicas y la optimización del mix de productos. La toma de decisiones basada en datos resultó en la reducción de inventario y el aumento del margen de beneficio.</p>",
             "alt": "Dashboard de ventas creado en Power BI mostrando gráficos de facturación, productos y regiones",
             "tecnologias": [
                 "Power BI",
@@ -148,6 +150,8 @@
         "previsao_casas": {
             "titulo": "Predicción de Precios de Casas (Python)",
             "descricao": "Modelo de machine learning para predecir precios de casas con Python. Utiliza regresión, análisis exploratorio y validación cruzada.",
+            "descricao_longa": "Este proyecto de ciencia de datos aplica técnicas avanzadas de machine learning para predecir los precios de propiedades residenciales. Utilizando el famoso conjunto de datos de Boston Housing y otras fuentes de datos inmobiliarios, desarrollé un modelo predictivo capaz de estimar precios basándose en diversas características de las propiedades.",
+            "relatorio": "<h3>Objetivo del Proyecto</h3><p>Desarrollar un modelo predictivo capaz de estimar el valor de propiedades residenciales con precisión, ayudando a inversores y compradores en la toma de decisiones.</p><h3>Metodología</h3><ul><li>Análisis exploratorio detallado para comprender los factores que influyen en los precios</li><li>Tratamiento de datos faltantes y valores atípicos</li><li>Ingeniería de características para crear variables más predictivas</li><li>Prueba de múltiples algoritmos: Regresión Lineal, Random Forest, Gradient Boosting</li><li>Optimización de hiperparámetros mediante GridSearch</li><li>Validación cruzada para garantizar la robustez del modelo</li></ul><h3>Resultados</h3><p>El modelo final (Gradient Boosting) alcanzó un R² de 0.91 y un RMSE de solo 4.3% del valor medio de las propiedades. El análisis de importancia de características reveló que ubicación, tamaño y antigüedad son los factores más determinantes para el precio.</p>",
             "alt": "Gráfico de dispersión de precios de casas predichos por modelo de machine learning",
             "tecnologias": [
                 "Python",
@@ -158,6 +162,8 @@
         "dashboard_rh": {
             "titulo": "Dashboard de RH",
             "descricao": "Visualización de indicadores de RH en dashboard dinámico. Permite análisis de rotación, ausentismo y satisfacción de los empleados.",
+            "descricao_longa": "Este dashboard fue desarrollado para el departamento de Recursos Humanos de una gran empresa, con el objetivo de proporcionar una visión completa de los principales indicadores de gestión de personas. El proyecto integra datos de diferentes sistemas internos para crear un único punto de acceso a la información relevante.",
+            "relatorio": "<h3>Objetivo del Proyecto</h3><p>Crear una herramienta interactiva que permita al departamento de RH seguir métricas clave de gestión de personas, identificar tendencias y tomar decisiones basadas en datos.</p><h3>Metodología</h3><ul><li>Levantamiento de requisitos junto al equipo de Recursos Humanos</li><li>Identificación y acceso a las fuentes de datos necesarias (sistema de nómina, encuestas de clima, registros de asistencia)</li><li>Creación de modelo de datos integrado</li><li>Desarrollo de KPIs específicos para RH</li><li>Implementación de visualizaciones y filtros interactivos</li></ul><h3>Resultados</h3><p>El dashboard permitió una reducción del 25% en la tasa de rotación tras la identificación de factores críticos de satisfacción por departamento. La herramienta también permitió un monitoreo más eficiente del ausentismo, resultando en un ahorro estimado de 120 mil pesos anuales con la implementación de políticas específicas.</p>",
             "alt": "Dashboard de RH con indicadores de rotación, ausentismo y satisfacción de los empleados",
             "tecnologias": [
                 "Power BI",
@@ -202,5 +208,79 @@
         "proximo_idioma": "Siguiente idioma",
         "abrir_menu_navegacao": "Abrir menú de navegación",
         "abrir_menu_idiomas": "Abrir menú de idiomas"
+    },
+    "sobreMim": "[NEEDS TRANSLATION] sobreMim",
+    "auto": {
+        "texto": {
+            "psgraduao_em_cincia_de_dados": "Pós-Graduação em Ciência de Dados",
+            "bacharelado_em_engenharia_da_c": "Bacharelado em Engenharia da Computação",
+            "tcnico_em_informtica": "Técnico em Informática",
+            "mba_em_business_intelligence": "MBA em Business Intelligence",
+            "data_science_bootcamp": "Data Science Bootcamp",
+            "advanced_sql_for_data_analysis": "Advanced SQL for Data Analysis",
+            "power_bi_master": "Power BI Master",
+            "machine_learning_az": "Machine Learning A-Z",
+            "aws_cloud_practitioner": "AWS Cloud Practitioner",
+            "docker_kubernetes": "Docker & Kubernetes",
+            "data_engineering_with_python": "Data Engineering with Python",
+            "deep_learning_specialization": "Deep Learning Specialization",
+            "abrir_menu_de_idiomas": "Abrir menu de idiomas",
+            "abrir_menu_de_navegao": "Abrir menu de navegação",
+            "idioma_anterior": "Idioma anterior",
+            "prximo_idioma": "Próximo idioma",
+            "skills_anteriores": "Skills anteriores",
+            "prximas_skills": "Próximas skills",
+            "email": "Email",
+            "github": "GitHub",
+            "linkedin": "LinkedIn",
+            "voltar_ao_incio": "Voltar ao início",
+            "voltar_ao_topo": "Voltar ao topo",
+            "selecione_um_assunto_oramento_": "Selecione um\n                            assunto\n                        Orçamento\n                        Parceria\n                        Proposta de Emprego\n                        Outro",
+            "nativo": "Nativo",
+            "fluente": "Fluente",
+            "intermedirio": "Intermediário",
+            "bsico": "Básico",
+            "avanado": "Avançado",
+            "voltar_para_a_seo_de_portflio": "Voltar para a seção de portfólio"
+        },
+        "paragrafo": {
+            "atuo_na_rea_de_cincia_de_dados": "Atuo na área de Ciência de Dados, em constante formação e desenvolvimento, com experiência\n                            prática em políticas de vendas, estratégias de precificação e operações de varejo. Ao longo\n                            da minha trajetória, venho aplicando uma abordagem analítica voltada para resultados, unindo\n                            visão de mercado com habilidades técnicas em Python, SQL, R, Power BI e ferramentas de\n                            análise em nuvem.",
+            "gosto_de_conectar_dados_e_estr": "Gosto de conectar dados e estratégia. Com base em fundamentos sólidos de estatística,\n                            modelagem e visualização de dados, trabalho para transformar grandes volumes de informação\n                            em insights acionáveis que apoiam decisões mais precisas e eficazes.",
+            "meu_foco_est_em_desenvolver_so": "Meu foco está em desenvolver soluções que aliem o raciocínio técnico à realidade dos\n                            negócios, sempre buscando gerar impacto real por meio da inteligência de dados.",
+            "acredito_que_grandes_solues_na": "Acredito que grandes soluções nascem de quem combina\n                                profundidade e visão ampla. Por isso sigo o conceito T-Shaped: mergulho a fundo no que\n                                estudo e amplio meus horizontes para enxergar conexões que geram impacto de verdade.",
+            "especializao_em_anlise_avanada": "Especialização em análise avançada de dados,\n                                        modelagem estatística e implementação de algoritmos de machine learning para\n                                        solução de problemas de negócios.",
+            "formao_em_engenharia_com_foco_": "Formação em engenharia com foco em desenvolvimento\n                                        de sistemas computacionais, análise de algoritmos e processamento de dados em\n                                        larga escala.",
+            "curso_tcnico_com_nfase_em_prog": "Curso técnico com ênfase em programação, manutenção\n                                        de hardware e administração de redes de computadores.",
+            "especializao_em_gesto_de_dados": "Especialização em gestão de dados corporativos,\n                                        estratégias de Business Intelligence e análise de mercado para tomada de\n                                        decisões.",
+            "imerso_intensiva_em_cincia_de_": "Imersão intensiva em ciência de dados com projetos\n                                        práticos utilizando Python, Pandas, NumPy e técnicas avançadas de visualização\n                                        com bibliotecas como Matplotlib e Seaborn.",
+            "curso_especializado_em_consult": "Curso especializado em consultas SQL avançadas,\n                                        otimização de queries e manipulação eficiente de grandes conjuntos de dados em\n                                        ambientes corporativos.",
+            "certificao_em_desenvolvimento_": "Certificação em desenvolvimento de dashboards\n                                        interativos, modelagem de dados e implementação de métricas de negócios\n                                        utilizando Microsoft Power BI.",
+            "treinamento_completo_em_algori": "Treinamento completo em algoritmos de aprendizado\n                                        de máquina, desde regressão e classificação até redes neurais e processamento de\n                                        linguagem natural.",
+            "certificao_em_conceitos_fundam": "Certificação em conceitos fundamentais de\n                                        computação em nuvem na Amazon Web Services, incluindo implementação de serviços\n                                        de dados e analytics.",
+            "curso_prtico_sobre_containeriz": "Curso prático sobre containerização de aplicações e\n                                        orquestração de serviços para ambientes de dados escaláveis e distribuídos.",
+            "curso_especializado_em_desenvo": "Curso especializado em desenvolvimento de pipelines\n                                        de dados, ETL e processamento de big data com ferramentas Python como Apache\n                                        Airflow e Spark.",
+            "especializao_em_redes_neurais_": "Especialização em redes neurais profundas, modelos\n                                        de visão computacional e sistemas de processamento de linguagem natural usando\n                                        TensorFlow e PyTorch."
+        },
+        "botao": {
+            "pt": "PT",
+            "anterior": "Anterior",
+            "prximo": "Próximo",
+            "enviar_mensagem": "Enviar\n                        Mensagem"
+        },
+        "link": {
+            "sobre_mim_": "SOBRE MIM ▼",
+            "fale_comigo": "Fale Comigo",
+            "baixe_meu_cv": "Baixe meu\n                    CV",
+            "voltar": "Voltar",
+            "ver_no_github": "Ver no GitHub",
+            "voltar_para_a_pgina_inicial": "Voltar para a Página Inicial"
+        },
+        "subtitulo": {
+            "descrio": "Descrição",
+            "relatrio_do_projeto": "Relatório do Projeto"
+        },
+        "titulo_secao": {
+            "tecnologias": "Tecnologias"
+        }
     }
 }

@@ -1,59 +1,50 @@
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-
-<head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Mateus Galvão</title>
 
     <!-- Script de otimização LCP - carregado com defer para não bloquear renderização -->
-    <script src="js/optimizer.js" defer></script>
+    <script src="js/optimizer.js" defer=""></script>
 
     <!-- Preload crítico da imagem header (LCP) -->
     <link rel="preload" href="img/webp/header-bg.webp" as="image" type="image/webp" fetchpriority="high">
 
     <!-- Meta tags para segurança e compatibilidade -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.fontawesome.com data:; img-src 'self' data: https://*.fontawesome.com https://cdnjs.cloudflare.com; connect-src 'self'; frame-src https://safeframe.googlesyndication.com; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co/ https://formsubmit.co/mateusmarques2011@live.com; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://*.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com https://cdnjs.cloudflare.com https://*.fontawesome.com data:; img-src 'self' data: https://*.fontawesome.com https://cdnjs.cloudflare.com; connect-src 'self'; frame-src https://safeframe.googlesyndication.com; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co/ https://formsubmit.co/mateusmarques2011@live.com; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy"
-        content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), battery=(), display-capture=()">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), battery=(), display-capture=()">
 
     <!-- Carregando CSS de fontes primeiro, sem preload desnecessário -->
-    <link href="css/fonts.css" rel="stylesheet" />
+    <link href="css/fonts.css" rel="stylesheet">
 
     <!-- Apenas ícones essenciais para primeira renderização -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style"
-        crossorigin>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"
-        crossorigin />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" crossorigin="">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" crossorigin="">
 
     <!-- Referência ao arquivo CSS original com crossorigin -->
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet">
 
     <!-- Configuração dos favicons sem preload desnecessário -->
     <link rel="icon" href="img/webp/favicon.webp" type="image/webp">
     <link rel="alternate icon" href="img/favicon.png" type="image/png">
 
     <!-- Meta tags para SEO -->
-    <meta content="Portfólio de Mateus Galvão, engenheiro e cientista de dados." name="description" />
-    <meta content="Mateus Galvão - Portfólio" property="og:title" />
-    <meta content="img/header-bg.jpg" property="og:image" />
-    <meta content="1200" property="og:image:width" />
-    <meta content="630" property="og:image:height" />
-    <meta content="Conheça meus projetos em Python, Power BI e Machine Learning." property="og:description" />
+    <meta content="Portfólio de Mateus Galvão, engenheiro e cientista de dados." name="description">
+    <meta content="Mateus Galvão - Portfólio" property="og:title">
+    <meta content="img/header-bg.jpg" property="og:image">
+    <meta content="1200" property="og:image:width">
+    <meta content="630" property="og:image:height">
+    <meta content="Conheça meus projetos em Python, Power BI e Machine Learning." property="og:description">
 
     <!-- Script para carregar o SEO JSON-LD (movido para arquivo externo) -->
     <script src="js/seo-loader.js"></script>
 </head>
 
-<body>
+<body class="page-visible">
     <div class="seletor-idiomas">
-        <button class="menu-idiomas-toggle" aria-label="Abrir menu de idiomas"
-            data-i18n-aria="acessibilidade.abrir_menu_idiomas">
+        <button class="menu-idiomas-toggle" aria-label="Abrir menu de idiomas" data-i18n-aria="auto.texto.abrir_menu_de_idiomas" data-i18n="auto.botao.pt">
             <span class="idioma-atual">PT</span>
         </button>
         <ul class="menu-idiomas">
@@ -69,8 +60,7 @@
         <a href="#servicos" data-i18n="nav.servicos">Serviços</a>
         <a href="#contato" data-i18n="nav.contato">Contato</a>
     </nav>
-    <button aria-label="Abrir menu de navegação" class="sidebar-toggle" id="toggle-button"
-        data-i18n-aria="acessibilidade.abrir_menu_navegacao"><span class="icone-menu">☰</span></button>
+    <button aria-label="Abrir menu de navegação" class="sidebar-toggle" id="toggle-button" data-i18n-aria="auto.texto.abrir_menu_de_navegao"><span class="icone-menu">☰</span></button>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
     <div class="main-content" id="main-content">
         <header>
@@ -78,19 +68,17 @@
             <h1 data-i18n="header.name">Eu sou Mateus Galvão</h1>
             <p data-i18n="header.role">Engenheiro de Dados | Cientista de Dados | Arquiteto de Dados</p>
             <div class="sobre-mim-btn-container">
-                <a href="#sobre" class="botao sobre-mim-btn" data-i18n-botao="botoes.sobreMim">SOBRE MIM <span
-                        class="seta">▼</span></a>
+                <a href="#sobre" class="botao sobre-mim-btn" data-i18n-botao="botoes.sobreMim" data-i18n="auto.link.sobre_mim_">SOBRE MIM <span class="seta">▼</span></a>
             </div>
             <!-- Ícones de contato na parte inferior do banner do header -->
             <div class="header-icons-bottom">
-                <a class="icon-link" href="#contato" title="Email">
+                <a class="icon-link" href="#contato" title="Email" data-i18n-title="auto.texto.email">
                     <i class="fas fa-envelope"></i>
                 </a>
-                <a class="icon-link" href="https://github.com/mateus-mg" target="_blank" title="GitHub">
+                <a class="icon-link" href="https://github.com/mateus-mg" target="_blank" title="GitHub" data-i18n-title="auto.texto.github">
                     <i class="fa-brands fa-github"></i>
                 </a>
-                <a class="icon-link" href="https://linkedin.com/in/mateus-marques-galvão-759b3a3a" target="_blank"
-                    title="LinkedIn">
+                <a class="icon-link" href="https://linkedin.com/in/mateus-marques-galvão-759b3a3a" target="_blank" title="LinkedIn" data-i18n-title="auto.texto.linkedin">
                     <i class="fab fa-linkedin"></i>
                 </a>
             </div>
@@ -103,20 +91,19 @@
                     <div class="foto-perfil">
                         <picture>
                             <source srcset="img/webp/foto-perfil.webp" type="image/webp">
-                            <img src="img/foto-perfil.jpg" alt="Foto de Mateus Galvão" width="220" height="270"
-                                loading="lazy">
+                            <img src="img/foto-perfil.jpg" alt="Foto de Mateus Galvão" width="220" height="270" loading="lazy">
                         </picture>
                     </div>
                     <div class="bio-texto">
-                        <p>Atuo na área de Ciência de Dados, em constante formação e desenvolvimento, com experiência
+                        <p data-i18n="auto.paragrafo.atuo_na_rea_de_cincia_de_dados">Atuo na área de Ciência de Dados, em constante formação e desenvolvimento, com experiência
                             prática em políticas de vendas, estratégias de precificação e operações de varejo. Ao longo
                             da minha trajetória, venho aplicando uma abordagem analítica voltada para resultados, unindo
                             visão de mercado com habilidades técnicas em Python, SQL, R, Power BI e ferramentas de
                             análise em nuvem.</p>
-                        <p>Gosto de conectar dados e estratégia. Com base em fundamentos sólidos de estatística,
+                        <p data-i18n="auto.paragrafo.gosto_de_conectar_dados_e_estr">Gosto de conectar dados e estratégia. Com base em fundamentos sólidos de estatística,
                             modelagem e visualização de dados, trabalho para transformar grandes volumes de informação
                             em insights acionáveis que apoiam decisões mais precisas e eficazes.</p>
-                        <p>Meu foco está em desenvolver soluções que aliem o raciocínio técnico à realidade dos
+                        <p data-i18n="auto.paragrafo.meu_foco_est_em_desenvolver_so">Meu foco está em desenvolver soluções que aliem o raciocínio técnico à realidade dos
                             negócios, sempre buscando gerar impacto real por meio da inteligência de dados.</p>
                     </div>
                 </div>
@@ -126,14 +113,14 @@
                         <!-- Subseção Perfil -->
                         <div class="subsecao" id="perfil">
                             <h3 data-i18n="perfil.titulo">Perfil</h3>
-                            <p class="perfil-filosofia">Acredito que grandes soluções nascem de quem combina
+                            <p class="perfil-filosofia" data-i18n="auto.paragrafo.acredito_que_grandes_solues_na">Acredito que grandes soluções nascem de quem combina
                                 profundidade e visão ampla. Por isso sigo o conceito T-Shaped: mergulho a fundo no que
                                 estudo e amplio meus horizontes para enxergar conexões que geram impacto de verdade.</p>
                             <ul>
-                                <li><strong data-i18n="perfil.nome">Nome:</strong><br /> Mateus Marques Galvão</li>
-                                <li><strong data-i18n="perfil.nascimento">Data de Nascimento:</strong><br /> 27 de
+                                <li><strong data-i18n="perfil.nome">Nome:</strong><br> Mateus Marques Galvão</li>
+                                <li><strong data-i18n="perfil.nascimento">Data de Nascimento:</strong><br> 27 de
                                     agosto, 1996</li>
-                                <li><strong data-i18n="perfil.profissao">Profissão:</strong><br /> Analista de Dados
+                                <li><strong data-i18n="perfil.profissao">Profissão:</strong><br> Analista de Dados
                                 </li>
                             </ul>
                             <div class="idiomas-carrossel">
@@ -143,10 +130,9 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.Portuguese">Português</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-nativo" data-nivel="Nativo"
-                                                        data-i18n-nivel="idiomas.nativo">
+                                                    <div class="nivel nivel-nativo" data-nivel="Nativo" data-i18n-nivel="idiomas.nativo">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Nativo</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.nativo">Nativo</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -157,10 +143,9 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.ingles">Inglês</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-fluente" data-nivel="Fluente"
-                                                        data-i18n-nivel="idiomas.fluente">
+                                                    <div class="nivel nivel-fluente" data-nivel="Fluente" data-i18n-nivel="idiomas.fluente">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Fluente</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.fluente">Fluente</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -171,10 +156,9 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.espanhol">Espanhol</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
-                                                        data-i18n-nivel="idiomas.intermediario">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário" data-i18n-nivel="idiomas.intermediario">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Intermediário</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.intermedirio">Intermediário</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -184,10 +168,9 @@
                                             <div class="barra-nivel">
                                                 <span data-i18n="idiomas.frances">Francês</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-basico" data-nivel="Básico"
-                                                        data-i18n-nivel="idiomas.basico">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico" data-i18n-nivel="idiomas.basico">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Básico</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.bsico">Básico</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -195,12 +178,8 @@
                                         </div>
                                     </div>
                                     <div class="carrossel-nav">
-                                        <button class="carrossel-btn anterior" aria-label="Idioma anterior"
-                                            data-i18n-aria="acessibilidade.idioma_anterior"><i
-                                                class="fas fa-chevron-left"></i></button>
-                                        <button class="carrossel-btn proximo" aria-label="Próximo idioma"
-                                            data-i18n-aria="acessibilidade.proximo_idioma"><i
-                                                class="fas fa-chevron-right"></i></button>
+                                        <button class="carrossel-btn anterior" aria-label="Idioma anterior" data-i18n-aria="auto.texto.idioma_anterior"><i class="fas fa-chevron-left"></i></button>
+                                        <button class="carrossel-btn proximo" aria-label="Próximo idioma" data-i18n-aria="auto.texto.prximo_idioma"><i class="fas fa-chevron-right"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -214,15 +193,13 @@
                             <div class="skills-carrossel">
                                 <div class="carrossel-container">
                                     <div id="skills-barras-container" class="barras-container" aria-live="polite">
-                                        <div class="skills-barra ativo"
-                                            aria-label="Grupo de skills - Programação e Análise">
+                                        <div class="skills-barra ativo" aria-label="Grupo de skills - Programação e Análise">
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-python skill-icon"></i> Python</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-avancado" data-nivel="Avançado"
-                                                        data-i18n-nivel="skills.niveis.avancado">
+                                                    <div class="nivel nivel-avancado" data-nivel="Avançado" data-i18n-nivel="skills.niveis.avancado">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Avançado</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.avanado">Avançado</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -230,10 +207,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-database skill-icon"></i> SQL</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Intermediário</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.intermedirio">Intermediário</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -242,10 +218,9 @@
                                                 <span><i class="fas fa-chart-bar skill-icon"></i> Power BI</span>
                                                 <!-- Power BI -->
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Intermediário</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.intermedirio">Intermediário</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -253,10 +228,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-robot skill-icon"></i> Machine Learning</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-basico" data-nivel="Básico"
-                                                        data-i18n-nivel="skills.niveis.basico">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Básico</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.bsico">Básico</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -264,10 +238,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-file-excel skill-icon"></i> Excel</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-avancado" data-nivel="Avançado"
-                                                        data-i18n-nivel="skills.niveis.avancado">
+                                                    <div class="nivel nivel-avancado" data-nivel="Avançado" data-i18n-nivel="skills.niveis.avancado">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Avançado</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.avanado">Avançado</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -277,10 +250,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-exchange-alt skill-icon"></i> ETL</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Intermediário</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.intermedirio">Intermediário</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -288,10 +260,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-git-alt skill-icon"></i> Git</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Intermediário</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.intermedirio">Intermediário</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -299,10 +270,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-docker skill-icon"></i> Docker</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-basico" data-nivel="Básico"
-                                                        data-i18n-nivel="skills.niveis.basico">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Básico</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.bsico">Básico</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -310,10 +280,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fab fa-linux skill-icon"></i> Linux</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-basico" data-nivel="Básico"
-                                                        data-i18n-nivel="skills.niveis.basico">
+                                                    <div class="nivel nivel-basico" data-nivel="Básico" data-i18n-nivel="skills.niveis.basico">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Básico</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.bsico">Básico</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,10 +290,9 @@
                                             <div class="barra-nivel">
                                                 <span><i class="fas fa-filter skill-icon"></i> Power Query</span>
                                                 <div class="nivel-fundo">
-                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário"
-                                                        data-i18n-nivel="skills.niveis.intermediario">
+                                                    <div class="nivel nivel-intermediario" data-nivel="Intermediário" data-i18n-nivel="skills.niveis.intermediario">
                                                         <div class="tooltip-container">
-                                                            <div class="tooltip">Intermediário</div>
+                                                            <div class="tooltip" data-i18n="auto.texto.intermedirio">Intermediário</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -332,10 +300,8 @@
                                         </div>
                                     </div>
                                     <div class="carrossel-nav">
-                                        <button class="carrossel-btn anterior" aria-label="Skills anteriores"><i
-                                                class="fas fa-chevron-left"></i></button>
-                                        <button class="carrossel-btn proximo" aria-label="Próximas skills"><i
-                                                class="fas fa-chevron-right"></i></button>
+                                        <button class="carrossel-btn anterior" aria-label="Skills anteriores" data-i18n-aria="auto.texto.skills_anteriores"><i class="fas fa-chevron-left"></i></button>
+                                        <button class="carrossel-btn proximo" aria-label="Próximas skills" data-i18n-aria="auto.texto.prximas_skills"><i class="fas fa-chevron-right"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -345,8 +311,8 @@
             </div>
             <!-- Botões personalizados com container centralizado -->
             <div class="botoes-container">
-                <a class="botao fale-comigo" href="#contato" data-i18n-botao="botoes.faleComigo">Fale Comigo</a>
-                <a class="botao" download="" href="pdf/Mateus-CV.pdf" data-i18n-botao="botoes.baixeCV">Baixe meu
+                <a class="botao fale-comigo" href="#contato" data-i18n-botao="botoes.faleComigo" data-i18n="auto.link.fale_comigo">Fale Comigo</a>
+                <a class="botao" download="" href="pdf/Mateus-CV.pdf" data-i18n-botao="botoes.baixeCV" data-i18n="auto.link.baixe_meu_cv">Baixe meu
                     CV</a>
             </div>
         </section>
@@ -365,30 +331,30 @@
                             <div class="experiencia-pagina ativo" data-pagina="1">
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Pós-Graduação em Ciência de Dados</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.psgraduao_em_cincia_de_dados">Pós-Graduação em Ciência de Dados</h4>
                                         <span class="experiencia-periodo">2023 - 2024</span>
                                     </div>
-                                    <p class="experiencia-descricao">Especialização em análise avançada de dados,
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.especializao_em_anlise_avanada">Especialização em análise avançada de dados,
                                         modelagem estatística e implementação de algoritmos de machine learning para
                                         solução de problemas de negócios.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Bacharelado em Engenharia da Computação</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.bacharelado_em_engenharia_da_c">Bacharelado em Engenharia da Computação</h4>
                                         <span class="experiencia-periodo">2015 - 2020</span>
                                     </div>
-                                    <p class="experiencia-descricao">Formação em engenharia com foco em desenvolvimento
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.formao_em_engenharia_com_foco_">Formação em engenharia com foco em desenvolvimento
                                         de sistemas computacionais, análise de algoritmos e processamento de dados em
                                         larga escala.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Técnico em Informática</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.tcnico_em_informtica">Técnico em Informática</h4>
                                         <span class="experiencia-periodo">2013 - 2014</span>
                                     </div>
-                                    <p class="experiencia-descricao">Curso técnico com ênfase em programação, manutenção
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.curso_tcnico_com_nfase_em_prog">Curso técnico com ênfase em programação, manutenção
                                         de hardware e administração de redes de computadores.</p>
                                 </div>
                             </div>
@@ -396,10 +362,10 @@
                             <div class="experiencia-pagina" data-pagina="2">
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">MBA em Business Intelligence</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.mba_em_business_intelligence">MBA em Business Intelligence</h4>
                                         <span class="experiencia-periodo">2021 - 2022</span>
                                     </div>
-                                    <p class="experiencia-descricao">Especialização em gestão de dados corporativos,
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.especializao_em_gesto_de_dados">Especialização em gestão de dados corporativos,
                                         estratégias de Business Intelligence e análise de mercado para tomada de
                                         decisões.</p>
                                 </div>
@@ -408,10 +374,10 @@
 
                         <!-- Navegação da subseção Formações Acadêmicas -->
                         <div class="experiencia-navegacao">
-                            <button class="experiencia-nav-btn anterior" data-target="formacoes-container" disabled>
+                            <button class="experiencia-nav-btn anterior" data-target="formacoes-container" disabled="" data-i18n="auto.botao.anterior">
                                 <i class="fas fa-chevron-left"></i> Anterior
                             </button>
-                            <button class="experiencia-nav-btn proximo" data-target="formacoes-container">
+                            <button class="experiencia-nav-btn proximo" data-target="formacoes-container" data-i18n="auto.botao.prximo">
                                 Próximo <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -425,30 +391,30 @@
                             <div class="experiencia-pagina ativo" data-pagina="1">
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Data Science Bootcamp</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.data_science_bootcamp">Data Science Bootcamp</h4>
                                         <span class="experiencia-periodo">2022</span>
                                     </div>
-                                    <p class="experiencia-descricao">Imersão intensiva em ciência de dados com projetos
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.imerso_intensiva_em_cincia_de_">Imersão intensiva em ciência de dados com projetos
                                         práticos utilizando Python, Pandas, NumPy e técnicas avançadas de visualização
                                         com bibliotecas como Matplotlib e Seaborn.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Advanced SQL for Data Analysis</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.advanced_sql_for_data_analysis">Advanced SQL for Data Analysis</h4>
                                         <span class="experiencia-periodo">2021</span>
                                     </div>
-                                    <p class="experiencia-descricao">Curso especializado em consultas SQL avançadas,
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.curso_especializado_em_consult">Curso especializado em consultas SQL avançadas,
                                         otimização de queries e manipulação eficiente de grandes conjuntos de dados em
                                         ambientes corporativos.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Power BI Master</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.power_bi_master">Power BI Master</h4>
                                         <span class="experiencia-periodo">2020</span>
                                     </div>
-                                    <p class="experiencia-descricao">Certificação em desenvolvimento de dashboards
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.certificao_em_desenvolvimento_">Certificação em desenvolvimento de dashboards
                                         interativos, modelagem de dados e implementação de métricas de negócios
                                         utilizando Microsoft Power BI.</p>
                                 </div>
@@ -457,30 +423,30 @@
                             <div class="experiencia-pagina" data-pagina="2">
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Machine Learning A-Z</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.machine_learning_az">Machine Learning A-Z</h4>
                                         <span class="experiencia-periodo">2022</span>
                                     </div>
-                                    <p class="experiencia-descricao">Treinamento completo em algoritmos de aprendizado
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.treinamento_completo_em_algori">Treinamento completo em algoritmos de aprendizado
                                         de máquina, desde regressão e classificação até redes neurais e processamento de
                                         linguagem natural.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">AWS Cloud Practitioner</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.aws_cloud_practitioner">AWS Cloud Practitioner</h4>
                                         <span class="experiencia-periodo">2023</span>
                                     </div>
-                                    <p class="experiencia-descricao">Certificação em conceitos fundamentais de
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.certificao_em_conceitos_fundam">Certificação em conceitos fundamentais de
                                         computação em nuvem na Amazon Web Services, incluindo implementação de serviços
                                         de dados e analytics.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Docker & Kubernetes</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.docker_kubernetes">Docker &amp; Kubernetes</h4>
                                         <span class="experiencia-periodo">2023</span>
                                     </div>
-                                    <p class="experiencia-descricao">Curso prático sobre containerização de aplicações e
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.curso_prtico_sobre_containeriz">Curso prático sobre containerização de aplicações e
                                         orquestração de serviços para ambientes de dados escaláveis e distribuídos.</p>
                                 </div>
                             </div>
@@ -488,20 +454,20 @@
                             <div class="experiencia-pagina" data-pagina="3">
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Data Engineering with Python</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.data_engineering_with_python">Data Engineering with Python</h4>
                                         <span class="experiencia-periodo">2024</span>
                                     </div>
-                                    <p class="experiencia-descricao">Curso especializado em desenvolvimento de pipelines
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.curso_especializado_em_desenvo">Curso especializado em desenvolvimento de pipelines
                                         de dados, ETL e processamento de big data com ferramentas Python como Apache
                                         Airflow e Spark.</p>
                                 </div>
 
                                 <div class="experiencia-item">
                                     <div class="experiencia-cabecalho">
-                                        <h4 class="experiencia-titulo">Deep Learning Specialization</h4>
+                                        <h4 class="experiencia-titulo" data-i18n="auto.texto.deep_learning_specialization">Deep Learning Specialization</h4>
                                         <span class="experiencia-periodo">2024</span>
                                     </div>
-                                    <p class="experiencia-descricao">Especialização em redes neurais profundas, modelos
+                                    <p class="experiencia-descricao" data-i18n="auto.paragrafo.especializao_em_redes_neurais_">Especialização em redes neurais profundas, modelos
                                         de visão computacional e sistemas de processamento de linguagem natural usando
                                         TensorFlow e PyTorch.</p>
                                 </div>
@@ -510,10 +476,10 @@
 
                         <!-- Navegação da subseção Cursos -->
                         <div class="experiencia-navegacao">
-                            <button class="experiencia-nav-btn anterior" data-target="cursos-container" disabled>
+                            <button class="experiencia-nav-btn anterior" data-target="cursos-container" disabled="" data-i18n="auto.botao.anterior">
                                 <i class="fas fa-chevron-left"></i> Anterior
                             </button>
-                            <button class="experiencia-nav-btn proximo" data-target="cursos-container">
+                            <button class="experiencia-nav-btn proximo" data-target="cursos-container" data-i18n="auto.botao.prximo">
                                 Próximo <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
@@ -609,14 +575,13 @@
             <div class="titulo-section" data-i18n="contato">Contato</div>
             <div class="conteudo-section">
                 <p data-i18n="contato_descricao">Fale comigo! Será uma honra poder te ajudar.</p>
-                <form id="formulario-contato" class="form-contato" method="POST"
-                    action="https://formsubmit.co/mateusmarques2011@live.com">
+                <form id="formulario-contato" class="form-contato" method="POST" action="https://formsubmit.co/mateusmarques2011@live.com">
                     <label for="nome" data-i18n="formulario.nome">Nome:</label>
-                    <input id="nome" name="Nome" required="" type="text" />
+                    <input id="nome" name="Nome" required="" type="text">
                     <label for="email" data-i18n="formulario.email">E-mail:</label>
-                    <input id="email" name="Email" required="" type="email" />
+                    <input id="email" name="Email" required="" type="email">
                     <label for="assunto" data-i18n="formulario.assunto">Assunto:</label>
-                    <select id="assunto" name="Assunto" required="">
+                    <select id="assunto" name="Assunto" required="" data-i18n="auto.texto.selecione_um_assunto_oramento_">
                         <option disabled="" selected="" value="" data-i18n="formulario.selecioneAssunto">Selecione um
                             assunto</option>
                         <option value="Orçamento" data-i18n="formulario.orcamento">Orçamento</option>
@@ -633,7 +598,7 @@
                     <input type="hidden" name="_subject" value=""> <!-- Será preenchido via JavaScript -->
                     <input type="hidden" name="_next" value="https://mateusmg.pages.dev/?enviado=sucesso">
 
-                    <button class="botao" id="botao-enviar" type="submit" data-i18n-botao="botoes.enviarMensagem">Enviar
+                    <button class="botao" id="botao-enviar" type="submit" data-i18n-botao="botoes.enviarMensagem" data-i18n="auto.botao.enviar_mensagem">Enviar
                         Mensagem</button>
                 </form>
             </div>
@@ -643,8 +608,7 @@
         </footer>
     </div>
     <!-- Botão Voltar ao Topo -->
-    <a href="#" id="btn-topo" class="btn-topo" aria-label="Voltar ao topo" title="Voltar ao início"
-        data-i18n-title="botoes.voltarAoTopo">
+    <a href="#" id="btn-topo" class="btn-topo" aria-label="Voltar ao topo" title="Voltar ao início" data-i18n-title="auto.texto.voltar_ao_incio" data-i18n-aria="auto.texto.voltar_ao_topo">
         <i class="fas fa-arrow-up"></i>
     </a>
 
@@ -652,14 +616,15 @@
     <script src="js/init.js"></script>
 
     <!-- Sistema de internacionalização centralizado -->
-    <script src="js/i18n.js"></script>
-
-    <!-- Sistema de gerenciamento de estado e comunicação entre componentes -->
+    <script src="js/i18n.js"></script> <!-- Sistema de gerenciamento de estado e comunicação entre componentes -->
     <script src="js/core/pubsub.js"></script>
     <script src="js/core/state.js"></script>
 
-    <!-- Scripts não críticos carregados de forma otimizada -->
-    <script src="js/scripts.js" defer></script>
-</body>
+    <!-- Arquivo combinado com todos os scripts principais -->
+    <script src="js/scripts.js"></script>
 
-</html>
+    <!-- Scripts não críticos carregados de forma otimizada -->
+    <script src="js/scripts.js" defer=""></script>
+
+
+</body></html>

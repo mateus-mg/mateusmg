@@ -107,6 +107,21 @@ const handlers = {
                 domCache.menuIdiomas.classList.remove('ativo');
             }
         }
+    },
+
+    // Implementa transição de saída ao navegar entre páginas
+    handleNavigationWithTransition: (event) => {
+        const link = event.target.closest('a[href]');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (href.startsWith('#') || href.startsWith('http') || link.target === '_blank') return;
+        event.preventDefault();
+        // Inicia transição de saída
+        document.body.classList.remove('fade-in');
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = href;
+        }, 400);
     }
 };
 
@@ -126,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     domCache.toggleButton.addEventListener('click', handlers.toggleSidebar);
     document.addEventListener('click', handlers.closeMenus);
     document.addEventListener('keydown', handlers.handleEscape);
+    document.addEventListener('click', handlers.handleNavigationWithTransition);
 
     // Inicializações
     criarOverlaySidebar();
@@ -1162,5 +1178,10 @@ window.navegarPortfolio = function (direcao) {
         }
     }
 };
+
+// Ao carregar a página, aplica classe para transição de entrada
+window.addEventListener('load', () => {
+    document.body.classList.add('fade-in');
+});
 
 console.log("Script principal carregado com sucesso");

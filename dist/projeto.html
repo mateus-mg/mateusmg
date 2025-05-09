@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
+<!DOCTYPE html><html lang="pt-BR"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto - Mateus Galvão</title>
@@ -14,22 +11,24 @@
     <link href="css/styles.combined.min.css" rel="stylesheet">
 
     <!-- Font Awesome (usando o mesmo método do index.html) -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style"
-        crossorigin>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"
-        crossorigin />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" crossorigin="">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" crossorigin="">
+
+    <!-- Preconnect para CDN da FontAwesome -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="">
 
     <!-- Open Graph Meta Tags para compartilhamento em redes sociais -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Projeto - Mateus Galvão">
     <meta property="og:description" content="Detalhes do projeto de portfólio de Mateus Galvão">
     <meta property="og:image" content="https://mateuscg.com/img/og-image.jpg">
+    <link rel="preload" href="img/header-bg.jpg" as="image" fetchpriority="high">
 </head>
 
 <body>
     <!-- Seletor de idiomas -->
     <div class="seletor-idiomas">
-        <button class="menu-idiomas-toggle" aria-expanded="false">
+        <button class="menu-idiomas-toggle" aria-expanded="false" data-i18n="auto.botao.pt">
             <span class="idioma-atual">PT</span>
         </button>
         <ul class="menu-idiomas">
@@ -40,8 +39,7 @@
     </div>
 
     <!-- Botão de retorno à página principal com ícone Font Awesome -->
-    <a href="index.html#portfolio" class="return-button" id="return-button"
-        aria-label="Voltar para a seção de portfólio">
+    <a href="index.html#portfolio" class="return-button" id="return-button" aria-label="Voltar para a seção de portfólio" data-i18n-aria="auto.texto.voltar_para_a_seo_de_portflio">
         <i class="fas fa-reply"></i>
     </a>
 
@@ -52,33 +50,33 @@
         <div class="projeto-conteudo">
             <div class="projeto-info projeto-info-full">
                 <div class="projeto-descricao">
-                    <h2>Descrição</h2>
+                    <h2 data-i18n="auto.subtitulo.descrio">Descrição</h2>
                     <p id="projeto-descricao-curta"><!-- Preenchido via JavaScript --></p>
                     <div id="projeto-descricao-longa"><!-- Preenchido via JavaScript --></div>
                 </div>
 
                 <div class="projeto-tecnologias">
-                    <h3>Tecnologias</h3>
+                    <h3 data-i18n="auto.titulo_secao.tecnologias">Tecnologias</h3>
                     <div class="tags-container">
                         <!-- Tags de tecnologias -->
                     </div>
                 </div>
 
                 <div class="projeto-relatorio" id="projeto-relatorio">
-                    <h2>Relatório do Projeto</h2>
+                    <h2 data-i18n="auto.subtitulo.relatrio_do_projeto">Relatório do Projeto</h2>
                     <div class="relatorio-conteudo"><!-- Preenchido via JavaScript --></div>
                 </div>
 
                 <div class="botoes-container">
-                    <a href="index.html#portfolio" class="botao voltar-btn">Voltar</a>
-                    <a href="#" class="botao github-btn" target="_blank" rel="noopener noreferrer">Ver no GitHub</a>
+                    <a href="index.html#portfolio" class="botao voltar-btn" data-i18n="auto.link.voltar">Voltar</a>
+                    <a href="#" class="botao github-btn" target="_blank" rel="noopener noreferrer" data-i18n="auto.link.ver_no_github">Ver no GitHub</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Botão voltar ao topo -->
-    <a href="#" id="btn-topo" class="btn-topo" aria-label="Voltar ao topo">
+    <a href="#" id="btn-topo" class="btn-topo" aria-label="Voltar ao topo" data-i18n-aria="auto.texto.voltar_ao_topo">
         <i class="fas fa-arrow-up"></i>
     </a>
 
@@ -90,9 +88,13 @@
     
     
 
+    <!-- Arquivo combinado com todos os scripts principais -->
     
-    
-    <script src="js/scripts.combined.min.js"></script>
-</body>
 
-</html>
+    <!-- Scripts específicos para esta página -->
+    
+    
+
+
+    <script src="js/scripts.combined.min.js"></script>
+</body></html>

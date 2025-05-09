@@ -148,9 +148,7 @@ async function minifyAllJS() {
                 console.log(`⚠️ Arquivo ordenado não encontrado: ${file}, será ignorado`);
             }
             return exists;
-        });
-
-        // Adicionar arquivos restantes que não estão na ordem definida
+        });        // Adicionar arquivos restantes que não estão na ordem definida        
         const allFiles = [];
         function collectFilesRecursively(dir, baseDir = '') {
             const files = fs.readdirSync(dir);
@@ -161,8 +159,8 @@ async function minifyAllJS() {
                 if (fs.statSync(filePath).isDirectory()) {
                     // Se for um diretório, processe recursivamente
                     collectFilesRecursively(filePath, path.join(baseDir, file));
-                } else if (file.endsWith('.js')) {
-                    // Se for um arquivo .js, adicione à lista
+                } else if (file.endsWith('.js') && !file.includes('atualizador-es')) {
+                    // Se for um arquivo .js e não for relacionado ao atualizador-es, adicione à lista
                     allFiles.push(relativePath);
                 }
             });

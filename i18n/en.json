@@ -214,5 +214,79 @@
         "proximo_idioma": "Next language",
         "abrir_menu_navegacao": "Open navigation menu",
         "abrir_menu_idiomas": "Open language menu"
+    },
+    "sobreMim": "[NEEDS TRANSLATION] sobreMim",
+    "auto": {
+        "texto": {
+            "psgraduao_em_cincia_de_dados": "Pós-Graduação em Ciência de Dados",
+            "bacharelado_em_engenharia_da_c": "Bacharelado em Engenharia da Computação",
+            "tcnico_em_informtica": "Técnico em Informática",
+            "mba_em_business_intelligence": "MBA em Business Intelligence",
+            "data_science_bootcamp": "Data Science Bootcamp",
+            "advanced_sql_for_data_analysis": "Advanced SQL for Data Analysis",
+            "power_bi_master": "Power BI Master",
+            "machine_learning_az": "Machine Learning A-Z",
+            "aws_cloud_practitioner": "AWS Cloud Practitioner",
+            "docker_kubernetes": "Docker & Kubernetes",
+            "data_engineering_with_python": "Data Engineering with Python",
+            "deep_learning_specialization": "Deep Learning Specialization",
+            "abrir_menu_de_idiomas": "Abrir menu de idiomas",
+            "abrir_menu_de_navegao": "Abrir menu de navegação",
+            "idioma_anterior": "Idioma anterior",
+            "prximo_idioma": "Próximo idioma",
+            "skills_anteriores": "Skills anteriores",
+            "prximas_skills": "Próximas skills",
+            "email": "Email",
+            "github": "GitHub",
+            "linkedin": "LinkedIn",
+            "voltar_ao_incio": "Voltar ao início",
+            "voltar_ao_topo": "Voltar ao topo",
+            "selecione_um_assunto_oramento_": "Selecione um\n                            assunto\n                        Orçamento\n                        Parceria\n                        Proposta de Emprego\n                        Outro",
+            "nativo": "Nativo",
+            "fluente": "Fluente",
+            "intermedirio": "Intermediário",
+            "bsico": "Básico",
+            "avanado": "Avançado",
+            "voltar_para_a_seo_de_portflio": "Voltar para a seção de portfólio"
+        },
+        "paragrafo": {
+            "atuo_na_rea_de_cincia_de_dados": "Atuo na área de Ciência de Dados, em constante formação e desenvolvimento, com experiência\n                            prática em políticas de vendas, estratégias de precificação e operações de varejo. Ao longo\n                            da minha trajetória, venho aplicando uma abordagem analítica voltada para resultados, unindo\n                            visão de mercado com habilidades técnicas em Python, SQL, R, Power BI e ferramentas de\n                            análise em nuvem.",
+            "gosto_de_conectar_dados_e_estr": "Gosto de conectar dados e estratégia. Com base em fundamentos sólidos de estatística,\n                            modelagem e visualização de dados, trabalho para transformar grandes volumes de informação\n                            em insights acionáveis que apoiam decisões mais precisas e eficazes.",
+            "meu_foco_est_em_desenvolver_so": "Meu foco está em desenvolver soluções que aliem o raciocínio técnico à realidade dos\n                            negócios, sempre buscando gerar impacto real por meio da inteligência de dados.",
+            "acredito_que_grandes_solues_na": "Acredito que grandes soluções nascem de quem combina\n                                profundidade e visão ampla. Por isso sigo o conceito T-Shaped: mergulho a fundo no que\n                                estudo e amplio meus horizontes para enxergar conexões que geram impacto de verdade.",
+            "especializao_em_anlise_avanada": "Especialização em análise avançada de dados,\n                                        modelagem estatística e implementação de algoritmos de machine learning para\n                                        solução de problemas de negócios.",
+            "formao_em_engenharia_com_foco_": "Formação em engenharia com foco em desenvolvimento\n                                        de sistemas computacionais, análise de algoritmos e processamento de dados em\n                                        larga escala.",
+            "curso_tcnico_com_nfase_em_prog": "Curso técnico com ênfase em programação, manutenção\n                                        de hardware e administração de redes de computadores.",
+            "especializao_em_gesto_de_dados": "Especialização em gestão de dados corporativos,\n                                        estratégias de Business Intelligence e análise de mercado para tomada de\n                                        decisões.",
+            "imerso_intensiva_em_cincia_de_": "Imersão intensiva em ciência de dados com projetos\n                                        práticos utilizando Python, Pandas, NumPy e técnicas avançadas de visualização\n                                        com bibliotecas como Matplotlib e Seaborn.",
+            "curso_especializado_em_consult": "Curso especializado em consultas SQL avançadas,\n                                        otimização de queries e manipulação eficiente de grandes conjuntos de dados em\n                                        ambientes corporativos.",
+            "certificao_em_desenvolvimento_": "Certificação em desenvolvimento de dashboards\n                                        interativos, modelagem de dados e implementação de métricas de negócios\n                                        utilizando Microsoft Power BI.",
+            "treinamento_completo_em_algori": "Treinamento completo em algoritmos de aprendizado\n                                        de máquina, desde regressão e classificação até redes neurais e processamento de\n                                        linguagem natural.",
+            "certificao_em_conceitos_fundam": "Certificação em conceitos fundamentais de\n                                        computação em nuvem na Amazon Web Services, incluindo implementação de serviços\n                                        de dados e analytics.",
+            "curso_prtico_sobre_containeriz": "Curso prático sobre containerização de aplicações e\n                                        orquestração de serviços para ambientes de dados escaláveis e distribuídos.",
+            "curso_especializado_em_desenvo": "Curso especializado em desenvolvimento de pipelines\n                                        de dados, ETL e processamento de big data com ferramentas Python como Apache\n                                        Airflow e Spark.",
+            "especializao_em_redes_neurais_": "Especialização em redes neurais profundas, modelos\n                                        de visão computacional e sistemas de processamento de linguagem natural usando\n                                        TensorFlow e PyTorch."
+        },
+        "botao": {
+            "pt": "PT",
+            "anterior": "Anterior",
+            "prximo": "Próximo",
+            "enviar_mensagem": "Enviar\n                        Mensagem"
+        },
+        "link": {
+            "sobre_mim_": "SOBRE MIM ▼",
+            "fale_comigo": "Fale Comigo",
+            "baixe_meu_cv": "Baixe meu\n                    CV",
+            "voltar": "Voltar",
+            "ver_no_github": "Ver no GitHub",
+            "voltar_para_a_pgina_inicial": "Voltar para a Página Inicial"
+        },
+        "subtitulo": {
+            "descrio": "Descrição",
+            "relatrio_do_projeto": "Relatório do Projeto"
+        },
+        "titulo_secao": {
+            "tecnologias": "Tecnologias"
+        }
     }
 }

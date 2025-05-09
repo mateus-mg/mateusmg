@@ -93,8 +93,8 @@ async function extractTranslations() {
     // Mesclar as novas chaves com as traduções existentes
     mergeTranslations();
 
-    // Salvar os arquivos de tradução atualizados
-    saveTranslationFiles();
+    // Salvar os arquivos de tradução atualizados (com await para aguardar o término)
+    await saveTranslationFiles();
 
     console.log('✅ Extração de traduções concluída com sucesso!');
 }
@@ -392,7 +392,7 @@ function ensureAllKeys(target, source) {
  * Salva os arquivos de tradução atualizados
  */
 async function saveTranslationFiles() {
-    console.log('💾 Salvando arquivos de tradução atualizados...');
+    console.log('💾 Salvando arquivos de tradução atualizados... ' + new Date().toTimeString());
 
     // Garantir que o diretório i18n exista
     await fs.ensureDir(I18N_DIR);
@@ -404,7 +404,7 @@ async function saveTranslationFiles() {
         try {
             // Salvar o arquivo formatado para fácil leitura
             await fs.writeFile(filePath, JSON.stringify(existingTranslations[lang], null, 4), 'utf8');
-            console.log(`✅ Salvo: ${lang}.json`);
+            console.log(`✅ Salvo: ${lang}.json (${new Date().toTimeString()})`);
         } catch (error) {
             console.error(`❌ Erro ao salvar ${lang}.json:`, error);
         }

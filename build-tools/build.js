@@ -70,9 +70,10 @@ console.log('🔍 Extraindo traduções...');
 
 // Função para executar o processo de build com async/await
 async function executarBuild() {
-    try {
-        // Extrair traduções (primeiro passo)
+    try {        // Extrair traduções (primeiro passo)
+        console.log('⏱️ Início da extração de traduções: ' + new Date().toTimeString());
         await extractTranslations();
+        console.log('⏱️ Fim da extração de traduções: ' + new Date().toTimeString());
 
         // Copiar os arquivos atualizados de tradução para o diretório dist
         fs.copySync(path.join(ROOT_DIR, 'i18n'), path.join(DIST_DIR, 'i18n'));

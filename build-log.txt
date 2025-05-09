@@ -1,0 +1,98 @@
+🚀 Iniciando build do portfólio para produção...
+🧹 Limpando diretório de distribuição...
+📂 Copiando arquivos...
+✅ Copiado: css → dist/css
+✅ Copiado: js → dist/js
+✅ Copiado: img → dist/img
+✅ Copiado: fonts → dist/fonts
+✅ Copiado: i18n → dist/i18n
+✅ Copiado: pdf → dist/pdf
+✅ Copiado: index.html
+✅ Copiado: projeto.html
+✅ Copiado: 404.html
+✅ Copiado: 500.html
+✅ Copiado: _headers
+✅ Copiado: _routes.json
+✅ Copiado: cloudflare-pages.json
+✅ Copiado: LICENSE
+🔍 Extraindo traduções...
+⏱️ Início da extração de traduções: 14:25:39 GMT+0100 (Horário de Verão da Europa Ocidental)
+🔍 Iniciando extração de chaves de tradução...
+📚 Carregando arquivos de tradução existentes...
+✅ Carregado: pt.json
+✅ Carregado: en.json
+✅ Carregado: es.json
+🔍 Processando index.html...
+  → Sugerindo tradução para atributo aria-label: "Abrir menu de navegação" (auto.texto.abrir_menu_de_navegao)
+  → Sugerindo tradução para atributo aria-label: "Idioma anterior" (auto.texto.idioma_anterior)
+  → Sugerindo tradução para atributo aria-label: "Próximo idioma" (auto.texto.prximo_idioma)
+  → Sugerindo tradução para atributo aria-label: "Skills anteriores" (auto.texto.skills_anteriores)
+  → Sugerindo tradução para atributo aria-label: "Próximas skills" (auto.texto.prximas_skills)
+  → Sugerindo tradução para atributo title: "Email" (auto.texto.email)
+  → Sugerindo tradução para atributo title: "GitHub" (auto.texto.github)
+  → Sugerindo tradução para atributo title: "LinkedIn" (auto.texto.linkedin)
+  → Sugerindo tradução para atributo title: "Voltar ao início" (auto.texto.voltar_ao_incio)
+  → Sugerindo tradução para atributo aria-label: "Voltar ao topo" (auto.texto.voltar_ao_topo)
+✅ index.html: Encontradas 117 chaves de tradução.
+📝 Arquivo HTML atualizado: index.html
+🔍 Processando projeto.html...
+  → Sugerindo tradução para atributo aria-label: "Voltar para a seção de portfól..." (auto.texto.voltar_para_a_seo_de_portflio)
+  → Sugerindo tradução para atributo aria-label: "Voltar ao topo" (auto.texto.voltar_ao_topo)
+✅ projeto.html: Encontradas 8 chaves de tradução.
+📝 Arquivo HTML atualizado: projeto.html
+🔍 Processando 404.html...
+✅ 404.html: Encontradas 1 chaves de tradução.
+📝 Arquivo HTML atualizado: 404.html
+🔍 Processando 500.html...
+✅ 500.html: Encontradas 1 chaves de tradução.
+📝 Arquivo HTML atualizado: 500.html
+🔄 Mesclando traduções novas com existentes...
+💾 Salvando arquivos de tradução atualizados... 14:25:39 GMT+0100 (Horário de Verão da Europa Ocidental)
+✅ Salvo: pt.json (14:25:39 GMT+0100 (Horário de Verão da Europa Ocidental))
+✅ Salvo: en.json (14:25:39 GMT+0100 (Horário de Verão da Europa Ocidental))
+✅ Salvo: es.json (14:25:39 GMT+0100 (Horário de Verão da Europa Ocidental))
+✅ Extração de traduções concluída com sucesso!
+⏱️ Fim da extração de traduções: 14:25:39 GMT+0100 (Horário de Verão da Europa Ocidental)
+✅ Arquivos de tradução atualizados copiados para dist/i18n
+🔧 Minificando arquivos CSS...
+🔍 Encontrados 2 arquivos CSS para minificar.
+✅ fonts.css: 1.12 KB → 0.68 KB (39.58% redução)
+✅ style.css: 58.62 KB → 35.11 KB (40.10% redução)
+🔄 Criando arquivo CSS combinado...
+✅ styles.combined.min.css: 35.79 KB
+🎉 Minificação CSS concluída com sucesso!
+
+🔧 Minificando arquivos JavaScript...
+🔍 Encontrados 6 arquivos JavaScript para minificar.
+✅ i18n.js: 20.51 KB → 7.37 KB (64.07% redução)
+✅ init.js: 4.92 KB → 2.52 KB (48.69% redução)
+✅ optimizer.js: 11.07 KB → 3.90 KB (64.74% redução)
+✅ projeto-detalhe.js: 14.76 KB → 8.09 KB (45.16% redução)
+✅ scripts.js: 46.70 KB → 24.80 KB (46.90% redução)
+✅ seo-loader.js: 3.59 KB → 1.54 KB (57.11% redução)
+🔄 Criando arquivo JavaScript combinado...
+📄 Ordem de arquivos para minificação: core/pubsub.js, i18n.js, core/state.js, init.js, optimizer.js, scripts.js, projeto-detalhe.js, seo-loader.js
+✅ Adicionado ao pacote combinado: core/pubsub.js
+✅ Adicionado ao pacote combinado: i18n.js
+✅ Adicionado ao pacote combinado: core/state.js
+✅ Adicionado ao pacote combinado: init.js
+✅ Adicionado ao pacote combinado: optimizer.js
+✅ Adicionado ao pacote combinado: scripts.js
+✅ Adicionado ao pacote combinado: projeto-detalhe.js
+✅ Adicionado ao pacote combinado: seo-loader.js
+✅ scripts.combined.min.js: 51.49 KB
+🔄 Processando index.html...
+   - Encontradas 8 tags de script em index.html
+✅ index.html atualizado para usar arquivos minificados e combinados (alterações aplicadas)
+   - 8 tags de script manipuladas
+   - Arquivo CSS combinado: Aplicado
+   - Arquivo JS combinado: Aplicado
+🔄 Processando projeto.html...
+   - Encontradas 7 tags de script em projeto.html
+✅ projeto.html atualizado para usar arquivos minificados e combinados (alterações aplicadas)
+   - 7 tags de script manipuladas
+   - Arquivo CSS combinado: Aplicado
+   - Arquivo JS combinado: Aplicado
+🎉 Minificação JavaScript concluída com sucesso!
+
+✅ Build concluído com sucesso! Os arquivos estão na pasta dist/

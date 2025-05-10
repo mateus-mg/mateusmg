@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="pt-br"><head>
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erro no Servidor | Portfólio de Mateus</title>
@@ -6,20 +9,48 @@
     <link rel="icon" href="img/webp/favicon.webp" type="image/webp">
     <link rel="alternate icon" href="img/favicon.png" type="image/png">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Ferramentas de desenvolvimento i18n (carregado apenas em ambiente de dev) -->
+    <script>
+        // Verificar se estamos em ambiente de desenvolvimento
+        if (window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.includes('.local') ||
+            window.location.search.includes('i18n-debug=true')) {
+            document.write('<script src="js/i18n-dev-tools.js"><\/script>');
+        }
+    </script>
 </head>
 
 <body>
     <div class="error-container">
         <div class="error-content">
             <div class="error-code">500</div>
-            <div class="error-message">Erro Interno do Servidor</div>
-            <div class="error-description">
+            <div class="error-message" data-i18n="error.500.title">Erro Interno do Servidor</div>
+            <div class="error-description" data-i18n="error.500.description">
                 Ops! Algo deu errado no servidor. Estamos trabalhando para resolver o problema o mais rápido possível.
                 Por favor, tente novamente mais tarde ou volte para a página inicial.
             </div>
-            <a href="index.html" class="home-button" data-i18n="auto.link.voltar_para_a_pgina_inicial">Voltar para a Página Inicial</a>
+            <a href="index.html" class="home-button" data-i18n="auto.link.voltar_para_a_pgina_inicial">Voltar para a
+                Página Inicial</a>
         </div>
     </div>
 
+    <!-- Sistema de internacionalização centralizado -->
+    <script src="js/i18n.js"></script>
+    <!-- Sistema de gerenciamento de estado e comunicação entre componentes -->
+    <script src="js/core/pubsub.js"></script>
+    <script src="js/core/state.js"></script>
 
-</body></html>
+    <!-- Gerenciador de feedback com integração i18n -->
+    <script src="js/feedback-manager.js"></script>
+
+    <!-- Script de inicialização rápida -->
+    <script src="js/init.js"></script>
+
+    <!-- Scripts principais -->
+    <script src="js/scripts.js" defer></script>
+
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 /**
- * Extrator de traduções para o portfólio - Mateus Galvão
- * Script para extrair automaticamente todas as chaves de tradução do site
+ * Script para extrair traduções dos arquivos HTML do projeto
+ * Este script analisa os arquivos HTML e JavaScript para encontrar chaves de tradução
+ * e atualizar os arquivos i18n/pt.json, en.json e es.json
  */
 
 const fs = require('fs-extra');
@@ -8,418 +9,363 @@ const path = require('path');
 const cheerio = require('cheerio');
 const glob = require('glob');
 
-// Caminhos importantes
-const ROOT_DIR = path.resolve(__dirname, '../');
-const I18N_DIR = path.join(ROOT_DIR, 'i18n');
-const HTML_FILES = ['index.html', 'projeto.html', '404.html', '500.html'];
-
-// Configuração
-const CONFIG = {
-    verbose: true, // Mostrar logs detalhados
-    defaultLang: 'pt', // Idioma padrão (português)
-    supportedLangs: ['pt', 'en', 'es'], // Idiomas suportados
-    autoAddAttributes: true, // Adicionar automaticamente atributos de tradução aos elementos HTML
-    updateHtmlFiles: true, // Atualizar os arquivos HTML com atributos de tradução
-    attributesMap: {
-        'data-i18n': { type: 'text' },
-        'data-i18n-aria': { type: 'attribute', attribute: 'aria-label' },
-        'data-i18n-botao': { type: 'text' },
-        'data-i18n-title': { type: 'attribute', attribute: 'title' },
-        'data-i18n-placeholder': { type: 'attribute', attribute: 'placeholder' },
-        'data-i18n-alt': { type: 'attribute', attribute: 'alt' },
-        'data-i18n-value': { type: 'attribute', attribute: 'value' }
-    },
-    // Seletores adicionais para elementos que podem conter textos traduzíveis mas não têm atributos data-i18n
-    additionalSelectors: [
-        'h1:not([data-i18n])',
-        'h2:not([data-i18n])',
-        'h3:not([data-i18n])',
-        'h4:not([data-i18n])',
-        'h5:not([data-i18n])',
-        'h6:not([data-i18n])',
-        'p:not([data-i18n])',
-        'button:not([data-i18n]):not(.seletor-idioma)',
-        'a:not([data-i18n])',
-        'label:not([data-i18n])',
-        'input[type="submit"]',
-        'input[type="button"]',
-        'input[type="text"][placeholder]:not([data-i18n])',
-        'input[type="email"][placeholder]:not([data-i18n])',
-        'input[type="tel"][placeholder]:not([data-i18n])',
-        'textarea[placeholder]:not([data-i18n])',
-        'select:not([data-i18n])',
-        'option:not([data-i18n])',
-        '.form-label:not([data-i18n])',
-        '.tooltip:not([data-i18n])',
-        '.modal-title:not([data-i18n])',
-        '.modal-body:not([data-i18n-container]) > :not([data-i18n])',
-        '.popup-feedback:not([data-i18n-container]) *:not([data-i18n])',
-        '.alert:not([data-i18n])',
-        '.notification:not([data-i18n])',
-        '.badge:not([data-i18n])',
-        '.card-title:not([data-i18n])',
-        '.card-text:not([data-i18n])',
-        'th:not([data-i18n])',
-        'td:not([data-i18n])',
-        'figcaption:not([data-i18n])'
-    ]
+// Conjunto de ícones para mensagens de console
+const icons = {
+    init: '🚀',
+    scan: '🔍',
+    html: '📄',
+    js: '📜',
+    extract: '🔎',
+    portfolio: '🖼️',
+    save: '💾',
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    processing: '⚙️',
+    time: '⏱️'
 };
 
-// Armazenar todas as chaves de tradução encontradas
-const translationKeys = {};
+// Caminhos importantes
+const ROOT_DIR = path.resolve(__dirname, '../');
+const HTML_FILES = ['index.html', 'projeto.html', '404.html', '500.html'];
+const JS_FILES = glob.sync('js/**/*.js', { cwd: ROOT_DIR });
+const I18N_DIR = path.join(ROOT_DIR, 'i18n');
+const PT_JSON_PATH = path.join(I18N_DIR, 'pt.json');
 
-// Para armazenar as traduções existentes
-const existingTranslations = {};
-
-/**
- * Função principal para extrair traduções
- */
-async function extractTranslations() {
-    console.log('🔍 Iniciando extração de chaves de tradução...');
-
-    // Carregar traduções existentes
-    await loadExistingTranslations();
-
-    // Processar arquivos HTML
-    for (const htmlFile of HTML_FILES) {
-        const htmlPath = path.join(ROOT_DIR, htmlFile);
-        if (fs.existsSync(htmlPath)) {
-            await processHTMLFile(htmlPath);
-        } else {
-            console.warn(`⚠️ Arquivo não encontrado: ${htmlFile}`);
-        }
-    }
-
-    // Mesclar as novas chaves com as traduções existentes
-    mergeTranslations();
-
-    // Salvar os arquivos de tradução atualizados (com await para aguardar o término)
-    await saveTranslationFiles();
-
-    console.log('✅ Extração de traduções concluída com sucesso!');
-}
-
-/**
- * Carregar os arquivos de tradução existentes
- */
-async function loadExistingTranslations() {
-    console.log('📚 Carregando arquivos de tradução existentes...');
-
-    for (const lang of CONFIG.supportedLangs) {
-        const filePath = path.join(I18N_DIR, `${lang}.json`);
-
-        if (fs.existsSync(filePath)) {
-            try {
-                const content = await fs.readFile(filePath, 'utf8');
-                existingTranslations[lang] = JSON.parse(content);
-                console.log(`✅ Carregado: ${lang}.json`);
-            } catch (error) {
-                console.error(`❌ Erro ao carregar ${lang}.json:`, error);
-                existingTranslations[lang] = {};
-            }
-        } else {
-            console.warn(`⚠️ Arquivo de tradução não encontrado: ${lang}.json`);
-            existingTranslations[lang] = {};
-        }
+// Função para carregar um arquivo JSON
+function carregarJSON(caminho) {
+    try {
+        return fs.readJsonSync(caminho);
+    } catch (error) {
+        console.error(`Erro ao carregar ${caminho}:`, error);
+        return {};
     }
 }
 
-/**
- * Processa um arquivo HTML para extrair chaves de tradução
- */
-async function processHTMLFile(filePath) {
-    const fileName = path.basename(filePath);
-    console.log(`🔍 Processando ${fileName}...`);
+// Função auxiliar para definir um valor em um objeto aninhado usando um caminho de chaves (ex: "nav.home")
+function setNestedValue(obj, path, value) {
+    const parts = path.split('.');
+    let current = obj;
 
-    const html = await fs.readFile(filePath, 'utf8');
-    const $ = cheerio.load(html);
-
-    // Contador para chaves encontradas
-    let keysFound = 0;
-
-    // Processar elementos com atributos de tradução
-    Object.keys(CONFIG.attributesMap).forEach(attr => {
-        $(`[${attr}]`).each((i, element) => {
-            const key = $(element).attr(attr);
-            if (key && key.trim()) {
-                addTranslationKey(key);
-                keysFound++;
-            }
-        });
-    });
-
-    // Processar elementos adicionais que podem precisar de tradução
-    CONFIG.additionalSelectors.forEach(selector => {
-        $(selector).each((i, element) => {
-            const text = $(element).text().trim();
-
-            // Verificar se o texto existe e não é apenas espaços em branco
-            if (text && !isJustCode(text)) {
-                // Gerar uma chave baseada no texto e na localização do elemento
-                const generatedKey = generateTranslationKey(text, element.name);
-
-                if (CONFIG.verbose) {
-                    console.log(`  → Sugerindo tradução para: "${text.substring(0, 30)}${text.length > 30 ? '...' : ''}" (${generatedKey})`);
-                }
-
-                addTranslationKey(generatedKey, text);
-
-                // Adicionar automaticamente o atributo data-i18n ao elemento
-                if (CONFIG.autoAddAttributes) {
-                    $(element).attr('data-i18n', generatedKey);
-                }
-
-                keysFound++;
-            }
-
-            // Verificar atributos que precisam de tradução
-            processElementAttributes(element, $, keysFound);
-        });
-    });
-
-    console.log(`✅ ${fileName}: Encontradas ${keysFound} chaves de tradução.`);
-
-    // Se configurado para atualizar arquivos HTML com atributos de tradução
-    if (CONFIG.updateHtmlFiles) {
-        const updatedHtml = $.html();
-        await fs.writeFile(filePath, updatedHtml, 'utf8');
-        console.log(`📝 Arquivo HTML atualizado: ${fileName}`);
-    }
-}
-
-/**
- * Processa atributos de um elemento que podem precisar de tradução
- */
-function processElementAttributes(element, $, keysFound) {
-    const attributesToTranslate = [
-        'placeholder', 'title', 'alt', 'aria-label', 'value'
-    ];
-
-    attributesToTranslate.forEach(attr => {
-        const attrValue = $(element).attr(attr);
-        if (attrValue && attrValue.trim() && !isJustCode(attrValue)) {
-            // Ignorar valores que são caminhos, URLs ou valores numéricos
-            if (!/^(https?:\/\/|www\.|\/|#|\d+(\.\d+)?%?$)/.test(attrValue)) {
-                const elementType = element.name;
-                const generatedKey = generateTranslationKey(attrValue, `${elementType}_${attr}`);
-
-                if (CONFIG.verbose) {
-                    console.log(`  → Sugerindo tradução para atributo ${attr}: "${attrValue.substring(0, 30)}${attrValue.length > 30 ? '...' : ''}" (${generatedKey})`);
-                }
-
-                addTranslationKey(generatedKey, attrValue);
-
-                // Adicionar automaticamente o atributo de tradução ao elemento
-                if (CONFIG.autoAddAttributes) {
-                    const attrToAdd = getTranslationAttributeForType(attr);
-                    if (attrToAdd) {
-                        $(element).attr(attrToAdd, generatedKey);
-                    }
-                }
-
-                keysFound++;
-            }
-        }
-    });
-}
-
-/**
- * Obtém o atributo de tradução correspondente para um tipo de atributo
- */
-function getTranslationAttributeForType(attributeType) {
-    const attributeMap = {
-        'placeholder': 'data-i18n-placeholder',
-        'title': 'data-i18n-title',
-        'alt': 'data-i18n-alt',
-        'aria-label': 'data-i18n-aria',
-        'value': 'data-i18n-value'
-    };
-
-    return attributeMap[attributeType] || null;
-}
-
-/**
- * Verifica se o texto parece ser apenas código ou conteúdo não traduzível
- */
-function isJustCode(text) {
-    // Textos muito curtos (como ícones ou números isolados)
-    if (text.length < 2) return true;
-
-    // Textos que parecem ser código JS, URLs, ou outros conteúdos não traduzíveis
-    if (/^({.*}|\[.*\]|https?:\/\/|www\.|<.*>)$/.test(text)) return true;
-
-    return false;
-}
-
-/**
- * Gera uma chave de tradução baseada no texto e tipo de elemento
- */
-function generateTranslationKey(text, elementType) {
-    // Simplificar o texto para criar uma chave
-    const simplifiedText = text
-        .toLowerCase()
-        .replace(/[^\w\s]/g, '') // Remover caracteres especiais
-        .replace(/\s+/g, '_')    // Substituir espaços por underscores
-        .substring(0, 30);       // Limitar tamanho
-
-    // Prefixo baseado no tipo de elemento
-    const prefixMap = {
-        h1: 'titulo',
-        h2: 'subtitulo',
-        h3: 'titulo_secao',
-        p: 'paragrafo',
-        button: 'botao',
-        a: 'link',
-        label: 'label',
-        input: 'input'
-    };
-
-    const prefix = prefixMap[elementType] || 'texto';
-
-    return `auto.${prefix}.${simplifiedText}`;
-}
-
-/**
- * Adiciona uma chave de tradução à lista global
- */
-function addTranslationKey(key, defaultText = null) {
-    // Ignorar chaves vazias
-    if (!key || key.trim() === '') return;
-
-    // Verificar se a chave já existe no objeto de traduções
-    const parts = key.split('.');
-
-    // Navegar pela estrutura de objetos para chegar ao ponto correto
-    let current = translationKeys;
     for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i];
-        if (!current[part]) {
+        if (!current[part] || typeof current[part] !== 'object') {
             current[part] = {};
-        } else if (typeof current[part] !== 'object') {
-            // Converter chave simples em objeto para comportar novas subchaves
-            current[part] = { '_value': current[part] };
         }
         current = current[part];
     }
 
-    // Último nível - definir o valor com texto padrão 
     const lastPart = parts[parts.length - 1];
-    if (!current[lastPart]) {
-        current[lastPart] = defaultText || key; // Usar o texto padrão ou a própria chave como valor inicial
+    // Só substitui se for string vazia ou não existir
+    if (!current[lastPart] || current[lastPart] === "") {
+        current[lastPart] = value;
     }
 }
 
-/**
- * Mescla as novas chaves encontradas com as traduções existentes
- */
-function mergeTranslations() {
-    console.log('🔄 Mesclando traduções novas com existentes...');
+// Função para extrair chaves de data-i18n dos arquivos HTML
+function extrairChavesHTML(caminhoArquivo) {
+    try {
+        console.log(`${icons.html} Processando arquivo HTML: ${path.basename(caminhoArquivo)}`);
+        const html = fs.readFileSync(caminhoArquivo, 'utf8');
+        const $ = cheerio.load(html);
+        const chaves = new Map();
 
-    // Para cada idioma suportado
-    for (const lang of CONFIG.supportedLangs) {
-        // Se for o idioma padrão, usar as chaves extraídas como base
-        if (lang === CONFIG.defaultLang) {
-            existingTranslations[lang] = deepMerge(existingTranslations[lang] || {}, translationKeys);
-        }
-        // Para outros idiomas, garantir que todas as chaves estejam presentes, mas manter as traduções existentes
-        else {
-            existingTranslations[lang] = ensureAllKeys(existingTranslations[lang] || {}, translationKeys);
-        }
-    }
-}
+        // Extrair data-i18n regular
+        $('[data-i18n]').each(function () {
+            const chave = $(this).attr('data-i18n');
+            const texto = $(this).text().trim();
 
-/**
- * Função recursiva para mesclar objetos de forma profunda
- */
-function deepMerge(target, source) {
-    const output = Object.assign({}, target);
-
-    if (isObject(target) && isObject(source)) {
-        Object.keys(source).forEach(key => {
-            if (isObject(source[key])) {
-                if (!(key in target)) {
-                    output[key] = source[key];
-                } else {
-                    output[key] = deepMerge(target[key], source[key]);
-                }
-            } else {
-                output[key] = source[key];
+            if (chave && texto && !chave.startsWith('auto.')) {
+                chaves.set(chave, texto);
             }
         });
-    }
 
-    return output;
-}
+        // Extrair attributos data-i18n-* (data-i18n-title, data-i18n-aria, etc)
+        $('*').each(function () {
+            const elemento = $(this);
+            const atributos = elemento.attr();
 
-/**
- * Verifica se o valor é um objeto
- */
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
-}
+            if (!atributos) return;
 
-/**
- * Garante que todas as chaves do source existem no target
- */
-function ensureAllKeys(target, source) {
-    const output = Object.assign({}, target);
+            Object.keys(atributos).forEach(attr => {
+                if (attr.startsWith('data-i18n-')) {
+                    const tipoAtributo = attr.replace('data-i18n-', '');
+                    const chave = elemento.attr(attr);
 
-    if (isObject(source)) {
-        Object.keys(source).forEach(key => {
-            if (isObject(source[key])) {
-                if (!(key in target)) {
-                    // Se a chave não existe no target, copiar do source
-                    output[key] = source[key];
-                } else if (isObject(target[key])) {
-                    // Se ambos são objetos, continuar recursivamente
-                    output[key] = ensureAllKeys(target[key], source[key]);
-                } else {
-                    // Se target[key] não é objeto mas source[key] é, criar estrutura no target
-                    output[key] = ensureAllKeys({}, source[key]);
+                    if (!chave || chave.startsWith('auto.')) return;
+
+                    // Obter o valor do atributo correspondente
+                    const nomeAtributoReal = tipoAtributo;
+                    const valorAtributo = elemento.attr(nomeAtributoReal);
+
+                    if (valorAtributo) {
+                        chaves.set(chave, valorAtributo);
+                    }
                 }
-            } else if (!(key in target)) {
-                // Se é um valor simples e não existe no target, copiar e marcar como "NEEDS TRANSLATION"
-                output[key] = `[NEEDS TRANSLATION] ${source[key]}`;
-            }
-            // Se a chave já existe no target como valor simples, manter a tradução existente
+            });
         });
-    }
 
-    return output;
+        return chaves;
+    } catch (error) {
+        console.error(`Erro ao processar ${caminhoArquivo}:`, error);
+        return new Map();
+    }
 }
 
-/**
- * Salva os arquivos de tradução atualizados
- */
-async function saveTranslationFiles() {
-    console.log('💾 Salvando arquivos de tradução atualizados... ' + new Date().toTimeString());
+// Função para extrair textos estáticos de botões, menus e outros elementos
+function extrairTextosEstaticos(caminhoArquivo) {
+    try {
+        console.log(`${icons.extract} Extraindo textos estáticos de: ${path.basename(caminhoArquivo)}`);
+        const html = fs.readFileSync(caminhoArquivo, 'utf8');
+        const $ = cheerio.load(html);
+        const chaves = new Map();
 
-    // Garantir que o diretório i18n exista
-    await fs.ensureDir(I18N_DIR);
+        // Extrair textos de botões
+        $('button, .botao, .btn').each(function () {
+            const texto = $(this).text().trim();
+            if (texto && !$(this).attr('data-i18n')) {
+                const chave = `auto.botao.${normalizarChave(texto)}`;
+                chaves.set(chave, texto);
+            }
+        });
 
-    // Para cada idioma suportado
-    for (const lang of CONFIG.supportedLangs) {
-        const filePath = path.join(I18N_DIR, `${lang}.json`);
+        // Extrair textos de links/menus de navegação
+        $('a, .menu-item, nav a, .seletor-idioma').each(function () {
+            const texto = $(this).text().trim();
+            if (texto && !$(this).attr('data-i18n')) {
+                const chave = `auto.link.${normalizarChave(texto)}`;
+                chaves.set(chave, texto);
+            }
+        });
 
-        try {
-            // Salvar o arquivo formatado para fácil leitura
-            await fs.writeFile(filePath, JSON.stringify(existingTranslations[lang], null, 4), 'utf8');
-            console.log(`✅ Salvo: ${lang}.json (${new Date().toTimeString()})`);
-        } catch (error) {
-            console.error(`❌ Erro ao salvar ${lang}.json:`, error);
+        // Extrair textos de títulos de seção
+        $('h1, h2, h3, h4, h5, h6, .titulo-section').each(function () {
+            const texto = $(this).text().trim();
+            if (texto && !$(this).attr('data-i18n')) {
+                const chave = `auto.titulo_secao.${normalizarChave(texto)}`;
+                chaves.set(chave, texto);
+            }
+        });
+
+        // Extrair textos de parágrafos
+        $('p').each(function () {
+            const texto = $(this).text().trim();
+            if (texto && !$(this).attr('data-i18n') && texto.length > 10) {
+                const chave = `auto.paragrafo.${normalizarChave(texto)}`;
+                chaves.set(chave, texto);
+            }
+        });
+
+        // Extrair textos de labels e campos de formulário
+        $('label, input[type="text"], input[type="email"], textarea, select, option').each(function () {
+            let texto = $(this).text().trim();
+
+            // Para inputs, verificar placeholder ou value
+            if ($(this).is('input') || $(this).is('textarea')) {
+                texto = $(this).attr('placeholder') || $(this).attr('value') || '';
+            }
+
+            if (texto && !$(this).attr('data-i18n')) {
+                const chave = `auto.texto.${normalizarChave(texto)}`;
+                chaves.set(chave, texto);
+            }
+        });
+
+        // Extrair textos de atributos aria e titles
+        $('[aria-label], [title]').each(function () {
+            const ariaText = $(this).attr('aria-label');
+            const titleText = $(this).attr('title');
+
+            if (ariaText && !$(this).attr('data-i18n-aria')) {
+                const chave = `auto.texto.${normalizarChave(ariaText)}`;
+                chaves.set(chave, ariaText);
+            }
+
+            if (titleText && !$(this).attr('data-i18n-title')) {
+                const chave = `auto.texto.${normalizarChave(titleText)}`;
+                chaves.set(chave, titleText);
+            }
+        });
+
+        return chaves;
+    } catch (error) {
+        console.error(`Erro ao extrair textos estáticos de ${caminhoArquivo}:`, error);
+        return new Map();
+    }
+}
+
+// Função para extrair chaves de tradução de arquivos JavaScript
+function extrairChavesJS(caminhoArquivo) {
+    try {
+        console.log(`${icons.js} Processando arquivo JS: ${path.basename(caminhoArquivo)}`);
+        const conteudo = fs.readFileSync(caminhoArquivo, 'utf8');
+        const chaves = new Map();
+
+        // Procurar por padrões como i18n.traduzir('chave.exemplo'), i18n.traduzirSync('chave.exemplo')
+        const regex = /[i]18n\.(traduzir|traduzirSync)\(['"]([\w\.]+)['"]/g;
+        let match;
+
+        while ((match = regex.exec(conteudo)) !== null) {
+            const chave = match[2];
+            if (chave && !chave.startsWith('auto.')) {
+                // Não temos o valor, então apenas registramos a chave
+                chaves.set(chave, "");
+            }
+        }
+
+        return chaves;
+    } catch (error) {
+        console.error(`Erro ao processar ${caminhoArquivo}:`, error);
+        return new Map();
+    }
+}
+
+// Função para extrair chaves de tradução dos cards da seção portfolio
+function extrairChavesPortfolio(caminhoArquivo) {
+    try {
+        console.log(`${icons.portfolio} Extraindo chaves dos cards de portfólio: ${path.basename(caminhoArquivo)}`);
+        const conteudo = fs.readFileSync(caminhoArquivo, 'utf8');
+        const chaves = new Map();
+
+        // Procurar por definições de projetos em JavaScript
+        // Este regex é uma aproximação e pode precisar ser ajustado para o formato exato dos dados
+        const regexProjetos = /\{[\s\n]*id:[\s\n]*['"]([^'"]+)['"][\s\n]*,[\s\n]*titulo:[\s\n]*['"]([^'"]+)['"][\s\n]*,[\s\n]*descricao:[\s\n]*['"]([^'"]+)['"][\s\n]*,/g;
+        let match;
+
+        while ((match = regexProjetos.exec(conteudo)) !== null) {
+            const id = match[1];
+            const titulo = match[2];
+            const descricao = match[3];
+
+            if (titulo) {
+                chaves.set(`portfolio.${id}.titulo`, titulo);
+            }
+
+            if (descricao) {
+                chaves.set(`portfolio.${id}.descricao`, descricao);
+            }
+        }
+
+        // Extrair botões de navegação do portfólio
+        const regexBotoes = /botao_anterior['"]\s*:\s*['"]([^'"]+)['"]/;
+        const regexBotoesNext = /botao_proximo['"]\s*:\s*['"]([^'"]+)['"]/;
+
+        const matchAnterior = regexBotoes.exec(conteudo);
+        if (matchAnterior && matchAnterior[1]) {
+            chaves.set('portfolio.navegacao.anterior', matchAnterior[1]);
+        }
+
+        const matchProximo = regexBotoesNext.exec(conteudo);
+        if (matchProximo && matchProximo[1]) {
+            chaves.set('portfolio.navegacao.proximo', matchProximo[1]);
+        }
+
+        return chaves;
+    } catch (error) {
+        console.error(`Erro ao extrair chaves de portfólio ${caminhoArquivo}:`, error);
+        return new Map();
+    }
+}
+
+// Função para normalizar texto para usar como chave
+function normalizarChave(texto) {
+    return texto
+        .toLowerCase()
+        .replace(/[^\w\s]/gi, '')
+        .replace(/\s+/g, '_')
+        .substring(0, 40); // Limitar tamanho da chave
+}
+
+// Função principal para extrair todas as chaves e atualizar os arquivos JSON
+async function extractTranslations() {
+    console.log(`\n${icons.init} Iniciando extração de traduções...`);
+    console.log(`${icons.time} Início: ${new Date().toLocaleTimeString()}`);
+
+    // Criar diretório i18n se não existir
+    fs.ensureDirSync(I18N_DIR);
+
+    // Carregar o arquivo pt.json existente
+    const ptJson = carregarJSON(PT_JSON_PATH) || {};
+
+    // Mapa para armazenar todas as chaves e valores encontrados
+    const todasChaves = new Map();
+
+    // Processar arquivos HTML
+    for (const arquivo of HTML_FILES) {
+        const caminhoCompleto = path.join(ROOT_DIR, arquivo);
+        if (fs.existsSync(caminhoCompleto)) {
+            // Extrair chaves já marcadas com data-i18n
+            const chaves = extrairChavesHTML(caminhoCompleto);
+            for (const [chave, valor] of chaves.entries()) {
+                todasChaves.set(chave, valor);
+            }
+
+            // Extrair textos estáticos
+            const textosEstaticos = extrairTextosEstaticos(caminhoCompleto);
+            for (const [chave, valor] of textosEstaticos.entries()) {
+                todasChaves.set(chave, valor);
+            }
         }
     }
+
+    // Processar arquivos JavaScript para buscar chaves de tradução
+    for (const arquivo of JS_FILES) {
+        const caminhoCompleto = path.join(ROOT_DIR, arquivo);
+        if (fs.existsSync(caminhoCompleto)) {
+            const chaves = extrairChavesJS(caminhoCompleto);
+            for (const [chave, valor] of chaves.entries()) {
+                todasChaves.set(chave, valor);
+            }
+
+            // Se for o arquivo que contém a definição dos projetos, extrair chaves dos cards
+            if (arquivo.includes('scripts.js') || arquivo.includes('portfolio.js')) {
+                const chavesPortfolio = extrairChavesPortfolio(caminhoCompleto);
+                for (const [chave, valor] of chavesPortfolio.entries()) {
+                    todasChaves.set(chave, valor);
+                }
+            }
+        }
+    }
+
+    // Atualizar o objeto ptJson com as chaves encontradas
+    for (const [chave, valor] of todasChaves.entries()) {
+        setNestedValue(ptJson, chave, valor);
+    }
+
+    // Escrever o arquivo pt.json atualizado
+    await fs.writeJson(PT_JSON_PATH, ptJson, { spaces: 2 });
+    console.log(`${icons.save} Arquivo ${path.relative(ROOT_DIR, PT_JSON_PATH)} atualizado com ${todasChaves.size} chaves de tradução.`);
+    console.log(`${icons.success} Extração de traduções concluída com sucesso!`);
+    console.log(`${icons.time} Fim: ${new Date().toLocaleTimeString()}`);
+
+    return { totalChaves: todasChaves.size };
 }
 
-// Exportar função principal
-module.exports = {
-    extractTranslations
-};
-
-// Se executado diretamente
+// Executar a função quando o script é chamado diretamente
 if (require.main === module) {
-    extractTranslations().catch(error => {
-        console.error('❌ Erro durante a extração de traduções:', error);
-        process.exit(1);
-    });
+    console.log(`${icons.init} Executando extração de traduções como script independente`);
+    extractTranslations()
+        .then(result => {
+            console.log(`${icons.success} Total de chaves extraídas: ${result.totalChaves}`);
+            process.exit(0);
+        })
+        .catch(error => {
+            console.error(`${icons.error} Erro ao extrair traduções:`, error);
+            process.exit(1);
+        });
+}
+
+module.exports = { extractTranslations };
+
+// Executar a função se este arquivo for chamado diretamente (não importado como módulo)
+if (require.main === module) {
+    console.log('Executando extração de traduções como script principal...');
+    extractTranslations()
+        .then(resultado => {
+            console.log(`Extração concluída com sucesso! Total de ${resultado.totalChaves} chaves.`);
+        })
+        .catch(err => {
+            console.error('Erro durante a extração de traduções:', err);
+            process.exit(1);
+        });
 }

@@ -21,6 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
       
+      - name: Auto Translate
+        env:
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+        run: node build-tools/auto-translate.js
+      
       - name: Extract Translations and Build site
         run: node build-tools/build.js
       

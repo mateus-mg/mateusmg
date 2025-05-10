@@ -6,13 +6,20 @@
     "scripts": {
         "build": "node build-tools/build.js",
         "build:css": "node build-tools/minify-css.js",
-        "build:js": "node build-tools/minify-js.js"
+        "build:js": "node build-tools/minify-js.js",
+        "extract-translations": "node build-tools/extract-translations.js",
+        "auto-translate": "node build-tools/auto-translate.js",
+        "update-translations": "npm run extract-translations && npm run auto-translate",
+        "translations": "node -e \"require('./build-tools/extract-translations').extractTranslations().then(() => require('./build-tools/auto-translate')()\"",
+        "validate-translations": "node build-tools/validar-traducoes.js",
+        "dev": "npm run extract-translations && node -e \"console.log('Modo de desenvolvimento iniciado com ferramentas de i18n ativas!')\""
     },
     "devDependencies": {
-        "cheerio": "^1.0.0-rc.12",
+        "chalk": "^4.1.2",
+        "cheerio": "^1.0.0",
         "clean-css": "^5.3.2",
-        "fs-extra": "^11.1.1",
-        "glob": "^10.3.10",
+        "fs-extra": "^11.3.0",
+        "glob": "^10.4.5",
         "terser": "^5.19.2"
     },
     "browserslist": [
